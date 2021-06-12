@@ -28,13 +28,7 @@ namespace CameraPlus.Behaviours
         }
 
         protected readonly WaitUntil _waitForMainCamera = new WaitUntil(() => Camera.main);
-        protected const int OnlyInThirdPerson = 3;
-        protected const int UILayer = 5;
-        protected const int OnlyInFirstPerson = 6; //Moved to an empty layer because layer 4 overlapped the floor
-        protected const int NotesDebriLayer = 9;
-        protected const int AlwaysVisible = 10;
-        protected const int NoteLayer = 8;
-        protected const int CustomNoteLayer = 24;
+
 
         public bool ThirdPerson
         {
@@ -47,14 +41,14 @@ namespace CameraPlus.Behaviours
 
                 if (value)
                 {
-                    _cam.cullingMask &= ~(1 << OnlyInFirstPerson);
-                    _cam.cullingMask |= 1 << OnlyInThirdPerson;
+                    _cam.cullingMask &= ~(1 << Layer.OnlyInFirstPerson);
+                    _cam.cullingMask |= 1 << Layer.OnlyInThirdPerson;
 
                 }
                 else
                 {
-                    _cam.cullingMask &= ~(1 << OnlyInThirdPerson);
-                    _cam.cullingMask |= 1 << OnlyInFirstPerson;
+                    _cam.cullingMask &= ~(1 << Layer.OnlyInThirdPerson);
+                    _cam.cullingMask |= 1 << Layer.OnlyInFirstPerson;
                 }
             }
         }
@@ -756,42 +750,53 @@ namespace CameraPlus.Behaviours
             {
                 if (Config.thirdPerson || Config.use360Camera)
                 {
-                    builder |= 1 << OnlyInThirdPerson;
-                    builder &= ~(1 << OnlyInFirstPerson);
+                    builder |= 1 << Layer.OnlyInThirdPerson;
+                    builder &= ~(1 << Layer.OnlyInFirstPerson);
                 }
                 else
                 {
-                    builder |= 1 << OnlyInFirstPerson;
-                    builder &= ~(1 << OnlyInThirdPerson);
+                    builder |= 1 << Layer.OnlyInFirstPerson;
+                    builder &= ~(1 << Layer.OnlyInThirdPerson);
                 }
-                builder |= 1 << AlwaysVisible;
+                builder |= 1 << Layer.AlwaysVisible;
             }
             else
             {
-                builder &= ~(1 << OnlyInThirdPerson);
-                builder &= ~(1 << OnlyInFirstPerson);
-                builder &= ~(1 << AlwaysVisible);
+                builder &= ~(1 << Layer.OnlyInThirdPerson);
+                builder &= ~(1 << Layer.OnlyInFirstPerson);
+                builder &= ~(1 << Layer.AlwaysVisible);
             }
             if (Config.debri != "link")
             {
                 if (Config.debri == "show")
-                    builder |= (1 << NotesDebriLayer);
+                    builder |= (1 << Layer.NotesDebriLayer);
                 else
-                    builder &= ~(1 << NotesDebriLayer);
+                    builder &= ~(1 << Layer.NotesDebriLayer);
             }
             if (Config.HideUI)
-                builder &= ~(1 << UILayer);
+                builder &= ~(1 << Layer.UI);
             else
-                builder |= (1 << UILayer);
+                builder |= (1 << Layer.UI);
+
+            if (Config.Saber)
+                builder |= 1 << Layer.Saber;
+            else
+                builder &= ~(1 << Layer.Saber);
+
+            if (Config.WallFrame)
+                builder |= 1 << Layer.Obstracle;
+            else
+                builder &= ~(1 << Layer.Obstracle);
+
             if (Config.Notes)
             {
-                builder &= ~(1 << CustomNoteLayer);
-                builder |= 1 << NoteLayer;
+                builder &= ~(1 << Layer.CustomNoteLayer);
+                builder |= 1 << Layer.Notes;
             }
             else
             {
-                builder &= ~(1 << CustomNoteLayer);
-                builder &= ~(1 << NoteLayer);
+                builder &= ~(1 << Layer.CustomNoteLayer);
+                builder &= ~(1 << Layer.Notes);
             }
 
             _cam.cullingMask = builder;

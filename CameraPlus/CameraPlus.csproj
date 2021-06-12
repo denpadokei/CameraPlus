@@ -201,6 +201,7 @@
     <Compile Include="HarmonyPatches\RotateMapPatch.cs" />
     <Compile Include="HarmonyPatches\TransparentWallsPatch.cs" />
     <Compile Include="HarmonyPatches\VRPointerPatch.cs" />
+    <Compile Include="Utilities\Layer.cs" />
     <Compile Include="Utilities\MultiplayerSession.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Logger.cs" />

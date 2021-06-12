@@ -61,8 +61,8 @@ namespace CameraPlus.Configuration
         public bool avatar = true;
         public string debri = "link";
         public bool HideUI = false;
-        public bool Notes = true;
         public bool Saber = true;
+        public bool Notes = true;
         public bool WallFrame = true;
         public string movementScriptPath = String.Empty;
         public bool movementAudioSync = true;
