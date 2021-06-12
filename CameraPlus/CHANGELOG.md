@@ -1,6 +1,7 @@
 # v5.2.1 Changes
 - buf fix (It failed to destroy VRPointer internally and was mass-produced every time the profile was loaded.)  
 - Re-register code for 1.15.0 and below.  
+- Revised the display object  menu and added display / non-display switches for Saber, Notes, and wall frames.  
 
 # v5.2.0 Changes
 - Supported game version 1.16.1 (Not compatible with 1.15.0 and earlier. Although it works)  
