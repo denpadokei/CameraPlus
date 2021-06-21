@@ -232,9 +232,6 @@ namespace CameraPlus.Behaviours
 
             if (Config.VMCProtocolMode == "sender")
                 InitExternalSender();
-
-            if (CameraUtilities.seekBar == null)
-                CameraUtilities.CreatSeekbarTexture();
         }
 
         public void InitExternalSender()
@@ -414,12 +411,12 @@ namespace CameraPlus.Behaviours
 
             StartCoroutine(GetMainCamera());
             StartCoroutine(Get360Managers());
-
+            /*
             var pointer = VRPointerPatch.Instance;
             if (_moverPointer) Destroy(_moverPointer);
             _moverPointer = pointer.gameObject.AddComponent<CameraMoverPointer>();
             _moverPointer.Init(this, _cameraCube);
-
+            */
             if (to.name == "GameCore")
                 SharedCoroutineStarter.instance.StartCoroutine(Delayed_activeSceneChanged(from, to));
             else
@@ -476,15 +473,18 @@ namespace CameraPlus.Behaviours
                 {
                     if (FPFCPatch.isInstanceFPFC)
                     {
-                        if (isFPFC != FPFCPatch.instance.isActiveAndEnabled)
+                        if (isFPFC != FPFCPatch.isInstanceFPFC)
                         {
-                            isFPFC = FPFCPatch.instance.enabled;
+                            isFPFC = FPFCPatch.isInstanceFPFC;
                             turnToHead = false;
                             replaceFPFC = true;
                             CreateScreenRenderTexture();
                         }
                         else
+                        {
+                            isFPFC = FPFCPatch.isInstanceFPFC;
                             turnToHead = Config.turnToHead;
+                        }
                     }
 #if WithVMCAvatar
                     if (Plugin.cameraController.existsVMCAvatar)
@@ -512,7 +512,7 @@ namespace CameraPlus.Behaviours
                             Plugin.cameraController.origin = new GameObject("OriginParent").transform;
                         }
                         adjustParent.transform.position = Plugin.cameraController.origin.position - RoomAdjustPatch.position;
-                        adjustParent.transform.localRotation = Plugin.cameraController.origin.localRotation * Quaternion.Inverse(RoomAdjustPatch.rotation);
+                        adjustParent.transform.rotation = Plugin.cameraController.origin.rotation * Quaternion.Inverse(RoomAdjustPatch.rotation);
 
                         adjustOffset.transform.localPosition = ThirdPersonPos;
                         adjustOffset.transform.localEulerAngles = ThirdPersonRot;
@@ -536,7 +536,7 @@ namespace CameraPlus.Behaviours
                         transform.position += OffsetPosition;
 
                     }
-                    if (turnToHead)
+                    if (turnToHead && !isFPFC)
                     {
                         turnToTarget = Camera.main.transform;
                         turnToTarget.transform.position += turnToHeadOffset;
