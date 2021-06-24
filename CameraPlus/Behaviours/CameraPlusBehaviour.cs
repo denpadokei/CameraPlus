@@ -411,12 +411,12 @@ namespace CameraPlus.Behaviours
 
             StartCoroutine(GetMainCamera());
             StartCoroutine(Get360Managers());
-            /*
+
             var pointer = VRPointerPatch.Instance;
             if (_moverPointer) Destroy(_moverPointer);
             _moverPointer = pointer.gameObject.AddComponent<CameraMoverPointer>();
             _moverPointer.Init(this, _cameraCube);
-            */
+
             if (to.name == "GameCore")
                 SharedCoroutineStarter.instance.StartCoroutine(Delayed_activeSceneChanged(from, to));
             else

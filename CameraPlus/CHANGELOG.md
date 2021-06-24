@@ -1,3 +1,6 @@
+# v5.2.3 Changes
+- I accidentally commented out the VRPointer part.  
+
 # v5.2.2 Changes
 - Supports Player Track for new Noodle Extensions.  
 
