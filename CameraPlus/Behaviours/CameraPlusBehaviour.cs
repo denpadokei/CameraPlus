@@ -541,6 +541,7 @@ namespace CameraPlus.Behaviours
                         turnToTarget = Camera.main.transform;
                         turnToTarget.transform.position += turnToHeadOffset;
                         transform.LookAt(turnToTarget);
+                        turnToTarget.transform.position -= turnToHeadOffset;
                     }
 
                     _cameraCube.position = transform.position;
