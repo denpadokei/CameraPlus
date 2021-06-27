@@ -1,3 +1,6 @@
+# v5.2.4 Changes  
+- Fixed turningtohead offset forgetting to return.  
+
 # v5.2.3 Changes
 - I accidentally commented out the VRPointer part.  
 
