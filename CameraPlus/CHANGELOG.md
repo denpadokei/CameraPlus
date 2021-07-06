@@ -1,5 +1,8 @@
+# v5.2.5 Changes
+- Refined VRPointer. This should reduce bugs that the camera can't grab.  
+
 # v5.2.4 Changes  
-- Fixed turningtohead offset forgetting to return.  
+- Fixed TurnToeHead offset forgetting to return.  
 
 # v5.2.3 Changes
 - I accidentally commented out the VRPointer part.  

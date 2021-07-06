@@ -30,6 +30,7 @@ namespace CameraPlus
         internal Dictionary<string, Shader> Shaders = new Dictionary<string, Shader>();
         private RenderTexture _renderTexture;
         private ScreenCameraBehaviour _screenCameraBehaviour;
+        private CameraMoverPointer _cameraMovePointer;
 
         private void Awake()
         {
@@ -62,6 +63,7 @@ namespace CameraPlus
             }
 
             ShaderLoad();
+            _cameraMovePointer = this.gameObject.AddComponent<CameraMoverPointer>();
             CameraUtilities.AddNewCamera(Plugin.MainCamera);
             MultiplayerSessionInit = false;
             Logger.log.Notice($"{Plugin.Name} has started");

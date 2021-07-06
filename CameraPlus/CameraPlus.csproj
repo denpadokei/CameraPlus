@@ -170,6 +170,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\CameraPreviewQuad.cs" />
     <Compile Include="Camera2Utils\Camera2Config.cs" />
     <Compile Include="Camera2Utils\Camera2ConfigExporter.cs" />
     <Compile Include="Camera2Utils\Camera2Scenes.cs" />
@@ -200,7 +201,6 @@
     <Compile Include="HarmonyPatches\RoomAdjustPatch.cs" />
     <Compile Include="HarmonyPatches\RotateMapPatch.cs" />
     <Compile Include="HarmonyPatches\TransparentWallsPatch.cs" />
-    <Compile Include="HarmonyPatches\VRPointerPatch.cs" />
     <Compile Include="Utilities\Layer.cs" />
     <Compile Include="Utilities\MultiplayerSession.cs" />
     <Compile Include="Plugin.cs" />

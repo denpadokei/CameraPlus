@@ -1,8 +1,6 @@
-﻿using System.Collections;
+﻿using System.Linq;
 using UnityEngine;
 using VRUIControls;
-using CameraPlus.Behaviours;
-using CameraPlus.Configuration;
 
 namespace CameraPlus.Behaviours
 {
@@ -11,108 +9,83 @@ namespace CameraPlus.Behaviours
         protected const float MinScrollDistance = 0.25f;
         protected const float MaxLaserDistance = 50;
 
-        protected VRPointer _vrPointer;
-        protected CameraPlusBehaviour _cameraPlus;
-        protected Transform _cameraCube;
-        protected VRController _grabbingController;
-        protected Vector3 _grabPos;
-        protected Quaternion _grabRot;
-        protected Vector3 _realPos;
-        protected Quaternion _realRot;
+        private static CameraPlusBehaviour _targetCamera;
+        private static Transform _targetTransform;
+        private static VRController _grabbingController;
+        private static Vector3 _grabPos;
+        private static Quaternion _grabRot;
+        private static Vector3 _realPos;
+        private static Quaternion _realRot;
 
-        public virtual void Init(CameraPlusBehaviour cameraPlus, Transform cameraCube)
+        public static void BeginDragCamera(CameraPlusBehaviour camera)
         {
-            _cameraPlus = cameraPlus;
-            _cameraCube = cameraCube;
-            _realPos = _cameraPlus.Config.Position;
-            _realRot = Quaternion.Euler(_cameraPlus.Config.Rotation);
-            _vrPointer = GetComponent<VRPointer>();
+            if (_targetCamera != null)
+                EndDragCamera();
+            _grabbingController = Resources.FindObjectsOfTypeAll<VRLaserPointer>()
+                .LastOrDefault(x => x.gameObject.activeInHierarchy)
+                ?.GetComponentInParent<VRController>();
+            if (_grabbingController == null)
+                return;
+            _targetCamera = camera;
+            _targetTransform = camera._cam.transform;
+            _realPos = _targetCamera.Config.Position;
+            _realRot = Quaternion.Euler(_targetCamera.Config.Rotation);
+            _grabPos = _grabbingController.transform.InverseTransformPoint(_targetTransform.position);
+            _grabRot = Quaternion.Inverse(_grabbingController.rotation) * _targetTransform.rotation;
+
         }
 
-        protected virtual void OnEnable()
+        private static void EndDragCamera()
         {
-            try
-            {
-                _cameraPlus.Config.ConfigChangedEvent += PluginOnConfigChangedEvent;
-            }
-            catch { }
-        }
+            if (_targetCamera == null) return;
 
-        protected virtual void OnDisable()
-        {
-            _cameraPlus.Config.ConfigChangedEvent -= PluginOnConfigChangedEvent;
-        }
+            _targetCamera.Config.Position = _targetCamera.transform.position;
+            _targetCamera.Config.Rotation = _targetCamera.transform.rotation.eulerAngles;
 
-        protected virtual void PluginOnConfigChangedEvent(Config config)
-        {
-            _realPos = config.Position;
-            _realRot = Quaternion.Euler(config.Rotation);
+            _targetCamera.Config.Save();
+            _targetCamera = null;
         }
 
         protected virtual void Update()
         {
-            if (_vrPointer != null) {
-                if (_vrPointer.vrController != null)
-                    if (_vrPointer.vrController.triggerValue > 0.9f)
-                    {
-                        if (_grabbingController != null) return;
-                        if (Physics.Raycast(_vrPointer.vrController.position, _vrPointer.vrController.forward, out var hit, MaxLaserDistance))
-                        {
-                            if (hit.transform != _cameraCube) return;
-                            _grabbingController = _vrPointer.vrController;
-                            _grabPos = _vrPointer.vrController.transform.InverseTransformPoint(_cameraCube.position);
-                            _grabRot = Quaternion.Inverse(_vrPointer.vrController.transform.rotation) * _cameraCube.rotation;
-                        }
-                    }
-
-                if (_grabbingController == null || !(_grabbingController.triggerValue <= 0.9f)) return;
-                SaveToConfig();
-                _grabbingController = null;
+            if (_targetCamera != null)
+            {
+                if (_grabbingController != null && _targetCamera._cam.isActiveAndEnabled)
+                {
+                    if (_grabbingController.triggerValue > 0.5f)
+                        return;
+                }
+                EndDragCamera();
             }
         }
 
         protected virtual void LateUpdate()
         {
-            if (_grabbingController != null && !_cameraPlus.Config.LockCamera)
+            if (_targetCamera != null)
             {
-                var diff = _grabbingController.verticalAxisValue * Time.unscaledDeltaTime;
-                if (_grabPos.magnitude > MinScrollDistance)
+                if (_grabbingController != null && !_targetCamera.Config.LockCamera)
                 {
-                    _grabPos -= Vector3.forward * diff;
+                    var diff = _grabbingController.verticalAxisValue * Time.unscaledDeltaTime;
+                    if (_grabPos.magnitude > MinScrollDistance)
+                    {
+                        _grabPos -= Vector3.forward * diff;
+                    }
+                    else
+                    {
+                        _grabPos -= Vector3.forward * Mathf.Clamp(diff, float.MinValue, 0);
+                    }
+                    _realPos = _grabbingController.transform.TransformPoint(_grabPos);
+                    _realRot = _grabbingController.transform.rotation * _grabRot;
                 }
-                else
-                {
-                    _grabPos -= Vector3.forward * Mathf.Clamp(diff, float.MinValue, 0);
-                }
-                _realPos = _grabbingController.transform.TransformPoint(_grabPos);
-                _realRot = _grabbingController.transform.rotation * _grabRot;
+                else return;
+
+                _targetCamera.ThirdPersonPos = Vector3.Lerp(_targetCamera._quad.transform.position, _realPos,
+                    _targetCamera.Config.positionSmooth * Time.unscaledDeltaTime);
+
+                _targetCamera.ThirdPersonRot = Quaternion.Slerp(_targetCamera._quad.transform.rotation, _realRot,
+                    _targetCamera.Config.rotationSmooth * Time.unscaledDeltaTime).eulerAngles;
+
             }
-            else return;
-
-            _cameraPlus.ThirdPersonPos = Vector3.Lerp(_cameraCube.position, _realPos,
-                _cameraPlus.Config.positionSmooth * Time.unscaledDeltaTime);
-
-            _cameraPlus.ThirdPersonRot = Quaternion.Slerp(_cameraCube.rotation, _realRot,
-                _cameraPlus.Config.rotationSmooth * Time.unscaledDeltaTime).eulerAngles;
-        }
-
-        protected virtual void SaveToConfig()
-        {
-            var pos = _realPos;
-            var rot = _realRot.eulerAngles;
-
-            var config = _cameraPlus.Config;
-
-            config.posx = pos.x;
-            config.posy = pos.y;
-            config.posz = pos.z;
-
-            config.angx = rot.x;
-            config.angy = rot.y;
-            config.angz = rot.z;
-
-            if(!config.LockCameraDrag)
-                config.Save();
         }
     }
 }

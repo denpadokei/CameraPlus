@@ -36,9 +36,7 @@ namespace CameraPlus.Behaviours
             set
             {
                 _thirdPerson = value;
-                _cameraCube.gameObject.SetActive(_thirdPerson && Config.showThirdPersonCamera);
-                _cameraPreviewQuad.gameObject.SetActive(_thirdPerson && Config.showThirdPersonCamera);
-
+                _quad.gameObject.SetActive(_thirdPerson && Config.showThirdPersonCamera);
                 if (value)
                 {
                     _cam.cullingMask &= ~(1 << Layer.OnlyInFirstPerson);
@@ -61,15 +59,12 @@ namespace CameraPlus.Behaviours
         public Config Config;
 
         protected RenderTexture _camRenderTexture;
-        protected Material _previewMaterial;
-        protected Camera _cam;
-        protected Transform _cameraCube;
+        internal Camera _cam;
         protected ScreenCameraBehaviour _screenCamera;
-        protected GameObject _cameraPreviewQuad;
         protected Camera _mainCamera = null;
         protected CameraMoverPointer _moverPointer = null;
         protected GameObject _cameraCubeGO;
-        protected GameObject _quad;
+        internal CameraPreviewQuad _quad;
         protected CameraMovement _cameraMovement = null;
         protected BeatLineManager _beatLineManager;
         protected EnvironmentSpawnRotation _environmentSpawnRotation;
@@ -170,11 +165,6 @@ namespace CameraPlus.Behaviours
 
             _screenCamera = new GameObject("Screen Camera").AddComponent<ScreenCameraBehaviour>();
             
-            
-            Shader shader = Resources.Load<Shader>("CustomBlitCopyWithDepth");
-            if (_previewMaterial == null)
-                _previewMaterial = new Material(Plugin.cameraController.Shaders["BeatSaber/BlitCopyWithDepth"]);
-                //_previewMaterial = new Material(Shader.Find("Hidden/BlitCopyWithDepth"));
             gameObj.SetActive(true);
 
             var camera = _mainCamera.transform;
@@ -187,24 +177,9 @@ namespace CameraPlus.Behaviours
             gameObj.transform.localRotation = Quaternion.identity;
             gameObj.transform.localScale = Vector3.one;
 
-            _cameraCubeGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            DontDestroyOnLoad(_cameraCubeGO);
-            _cameraCubeGO.SetActive(ThirdPerson);
-            _cameraCube = _cameraCubeGO.transform;
-            _cameraCube.localScale = new Vector3(0.15f, 0.15f, 0.22f);
-            _cameraCube.name = "CameraCube";
-            _cameraCubeGO.layer = Plugin.cameraController.rootConfig.CameraQuadLayer;
-
-            _quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            DontDestroyOnLoad(_quad);
-            DestroyImmediate(_quad.GetComponent<Collider>());
-            _quad.GetComponent<MeshRenderer>().material = _previewMaterial;
-            _quad.transform.parent = _cameraCube;
-            _quad.transform.localPosition = new Vector3(-1f * ((_cam.aspect - 1) / 2 + 1), 0, 0.22f);
-            _quad.transform.localEulerAngles = new Vector3(0, 180, 0);
-            _quad.transform.localScale = new Vector3(_cam.aspect, 1, 1);
-            _cameraPreviewQuad = _quad;
-            _quad.layer = Plugin.cameraController.rootConfig.CameraQuadLayer;
+            _quad = new GameObject("PreviewQuad").AddComponent<CameraPreviewQuad>();
+            _quad.transform.SetParent(_cam.transform);
+            _quad.Init(this);
 
             ReadConfig();
 
@@ -216,8 +191,8 @@ namespace CameraPlus.Behaviours
                 transform.position = ThirdPersonPos;
                 transform.eulerAngles = ThirdPersonRot;
 
-                _cameraCube.position = ThirdPersonPos;
-                _cameraCube.eulerAngles = ThirdPersonRot;
+                _quad.transform.position = ThirdPersonPos;
+                _quad.transform.eulerAngles = ThirdPersonRot;
             }
 
             // Add our camera movement script if the movement script path is set
@@ -386,7 +361,7 @@ namespace CameraPlus.Behaviours
                 //_camRenderTexture.Create();
 
                 _cam.targetTexture = _camRenderTexture;
-                _previewMaterial.SetTexture("_MainTex", _camRenderTexture);
+                _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
                 _screenCamera.SetRenderTexture(_camRenderTexture);
 
                 if (FPFCPatch.isInstanceFPFC && !FPFCPatch.instance.isActiveAndEnabled)
@@ -411,11 +386,6 @@ namespace CameraPlus.Behaviours
 
             StartCoroutine(GetMainCamera());
             StartCoroutine(Get360Managers());
-
-            var pointer = VRPointerPatch.Instance;
-            if (_moverPointer) Destroy(_moverPointer);
-            _moverPointer = pointer.gameObject.AddComponent<CameraMoverPointer>();
-            _moverPointer.Init(this, _cameraCube);
 
             if (to.name == "GameCore")
                 SharedCoroutineStarter.instance.StartCoroutine(Delayed_activeSceneChanged(from, to));
@@ -544,8 +514,8 @@ namespace CameraPlus.Behaviours
                         turnToTarget.transform.position -= turnToHeadOffset;
                     }
 
-                    _cameraCube.position = transform.position;
-                    _cameraCube.eulerAngles = transform.eulerAngles;
+                    _quad.transform.position = transform.position;
+                    _quad.transform.eulerAngles = transform.eulerAngles;
 
                     if (externalSender != null & Config.VMCProtocolMode == "sender")
                     {
