@@ -42,7 +42,8 @@ namespace CameraPlus.Behaviours
             _targetCamera.Config.Position = _targetCamera.transform.position;
             _targetCamera.Config.Rotation = _targetCamera.transform.rotation.eulerAngles;
 
-            _targetCamera.Config.Save();
+            if(!_targetCamera.Config.LockCameraDrag)
+                _targetCamera.Config.Save();
             _targetCamera = null;
         }
 
