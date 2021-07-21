@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace CameraPlus.Configuration
 {
@@ -16,11 +15,6 @@ namespace CameraPlus.Configuration
         public int CameraQuadLayer = 0;
         public bool ScreenFillBlack = false;
 
-        public event Action<RootConfig> ConfigChangedEvent;
-
-        private readonly FileSystemWatcher _configWatcher;
-        private bool _saving;
-
         public RootConfig(string filePath)
         {
             FilePath = filePath;
@@ -29,52 +23,16 @@ namespace CameraPlus.Configuration
                 Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
 
             if (File.Exists(FilePath))
-            {
-                Load();
-                var text = File.ReadAllText(FilePath);
-            }
-            Save();
+                ConfigSerializer.LoadConfig(this, FilePath);
 
-            _configWatcher = new FileSystemWatcher(Path.GetDirectoryName(FilePath))
-            {
-                NotifyFilter = NotifyFilters.LastWrite,
-                Filter = Path.GetFileName(FilePath),
-                EnableRaisingEvents = true
-            };
-            _configWatcher.Changed += ConfigWatcherOnChanged;
-        }
-
-        ~RootConfig()
-        {
-            _configWatcher.Changed -= ConfigWatcherOnChanged;
-        }
-
-        public void Save()
-        {
-            _saving = true;
-            ConfigSerializer.SaveConfig(this, FilePath);
-            _saving = false;
-        }
-
-        public void Load()
-        {
-            ConfigSerializer.LoadConfig(this, FilePath);
-        }
-
-        private void ConfigWatcherOnChanged(object sender, FileSystemEventArgs fileSystemEventArgs)
-        {
-            if (_saving)
-            {
-                _saving = false;
-                return;
-            }
-
-            Load();
-
-            if (ConfigChangedEvent != null)
-            {
-                ConfigChangedEvent(this);
-            }
+            PluginConfig.Instance.ProfileSceneChange = ProfileSceneChange;
+            PluginConfig.Instance.MenuProfile = MenuProfile;
+            PluginConfig.Instance.GameProfile = GameProfile;
+            PluginConfig.Instance.RotateProfile = RotateProfile;
+            PluginConfig.Instance.MultiplayerProfile = MultiplayerProfile;
+            PluginConfig.Instance.ProfileLoadCopyMethod = ProfileLoadCopyMethod;
+            PluginConfig.Instance.CameraQuadLayer = CameraQuadLayer;
+            PluginConfig.Instance.ScreenFillBlack = ScreenFillBlack;
         }
     }
 }

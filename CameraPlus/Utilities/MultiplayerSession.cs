@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using CameraPlus.HarmonyPatches;
+using CameraPlus.Configuration;
 
 namespace CameraPlus.Utilities
 {
@@ -47,8 +48,8 @@ namespace CameraPlus.Utilities
             for (int i = 0; i < connectedPlayers.Count; i++)
                 Logger.log.Info($"ConnectedPlayer {connectedPlayers[i].userName},{connectedPlayers[i].sortIndex}");
 #endif
-            if (Plugin.cameraController.rootConfig.MultiplayerProfile != "" && Plugin.cameraController.rootConfig.ProfileSceneChange)
-                CameraUtilities.ProfileChange(Plugin.cameraController.rootConfig.MultiplayerProfile);
+            if (PluginConfig.Instance.MultiplayerProfile != "" && PluginConfig.Instance.ProfileSceneChange)
+                CameraUtilities.ProfileChange(PluginConfig.Instance.MultiplayerProfile);
             LoadLobbyAvatarPlace();
         }
         private static void OnSessionDisconnected(DisconnectedReason reason)
@@ -57,8 +58,8 @@ namespace CameraPlus.Utilities
             connectedPlayers.Clear();
             LobbyAvatarPlaceList.Clear();
             Logger.log.Info($"SessionManager Disconnected {reason}");
-            if (Plugin.cameraController.rootConfig.MenuProfile != "" && Plugin.cameraController.rootConfig.ProfileSceneChange)
-                CameraUtilities.ProfileChange(Plugin.cameraController.rootConfig.MenuProfile);
+            if (PluginConfig.Instance.MenuProfile != "" && PluginConfig.Instance.ProfileSceneChange)
+                CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
         }
         private static void OnSessionPlayerConnected(IConnectedPlayer player)
         {

@@ -6,10 +6,10 @@ using UnityEngine;
 namespace CameraPlus.HarmonyPatches
 {
 	[HarmonyPatch]
-	class RoomAdjustPatch
+	internal class RoomAdjustPatch
     {
-		public static Vector3 position = new Vector3();
-		public static Quaternion rotation = new Quaternion();
+		internal static Vector3 position = new Vector3();
+		internal static Quaternion rotation = new Quaternion();
 
 		static void Postfix(MonoBehaviour __instance)
 		{

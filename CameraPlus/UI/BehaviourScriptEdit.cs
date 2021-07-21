@@ -53,8 +53,8 @@ namespace CameraPlus.UI
             GUI.Button(new Rect(475, 40, 60, 30), "Section");
             GUI.Button(new Rect(540, 40, 60, 30), "PlayAll");
 
-            GUI.Box(new Rect(205, 70, 200, 50), $"Field of View\n{_parentBehaviour.GetFOV().ToString("F0")}");
-            _parentBehaviour.FOV(GUI.HorizontalSlider(new Rect(215, 105, 180, 30), _parentBehaviour.GetFOV(), 0f, 180f));
+            GUI.Box(new Rect(205, 70, 200, 50), $"Field of View\n{_parentBehaviour.FOV.ToString("F0")}");
+            _parentBehaviour.FOV=GUI.HorizontalSlider(new Rect(215, 105, 180, 30), _parentBehaviour.FOV, 0f, 180f);
 
             GUI.Box(new Rect(405, 80, 200, 120), "Position");
             GUI.Box(new Rect(405, 100, 200, 50), "PositionAmount");

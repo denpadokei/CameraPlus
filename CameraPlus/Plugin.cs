@@ -1,8 +1,11 @@
 ﻿using System.Reflection;
 using IPA;
+using IPA.Config;
+using IPA.Config.Stores;
 using HarmonyLib;
 using UnityEngine;
 using IPALogger = IPA.Logging.Logger;
+using CameraPlus.Configuration;
 
 namespace CameraPlus
 {
@@ -16,28 +19,13 @@ namespace CameraPlus
         private Harmony _harmony;
         internal static CameraPlusController cameraController;
         [Init]
-        /// <summary>
-        /// Called when the plugin is first loaded by IPA (either when the game starts or when the plugin is enabled if it starts disabled).
-        /// [Init] methods that use a Constructor or called before regular methods like InitWithConfig.
-        /// Only use [Init] with one Constructor.
-        /// </summary>
-        public void Init(IPALogger logger)
+
+        public void Init(Config conf, IPALogger logger)
         {
             instance = this;
+            PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
             Logger.log = logger;
         }
-
-        #region BSIPA Config
-        //Uncomment to use BSIPA's config
-        /*
-        [Init]
-        public void InitWithConfig(Config conf)
-        {
-            Configuration.PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
-            Logger.log.Debug("Config loaded");
-        }
-        */
-        #endregion
 
         [OnStart]
         public void OnApplicationStart()

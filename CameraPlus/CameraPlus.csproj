@@ -120,6 +120,7 @@
     <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Programs\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.AudioModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
@@ -151,10 +152,12 @@
     <Reference Include="UnityEngine.UI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Programs\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.UI.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.UIModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>D:\Programs\SteamLibrary\steamapps\common\Beat Saber\Beat Saber_Data\Managed\UnityEngine.UIModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.VRModule">
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\UnityEngine.VRModule.dll</HintPath>
@@ -170,15 +173,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Behaviours\CameraPreviewQuad.cs" />
     <Compile Include="Camera2Utils\Camera2Config.cs" />
     <Compile Include="Camera2Utils\Camera2ConfigExporter.cs" />
     <Compile Include="Camera2Utils\Camera2Scenes.cs" />
     <Compile Include="Behaviours\CameraMovement.cs" />
+    <Compile Include="Configuration\CameraConfig.cs" />
     <Compile Include="Configuration\MovementScriptJson.cs" />
     <Compile Include="Behaviours\CameraMoverPointer.cs" />
     <Compile Include="Behaviours\CameraPlusBehaviour.cs" />
-    <Compile Include="CameraPlusInstance.cs" />
     <Compile Include="Behaviours\ScreenCameraBehaviour.cs" />
+    <Compile Include="Configuration\PluginConfig.cs" />
+    <Compile Include="HarmonyPatches\MainCameraPatch.cs" />
+    <Compile Include="HarmonyPatches\PlayerSettingPatch.cs" />
     <Compile Include="UI\BehaviourScriptEdit.cs" />
     <Compile Include="UI\MenuCamera2.cs" />
     <Compile Include="UI\MenuDisplayObject.cs" />
@@ -188,7 +195,7 @@
     <Compile Include="UI\MenuMultiplayer.cs" />
     <Compile Include="UI\MenuProfile.cs" />
     <Compile Include="Utilities\CameraUtilities.cs" />
-    <Compile Include="Configuration\Config.cs" />
+    <Compile Include="Configuration\PreviousConfig.cs" />
     <Compile Include="Configuration\RootConfig.cs" />
     <Compile Include="HarmonyPatches\AudioTimeSyncControllerPatch.cs" />
     <Compile Include="HarmonyPatches\CustomPreviewBeatmapLevelPatch.cs" />
@@ -200,7 +207,7 @@
     <Compile Include="HarmonyPatches\RoomAdjustPatch.cs" />
     <Compile Include="HarmonyPatches\RotateMapPatch.cs" />
     <Compile Include="HarmonyPatches\TransparentWallsPatch.cs" />
-    <Compile Include="HarmonyPatches\VRPointerPatch.cs" />
+    <Compile Include="Utilities\ConfigConverter.cs" />
     <Compile Include="Utilities\Layer.cs" />
     <Compile Include="Utilities\MultiplayerSession.cs" />
     <Compile Include="Plugin.cs" />

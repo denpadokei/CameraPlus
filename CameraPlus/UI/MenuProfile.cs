@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using CameraPlus.Behaviours;
 using CameraPlus.Utilities;
+using CameraPlus.Configuration;
 
 namespace CameraPlus.UI
 {
@@ -18,73 +19,63 @@ namespace CameraPlus.UI
                 CameraUtilities.SaveCurrent();
             if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 125, 140, 30), new GUIContent("Delete")))
             {
-                if (!Plugin.cameraController.rootConfig.ProfileLoadCopyMethod)
+                if (!PluginConfig.Instance.ProfileLoadCopyMethod)
                     CameraUtilities.ProfileChange(null);
                 CameraUtilities.DeleteProfile(CameraUtilities.currentlySelected);
                 CameraUtilities.TrySetLast();
             }
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 165, 300, 30), new GUIContent("Load Selected")))
                 CameraUtilities.ProfileChange(CameraUtilities.currentlySelected);
-            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 200, 145, 30), new GUIContent("SceneProfile On"), Plugin.cameraController.rootConfig.ProfileSceneChange ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 200, 145, 30), new GUIContent("SceneProfile On"), PluginConfig.Instance.ProfileSceneChange ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
-                Plugin.cameraController.rootConfig.ProfileSceneChange = true;
-                Plugin.cameraController.rootConfig.Save();
+                PluginConfig.Instance.ProfileSceneChange = true;
             }
-            if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 200, 145, 30), new GUIContent("SceneProfile Off"), !Plugin.cameraController.rootConfig.ProfileSceneChange ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 200, 145, 30), new GUIContent("SceneProfile Off"), !PluginConfig.Instance.ProfileSceneChange ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
-                Plugin.cameraController.rootConfig.ProfileSceneChange = false;
-                Plugin.cameraController.rootConfig.Save();
+                PluginConfig.Instance.ProfileSceneChange = false;
             }
 
-            if (Plugin.cameraController.rootConfig.ProfileSceneChange)
+            if (PluginConfig.Instance.ProfileSceneChange)
             {
-                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 230, 270, 30), "Menu Scene  : " + (Plugin.cameraController.rootConfig.MenuProfile), contextMenu.ProfileStyle);
-                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 260, 270, 30), "Game Scene  : " + (Plugin.cameraController.rootConfig.GameProfile), contextMenu.ProfileStyle);
-                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 290, 270, 30), "Game 90/360 : " + (Plugin.cameraController.rootConfig.RotateProfile), contextMenu.ProfileStyle);
-                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 320, 270, 30), "Multiplayer : " + (Plugin.cameraController.rootConfig.MultiplayerProfile), contextMenu.ProfileStyle);
+                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 230, 270, 30), "Menu Scene  : " + (PluginConfig.Instance.MenuProfile), contextMenu.ProfileStyle);
+                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 260, 270, 30), "Game Scene  : " + (PluginConfig.Instance.GameProfile), contextMenu.ProfileStyle);
+                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 290, 270, 30), "Game 90/360 : " + (PluginConfig.Instance.RotateProfile), contextMenu.ProfileStyle);
+                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 320, 270, 30), "Multiplayer : " + (PluginConfig.Instance.MultiplayerProfile), contextMenu.ProfileStyle);
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 230, 30, 30), "X"))
                 {
-                    if (Plugin.cameraController.rootConfig.MenuProfile != string.Empty)
-                        Plugin.cameraController.rootConfig.MenuProfile = string.Empty;
-                    Plugin.cameraController.rootConfig.Save();
+                    if (PluginConfig.Instance.MenuProfile != string.Empty)
+                        PluginConfig.Instance.MenuProfile = string.Empty;
                 }
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 260, 30, 30), "X"))
                 {
-                    if (Plugin.cameraController.rootConfig.GameProfile != string.Empty)
-                        Plugin.cameraController.rootConfig.GameProfile = string.Empty;
-                    Plugin.cameraController.rootConfig.Save();
+                    if (PluginConfig.Instance.GameProfile != string.Empty)
+                        PluginConfig.Instance.GameProfile = string.Empty;
                 }
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 290, 30, 30), "X"))
                 {
-                    if (Plugin.cameraController.rootConfig.RotateProfile != string.Empty)
-                        Plugin.cameraController.rootConfig.RotateProfile = string.Empty;
-                    Plugin.cameraController.rootConfig.Save();
+                    if (PluginConfig.Instance.RotateProfile != string.Empty)
+                        PluginConfig.Instance.RotateProfile = string.Empty;
                 }
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 320, 30, 30), "X"))
                 {
-                    if (Plugin.cameraController.rootConfig.MultiplayerProfile != string.Empty)
-                        Plugin.cameraController.rootConfig.MultiplayerProfile = string.Empty;
-                    Plugin.cameraController.rootConfig.Save();
+                    if (PluginConfig.Instance.MultiplayerProfile != string.Empty)
+                        PluginConfig.Instance.MultiplayerProfile = string.Empty;
                 }
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 350, 145, 25), new GUIContent("Menu Selected")))
                 {
-                    Plugin.cameraController.rootConfig.MenuProfile = CameraUtilities.currentlySelected;
-                    Plugin.cameraController.rootConfig.Save();
+                    PluginConfig.Instance.MenuProfile = CameraUtilities.currentlySelected;
                 }
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 375, 145, 25), new GUIContent("Game Selected")))
                 {
-                    Plugin.cameraController.rootConfig.GameProfile = CameraUtilities.currentlySelected;
-                    Plugin.cameraController.rootConfig.Save();
+                    PluginConfig.Instance.GameProfile = CameraUtilities.currentlySelected;
                 }
                 if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 375, 145, 25), new GUIContent("90/360 Selected")))
                 {
-                    Plugin.cameraController.rootConfig.RotateProfile = CameraUtilities.currentlySelected;
-                    Plugin.cameraController.rootConfig.Save();
+                    PluginConfig.Instance.RotateProfile = CameraUtilities.currentlySelected;
                 }
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 400, 145, 25), new GUIContent("Multiplay Selected")))
                 {
-                    Plugin.cameraController.rootConfig.MultiplayerProfile = CameraUtilities.currentlySelected;
-                    Plugin.cameraController.rootConfig.Save();
+                    PluginConfig.Instance.MultiplayerProfile = CameraUtilities.currentlySelected;
                 }
             }
             /*

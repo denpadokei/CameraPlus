@@ -66,11 +66,11 @@ namespace CameraPlus.UI
             menuCamera2Converter = new MenuCamera2();
             menuExternalLink = new MenuExternalLink();
 
-            if (this.parentBehaviour.Config.LockScreen)
+            if (this.parentBehaviour.Config.cameraLock.lockScreen)
                 texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Lock.png");
             else
                 texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.UnLock.png");
-            if (this.parentBehaviour.Config.LockCamera || this.parentBehaviour.Config.LockCameraDrag)
+            if (this.parentBehaviour.Config.cameraLock.lockCamera || this.parentBehaviour.Config.cameraLock.dontSaveDrag)
                 Cameratexture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.CameraLock.png");
             else
                 Cameratexture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.CameraUnlock.png");
@@ -111,45 +111,45 @@ namespace CameraPlus.UI
                 {
                     if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 25, 30, 30), texture))
                     {
-                        parentBehaviour.Config.LockScreen = !parentBehaviour.Config.LockScreen;
+                        parentBehaviour.Config.cameraLock.lockScreen = !parentBehaviour.Config.cameraLock.lockScreen;
                         parentBehaviour.Config.Save();
-                        if (this.parentBehaviour.Config.LockScreen)
+                        if (this.parentBehaviour.Config.cameraLock.lockScreen)
                             texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Lock.png");
                         else
                             texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.UnLock.png");
                     }
-                    GUI.Box(new Rect(menuPos.x + 35, menuPos.y + 25, 115, 30), new GUIContent(parentBehaviour.Config.LockScreen ? "Locked Screen" : "Unlocked Screen"), ProfileStyle);
+                    GUI.Box(new Rect(menuPos.x + 35, menuPos.y + 25, 115, 30), new GUIContent(parentBehaviour.Config.cameraLock.lockScreen ? "Locked Screen" : "Unlocked Screen"), ProfileStyle);
 
                     if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 25, 30, 30), Cameratexture))
                     {
-                        if (!parentBehaviour.Config.LockCamera && !parentBehaviour.Config.LockCameraDrag)
+                        if (!parentBehaviour.Config.cameraLock.lockCamera && !parentBehaviour.Config.cameraLock.dontSaveDrag)
                         {
-                            parentBehaviour.Config.LockCamera = true;
-                            parentBehaviour.Config.LockCameraDrag = false;
+                            parentBehaviour.Config.cameraLock.lockCamera = true;
+                            parentBehaviour.Config.cameraLock.dontSaveDrag = false;
                             Cameratexture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.CameraLock.png");
                         }
-                        else if (parentBehaviour.Config.LockCamera && !parentBehaviour.Config.LockCameraDrag)
+                        else if (parentBehaviour.Config.cameraLock.lockCamera && !parentBehaviour.Config.cameraLock.dontSaveDrag)
                         {
-                            parentBehaviour.Config.LockCamera = false;
-                            parentBehaviour.Config.LockCameraDrag = true;
+                            parentBehaviour.Config.cameraLock.lockCamera = false;
+                            parentBehaviour.Config.cameraLock.dontSaveDrag = true;
                             Cameratexture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.CameraLock.png");
                         }
                         else
                         {
-                            parentBehaviour.Config.LockCamera = false;
-                            parentBehaviour.Config.LockCameraDrag = false;
+                            parentBehaviour.Config.cameraLock.lockCamera = false;
+                            parentBehaviour.Config.cameraLock.dontSaveDrag = false;
                             Cameratexture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.CameraUnlock.png");
                         }
                         parentBehaviour.Config.Save();
                     }
-                    GUI.Box(new Rect(menuPos.x + 185, menuPos.y + 25, 115, 30), new GUIContent(parentBehaviour.Config.LockCameraDrag ? "ResetDrag Camera" : (parentBehaviour.Config.LockCamera ? "Locked Camera" : "Unlocked Camera")), ProfileStyle);
+                    GUI.Box(new Rect(menuPos.x + 185, menuPos.y + 25, 115, 30), new GUIContent(parentBehaviour.Config.cameraLock.dontSaveDrag ? "ResetDrag Camera" : (parentBehaviour.Config.cameraLock.lockCamera ? "Locked Camera" : "Unlocked Camera")), ProfileStyle);
 
                     if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 60, 145, 60), new GUIContent("Add New Camera")))
                     {
                         lock (Plugin.cameraController.Cameras)
                         {
                             string cameraName = CameraUtilities.GetNextCameraName();
-                            Logger.log.Notice($"Adding new config with name {cameraName}.cfg");
+                            Logger.log.Notice($"Adding new config with name {cameraName}.json");
                             CameraUtilities.AddNewCamera(cameraName);
                             CameraUtilities.ReloadCameras();
                             parentBehaviour.CloseContextMenu();
@@ -185,7 +185,7 @@ namespace CameraPlus.UI
                     if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 210, 95, 30), new GUIContent("First Person"), !parentBehaviour.Config.thirdPerson ? CustomEnableStyle : CustomDisableStyle))
                     {
                         parentBehaviour.Config.thirdPerson = false;
-                        parentBehaviour.Config.use360Camera = false;
+                        parentBehaviour.Config.cameraExtensions.follow360map = false;
                         parentBehaviour.ThirdPerson = parentBehaviour.Config.thirdPerson;
                         parentBehaviour.ThirdPersonPos = parentBehaviour.Config.Position;
                         parentBehaviour.ThirdPersonRot = parentBehaviour.Config.Rotation;
@@ -193,20 +193,20 @@ namespace CameraPlus.UI
                         parentBehaviour.CreateScreenRenderTexture();
                         parentBehaviour.Config.Save();
                     }
-                    if (GUI.Button(new Rect(menuPos.x + 105, menuPos.y + 210, 95, 30), new GUIContent("Third Person"), (parentBehaviour.Config.thirdPerson && !parentBehaviour.Config.use360Camera) ? CustomEnableStyle : CustomDisableStyle))
+                    if (GUI.Button(new Rect(menuPos.x + 105, menuPos.y + 210, 95, 30), new GUIContent("Third Person"), (parentBehaviour.Config.thirdPerson && !parentBehaviour.Config.cameraExtensions.follow360map) ? CustomEnableStyle : CustomDisableStyle))
                     {
                         parentBehaviour.Config.thirdPerson = true;
-                        parentBehaviour.Config.use360Camera = false;
+                        parentBehaviour.Config.cameraExtensions.follow360map = false;
                         parentBehaviour.ThirdPersonPos = parentBehaviour.Config.Position;
                         parentBehaviour.ThirdPersonRot = parentBehaviour.Config.Rotation;
 
                         parentBehaviour.CreateScreenRenderTexture();
                         parentBehaviour.Config.Save();
                     }
-                    if (GUI.Button(new Rect(menuPos.x + 205, menuPos.y + 210, 95, 30), new GUIContent("360 degree"), (parentBehaviour.Config.thirdPerson && parentBehaviour.Config.use360Camera) ? CustomEnableStyle : CustomDisableStyle))
+                    if (GUI.Button(new Rect(menuPos.x + 205, menuPos.y + 210, 95, 30), new GUIContent("360 degree"), (parentBehaviour.Config.thirdPerson && parentBehaviour.Config.cameraExtensions.follow360map) ? CustomEnableStyle : CustomDisableStyle))
                     {
                         parentBehaviour.Config.thirdPerson = true;
-                        parentBehaviour.Config.use360Camera = true;
+                        parentBehaviour.Config.cameraExtensions.follow360map = true;
                         parentBehaviour.ThirdPersonPos = parentBehaviour.Config.Position;
                         parentBehaviour.ThirdPersonRot = parentBehaviour.Config.Rotation;
 

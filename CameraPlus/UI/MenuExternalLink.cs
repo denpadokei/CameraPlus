@@ -12,9 +12,9 @@ namespace CameraPlus.UI
             GUI.Box(new Rect(menuPos.x, menuPos.y + 25, 300, 65), "VMCProtocol");
             if (parentBehaviour.Config.fitToCanvas)
             {
-                if (GUI.Button(new Rect(menuPos.x, menuPos.y + 45, 100, 40), new GUIContent("Sender"), parentBehaviour.Config.VMCProtocolMode == "sender" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                if (GUI.Button(new Rect(menuPos.x, menuPos.y + 45, 100, 40), new GUIContent("Sender"), parentBehaviour.Config.vmcProtocol.mode == Configuration.VMCProtocolMode.Sender ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
                 {
-                    parentBehaviour.Config.VMCProtocolMode = "sender";
+                    parentBehaviour.Config.vmcProtocol.mode = Configuration.VMCProtocolMode.Sender;
                     parentBehaviour.Config.Save();
                     parentBehaviour.DestoryVMCProtocolObject();
                     parentBehaviour.InitExternalSender();
@@ -25,9 +25,9 @@ namespace CameraPlus.UI
                 GUI.Box(new Rect(menuPos.x, menuPos.y + 45, 100, 40), new GUIContent("Require\nFitToCanvas"));
             if (Plugin.cameraController.existsVMCAvatar)
             {
-                if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 45, 100, 40), new GUIContent("Receiver"), parentBehaviour.Config.VMCProtocolMode == "receiver" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 45, 100, 40), new GUIContent("Receiver"), parentBehaviour.Config.vmcProtocol.mode == Configuration.VMCProtocolMode.Receiver ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
                 {
-                    parentBehaviour.Config.VMCProtocolMode = "receiver";
+                    parentBehaviour.Config.vmcProtocol.mode = Configuration.VMCProtocolMode.Receiver;
                     parentBehaviour.Config.Save();
                     parentBehaviour.DestoryVMCProtocolObject();
                     parentBehaviour.InitExternalReceiver();
@@ -36,27 +36,27 @@ namespace CameraPlus.UI
             else
                 GUI.Box(new Rect(menuPos.x + 100, menuPos.y + 45, 100, 40), new GUIContent("Require\nVMCAvatar Mod"));
 
-            if (GUI.Button(new Rect(menuPos.x + 200, menuPos.y + 45, 100, 40), new GUIContent("Disable"), parentBehaviour.Config.VMCProtocolMode == "disable" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 200, menuPos.y + 45, 100, 40), new GUIContent("Disable"), parentBehaviour.Config.vmcProtocol.mode == Configuration.VMCProtocolMode.Disable ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
-                parentBehaviour.Config.VMCProtocolMode = "disable";
+                parentBehaviour.Config.vmcProtocol.mode = Configuration.VMCProtocolMode.Disable;
                 parentBehaviour.Config.Save();
                 parentBehaviour.DestoryVMCProtocolObject();
             }
 
-            if (parentBehaviour.Config.VMCProtocolMode == "sender")
+            if (parentBehaviour.Config.vmcProtocol.mode == Configuration.VMCProtocolMode.Sender)
             {
                 GUI.Box(new Rect(menuPos.x, menuPos.y + 90, 150, 45), new GUIContent("Address"));
-                var addr = GUI.TextField(new Rect(menuPos.x, menuPos.y + 110, 150, 25), parentBehaviour.Config.VMCProtocolAddress);
+                var addr = GUI.TextField(new Rect(menuPos.x, menuPos.y + 110, 150, 25), parentBehaviour.Config.vmcProtocol.address);
                 if (Regex.IsMatch(addr, ("^" + ipNum + "\\." + ipNum + "\\." + ipNum + "\\." + ipNum + "$")))
                 {
-                    parentBehaviour.Config.VMCProtocolAddress = addr;
+                    parentBehaviour.Config.vmcProtocol.address = addr;
                     parentBehaviour.Config.Save();
                 }
                 GUI.Box(new Rect(menuPos.x + 150, menuPos.y + 90, 150, 45), new GUIContent("Port"));
-                var port = GUI.TextField(new Rect(menuPos.x + 150, menuPos.y + 110, 150, 25), parentBehaviour.Config.VMCProtocolPort.ToString());
+                var port = GUI.TextField(new Rect(menuPos.x + 150, menuPos.y + 110, 150, 25), parentBehaviour.Config.vmcProtocol.port.ToString());
                 if (int.TryParse(port, out int result))
                 {
-                    parentBehaviour.Config.VMCProtocolPort = result;
+                    parentBehaviour.Config.vmcProtocol.port = result;
                     parentBehaviour.Config.Save();
                 }
             }

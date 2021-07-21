@@ -27,49 +27,20 @@ namespace CameraPlus.Behaviours
             DiagonalRight
         }
 
-        protected readonly WaitUntil _waitForMainCamera = new WaitUntil(() => Camera.main);
+        public bool ThirdPerson { get => Config.thirdPerson; set { Config.thirdPerson = value; }}
+        internal float FOV { get => _cam.fieldOfView; set { _cam.fieldOfView = value; } }
 
-
-        public bool ThirdPerson
-        {
-            get { return _thirdPerson; }
-            set
-            {
-                _thirdPerson = value;
-                _cameraCube.gameObject.SetActive(_thirdPerson && Config.showThirdPersonCamera);
-                _cameraPreviewQuad.gameObject.SetActive(_thirdPerson && Config.showThirdPersonCamera);
-
-                if (value)
-                {
-                    _cam.cullingMask &= ~(1 << Layer.OnlyInFirstPerson);
-                    _cam.cullingMask |= 1 << Layer.OnlyInThirdPerson;
-
-                }
-                else
-                {
-                    _cam.cullingMask &= ~(1 << Layer.OnlyInThirdPerson);
-                    _cam.cullingMask |= 1 << Layer.OnlyInFirstPerson;
-                }
-            }
-        }
-
-        protected bool _thirdPerson;
         public Vector3 ThirdPersonPos;
         public Vector3 ThirdPersonRot;
         public Vector3 OffsetPosition;
         public Vector3 OffsetAngle;
-        public Config Config;
+        public CameraConfig Config;
 
+        internal Camera _cam;
+        internal CameraPreviewQuad _quad;
         protected RenderTexture _camRenderTexture;
-        protected Material _previewMaterial;
-        protected Camera _cam;
-        protected Transform _cameraCube;
         protected ScreenCameraBehaviour _screenCamera;
-        protected GameObject _cameraPreviewQuad;
         protected Camera _mainCamera = null;
-        protected CameraMoverPointer _moverPointer = null;
-        protected GameObject _cameraCubeGO;
-        protected GameObject _quad;
         protected CameraMovement _cameraMovement = null;
         protected BeatLineManager _beatLineManager;
         protected EnvironmentSpawnRotation _environmentSpawnRotation;
@@ -124,13 +95,14 @@ namespace CameraPlus.Behaviours
 #if WithVMCAvatar
         private VMCProtocol.VMCAvatarMarionette marionette = null;
 #endif
-        public virtual void Init(Config config)
+        public virtual void Init(CameraConfig config)
         {
             DontDestroyOnLoad(gameObject);
             Logger.log.Notice("Created new camera plus behaviour component!");
 
             Config = config;
-            _isMainCamera = Path.GetFileName(Config.FilePath) == $"{Plugin.MainCamera}.cfg";
+            Config.cam = this;
+            _isMainCamera = Path.GetFileName(Config.FilePath) == $"{Plugin.MainCamera}.json";
             _contextMenuEnabled = Array.IndexOf(Environment.GetCommandLineArgs(), "fpfc") == -1;
 
             StartCoroutine(DelayedInit());
@@ -138,10 +110,8 @@ namespace CameraPlus.Behaviours
 
         protected IEnumerator DelayedInit()
         {
-            yield return _waitForMainCamera;
+            yield return StartCoroutine(GetMainCamera());
 
-            _mainCamera = Camera.main;
-            //      _menuStrip = null;
             if (_contextMenu == null)
             {
                 MenuObj = new GameObject("CameraPlusMenu");
@@ -169,42 +139,21 @@ namespace CameraPlus.Behaviours
                 if (destroyList.Contains(component.GetType().Name)) Destroy(component);
 
             _screenCamera = new GameObject("Screen Camera").AddComponent<ScreenCameraBehaviour>();
-            
-            
-            Shader shader = Resources.Load<Shader>("CustomBlitCopyWithDepth");
-            if (_previewMaterial == null)
-                _previewMaterial = new Material(Plugin.cameraController.Shaders["BeatSaber/BlitCopyWithDepth"]);
-                //_previewMaterial = new Material(Shader.Find("Hidden/BlitCopyWithDepth"));
+
             gameObj.SetActive(true);
 
             var camera = _mainCamera.transform;
             transform.position = camera.position;
             transform.rotation = camera.rotation;
-            //Logger.log.Notice($"near clipplane \"{Camera.main.nearClipPlane}");
 
             gameObj.transform.parent = transform;
             gameObj.transform.localPosition = Vector3.zero;
             gameObj.transform.localRotation = Quaternion.identity;
             gameObj.transform.localScale = Vector3.one;
 
-            _cameraCubeGO = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            DontDestroyOnLoad(_cameraCubeGO);
-            _cameraCubeGO.SetActive(ThirdPerson);
-            _cameraCube = _cameraCubeGO.transform;
-            _cameraCube.localScale = new Vector3(0.15f, 0.15f, 0.22f);
-            _cameraCube.name = "CameraCube";
-            _cameraCubeGO.layer = Plugin.cameraController.rootConfig.CameraQuadLayer;
-
-            _quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            DontDestroyOnLoad(_quad);
-            DestroyImmediate(_quad.GetComponent<Collider>());
-            _quad.GetComponent<MeshRenderer>().material = _previewMaterial;
-            _quad.transform.parent = _cameraCube;
-            _quad.transform.localPosition = new Vector3(-1f * ((_cam.aspect - 1) / 2 + 1), 0, 0.22f);
-            _quad.transform.localEulerAngles = new Vector3(0, 180, 0);
-            _quad.transform.localScale = new Vector3(_cam.aspect, 1, 1);
-            _cameraPreviewQuad = _quad;
-            _quad.layer = Plugin.cameraController.rootConfig.CameraQuadLayer;
+            _quad = new GameObject("PreviewQuad").AddComponent<CameraPreviewQuad>();
+            _quad.transform.SetParent(_cam.transform);
+            _quad.Init(this);
 
             ReadConfig();
 
@@ -216,44 +165,42 @@ namespace CameraPlus.Behaviours
                 transform.position = ThirdPersonPos;
                 transform.eulerAngles = ThirdPersonRot;
 
-                _cameraCube.position = ThirdPersonPos;
-                _cameraCube.eulerAngles = ThirdPersonRot;
+                _quad.transform.position = ThirdPersonPos;
+                _quad.transform.eulerAngles = ThirdPersonRot;
             }
 
             // Add our camera movement script if the movement script path is set
-            if (Config.movementScriptPath != String.Empty || Config.songSpecificScript)
+            if (Config.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
                 AddMovementScript();
-
-            SetCullingMask();
 
             Plugin.cameraController.ActiveSceneChanged += SceneManager_activeSceneChanged;
             SceneManager_activeSceneChanged(new Scene(), new Scene());
             Logger.log.Notice($"Camera \"{Path.GetFileName(Config.FilePath)}\" successfully initialized! {Convert.ToString(_cam.cullingMask, 16)}");
 
-            if (Config.VMCProtocolMode == "sender")
+            if (Config.vmcProtocol.mode == VMCProtocolMode.Sender)
                 InitExternalSender();
         }
 
         public void InitExternalSender()
         {
-            if (Config.VMCProtocolMode == "sender" && Config.fitToCanvas)
+            if (Config.vmcProtocol.mode == VMCProtocolMode.Sender && Config.fitToCanvas)
             {
                 if (CameraUtilities.vmcPortList == null) CameraUtilities.vmcPortList = new List<int>();
-                if (CameraUtilities.vmcPortList.Find(p => p == Config.VMCProtocolPort) == Config.VMCProtocolPort)
+                if (CameraUtilities.vmcPortList.Find(p => p == Config.vmcProtocol.port) == Config.vmcProtocol.port)
                 {
-                    Logger.log.Notice($"Camera \"{Path.GetFileName(Config.FilePath)}\" already use port {Config.VMCProtocolPort}");
+                    Logger.log.Notice($"Camera \"{Path.GetFileName(Config.FilePath)}\" already use port {Config.vmcProtocol.port}");
                     return;
                 }
                 externalSender = new GameObject("VMCProtocolCamera").AddComponent<ExternalSender>();
-                externalSender.SendCameraData(Config.VMCProtocolAddress, Config.VMCProtocolPort);
+                externalSender.SendCameraData(Config.vmcProtocol.address, Config.vmcProtocol.port);
                 externalSender.camera = _cam;
-                CameraUtilities.vmcPortList.Add(Config.VMCProtocolPort);
+                CameraUtilities.vmcPortList.Add(Config.vmcProtocol.port);
             }
         }
         public void InitExternalReceiver()
         {
 #if WithVMCAvatar
-            if (Config.VMCProtocolMode == "receiver" && Plugin.cameraController.existsVMCAvatar)
+            if (Config.vmcProtocol.mode == VMCProtocolMode.Receiver && Plugin.cameraController.existsVMCAvatar)
             {
                 marionette = this.gameObject.AddComponent<VMCProtocol.VMCAvatarMarionette>();
                 ClearMovementScript();
@@ -267,11 +214,11 @@ namespace CameraPlus.Behaviours
                 Destroy(marionette);
 #endif
             if (CameraUtilities.vmcPortList != null)
-                if (CameraUtilities.vmcPortList.Find(p => p == Config.VMCProtocolPort) == Config.VMCProtocolPort)
-                    CameraUtilities.vmcPortList.Remove(Config.VMCProtocolPort);
+                if (CameraUtilities.vmcPortList.Find(p => p == Config.vmcProtocol.port) == Config.vmcProtocol.port)
+                    CameraUtilities.vmcPortList.Remove(Config.vmcProtocol.port);
             if (externalSender)
                 Destroy(externalSender);
-            if (Config.movementScriptPath != String.Empty || Config.songSpecificScript)
+            if (Config.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
                 AddMovementScript();
         }
 
@@ -292,31 +239,24 @@ namespace CameraPlus.Behaviours
                 Destroy(marionette);
 #endif
             if (CameraUtilities.vmcPortList != null)
-                if (CameraUtilities.vmcPortList.Find(p => p == Config.VMCProtocolPort) == Config.VMCProtocolPort)
-                    CameraUtilities.vmcPortList.Remove(Config.VMCProtocolPort);
+                if (CameraUtilities.vmcPortList.Find(p => p == Config.vmcProtocol.port) == Config.vmcProtocol.port)
+                    CameraUtilities.vmcPortList.Remove(Config.vmcProtocol.port);
             if (externalSender)
                 Destroy(externalSender);
 
-            if (_moverPointer) 
-                Destroy(_moverPointer);
-
             if (_screenCamera)
                 Destroy(_screenCamera.gameObject);
-            if (_cameraCubeGO)
-                Destroy(_cameraCubeGO);
             if (_quad)
                 Destroy(_quad);
         }
 
-        protected virtual void PluginOnConfigChangedEvent(Config config)
+        protected virtual void PluginOnConfigChangedEvent(CameraConfig config)
         {
             ReadConfig();
         }
 
         protected virtual void ReadConfig()
         {
-            ThirdPerson = Config.thirdPerson;
-
             if (!ThirdPerson)
             {
                 transform.position = _mainCamera.transform.position;
@@ -327,11 +267,12 @@ namespace CameraPlus.Behaviours
                 ThirdPersonPos = Config.Position;
                 ThirdPersonRot = Config.Rotation;
             }
-            turnToHead = Config.turnToHead;
+            turnToHead = Config.cameraExtensions.turnToHead;
             turnToHeadOffset = Config.TurnToHeadOffset;
-            SetCullingMask();
+            Config.SetCullingMask();
+            _quad.gameObject.SetActive(ThirdPerson && Config.PreviewCamera);
+            _cam.fieldOfView = Config.fov;
             CreateScreenRenderTexture();
-            SetFOV();
         }
 
         internal virtual void CreateScreenRenderTexture()
@@ -386,7 +327,7 @@ namespace CameraPlus.Behaviours
                 //_camRenderTexture.Create();
 
                 _cam.targetTexture = _camRenderTexture;
-                _previewMaterial.SetTexture("_MainTex", _camRenderTexture);
+                _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
                 _screenCamera.SetRenderTexture(_camRenderTexture);
 
                 if (FPFCPatch.isInstanceFPFC && !FPFCPatch.instance.isActiveAndEnabled)
@@ -412,27 +353,20 @@ namespace CameraPlus.Behaviours
             StartCoroutine(GetMainCamera());
             StartCoroutine(Get360Managers());
 
-            var pointer = VRPointerPatch.Instance;
-            if (_moverPointer) Destroy(_moverPointer);
-            _moverPointer = pointer.gameObject.AddComponent<CameraMoverPointer>();
-            _moverPointer.Init(this, _cameraCube);
-
             if (to.name == "GameCore")
-                SharedCoroutineStarter.instance.StartCoroutine(Delayed_activeSceneChanged(from, to));
+            {
+                if (!_cameraMovement || Config.movementScript.useAudioSync)
+                {
+                    string scriptpath = AddMovementScript();
+                    Logger.log.Notice($"{this.name} Add MoveScript \"{Path.GetFileName(scriptpath)}\" successfully initialized! {Convert.ToString(_cam.cullingMask, 16)}");
+                }
+
+            }
             else
-                if (Config.movementAudioSync || (!Config.movementAudioSync && Config.movementScriptPath == string.Empty))
+                if (Config.movementScript.useAudioSync || (!Config.movementScript.useAudioSync && Config.movementScript.movementScript == string.Empty))
                 ClearMovementScript();
         }
 
-        private IEnumerator Delayed_activeSceneChanged(Scene from, Scene to)
-        {
-            yield return new WaitForSeconds(0.05f);
-            if(!_cameraMovement || Config.movementAudioSync)
-            {
-                string scriptpath = AddMovementScript();
-                Logger.log.Notice($"{this.name} Add MoveScript \"{Path.GetFileName(scriptpath)}\" successfully initialized! {Convert.ToString(_cam.cullingMask, 16)}");
-            }
-        }
 
         protected virtual void Update()
         {
@@ -452,8 +386,6 @@ namespace CameraPlus.Behaviours
                         ThirdPersonPos = Config.Position;
                         ThirdPersonRot = Config.Rotation;
                     }
-
-                    Config.thirdPerson = ThirdPerson;
                     Config.Save();
                 }
             }
@@ -467,7 +399,7 @@ namespace CameraPlus.Behaviours
                 OffsetPosition = Vector3.zero;
                 OffsetAngle = Vector3.zero;
 
-                var camera = _mainCamera.transform;
+                var camera = _mainCamera?.transform;
 
                 if (ThirdPerson)
                 {
@@ -483,12 +415,12 @@ namespace CameraPlus.Behaviours
                         else
                         {
                             isFPFC = FPFCPatch.isInstanceFPFC;
-                            turnToHead = Config.turnToHead;
+                            turnToHead = Config.cameraExtensions.turnToHead;
                         }
                     }
 #if WithVMCAvatar
                     if (Plugin.cameraController.existsVMCAvatar)
-                        if (Config.VMCProtocolMode == "receiver" && marionette)
+                        if (Config.vmcProtocol.mode == VMCProtocolMode.Receiver && marionette)
                             if (marionette.receivedData)
                             {
                                 transform.position = marionette.position;
@@ -502,7 +434,7 @@ namespace CameraPlus.Behaviours
                     HandleMultiPlayerGame();
                     HandleThirdPerson360();
 
-                    if (Config.NoodleTrack && SceneManager.GetActiveScene().name == "GameCore")
+                    if (Config.cameraExtensions.followNoodlePlayerTrack && SceneManager.GetActiveScene().name == "GameCore")
                     {
                         if (adjustOffset == null)
                         {
@@ -544,10 +476,10 @@ namespace CameraPlus.Behaviours
                         turnToTarget.transform.position -= turnToHeadOffset;
                     }
 
-                    _cameraCube.position = transform.position;
-                    _cameraCube.eulerAngles = transform.eulerAngles;
+                    _quad.transform.position = transform.position;
+                    _quad.transform.eulerAngles = transform.eulerAngles;
 
-                    if (externalSender != null & Config.VMCProtocolMode == "sender")
+                    if (externalSender != null & Config.vmcProtocol.mode == VMCProtocolMode.Sender)
                     {
                         externalSender.position = ThirdPersonPos;
                         externalSender.rotation = Quaternion.Euler(ThirdPersonRot);
@@ -556,16 +488,16 @@ namespace CameraPlus.Behaviours
                     return;
                 }
                 transform.position = Vector3.Lerp(transform.position, camera.position + Config.FirstPersonPositionOffset,
-                    Config.positionSmooth * Time.unscaledDeltaTime);
+                    Config.cameraExtensions.positionSmooth * Time.unscaledDeltaTime);
 
-                if (!Config.forceFirstPersonUpRight)
+                if (!Config.cameraExtensions.firstPersonCameraForceUpRight)
                     transform.rotation = Quaternion.Slerp(transform.rotation, camera.rotation * Quaternion.Euler(Config.FirstPersonRotationOffset),
-                        Config.rotationSmooth * Time.unscaledDeltaTime);
+                        Config.cameraExtensions.rotationSmooth * Time.unscaledDeltaTime);
                 else
 
                 {
                     Quaternion rot = Quaternion.Slerp(transform.rotation, camera.rotation * Quaternion.Euler(Config.FirstPersonRotationOffset),
-                        Config.rotationSmooth * Time.unscaledDeltaTime);
+                        Config.cameraExtensions.rotationSmooth * Time.unscaledDeltaTime);
                     transform.rotation = rot * Quaternion.Euler(0, 0, -(rot.eulerAngles.z));
                 }
             }
@@ -574,7 +506,7 @@ namespace CameraPlus.Behaviours
 
         private void HandleThirdPerson360()
         {
-            if (!_beatLineManager || !Config.use360Camera || !_environmentSpawnRotation)
+            if (!_beatLineManager || !Config.cameraExtensions.follow360map || !_environmentSpawnRotation)
             {
                 _beatLineManager = BeatLineManagerPatch.Instance;
                 _environmentSpawnRotation = EnvironmentSpawnRotationPatch.Instance;
@@ -596,12 +528,12 @@ namespace CameraPlus.Behaviours
             else
                 b = this._environmentSpawnRotation.targetRotation;
 
-            if (Config.cam360RotateControlNew)
-                _yAngle = Mathf.LerpAngle(_yAngle, b, Mathf.Clamp(Time.deltaTime * Config.cam360Smoothness, 0f, 1f));
+            if (!Config.cameraExtensions.follow360mapUseLegacyProcess)
+                _yAngle = Mathf.LerpAngle(_yAngle, b, Mathf.Clamp(Time.deltaTime * Config.cameraExtensions.rotation360Smooth, 0f, 1f));
             else
-                _yAngle = Mathf.Lerp(_yAngle, b, Mathf.Clamp(Time.deltaTime * Config.cam360Smoothness, 0f, 1f));
+                _yAngle = Mathf.Lerp(_yAngle, b, Mathf.Clamp(Time.deltaTime * Config.cameraExtensions.rotation360Smooth, 0f, 1f));
 
-            ThirdPersonRot = new Vector3(Config.angx, _yAngle + Config.angy, Config.angz);
+            ThirdPersonRot = new Vector3(Config.Rotation.x, _yAngle + Config.Rotation.y, Config.Rotation.z);
 
             ThirdPersonPos = (transform.forward * Config.posz) + (transform.right * Config.posx);
             ThirdPersonPos = new Vector3(ThirdPersonPos.x, Config.posy, ThirdPersonPos.z);
@@ -611,12 +543,12 @@ namespace CameraPlus.Behaviours
         {
             try
             {
-                if (!MultiplayerLobbyAvatarPlaceManagerPatch.Instance || !MultiplayerLobbyControllerPatch.Instance.isActiveAndEnabled || Config.MultiPlayerNumber == 0) return;
+                if (!MultiplayerLobbyAvatarPlaceManagerPatch.Instance || !MultiplayerLobbyControllerPatch.Instance.isActiveAndEnabled || Config.multiplayer.targetPlayerNumber == 0) return;
                 if (MultiplayerSession.LobbyAvatarPlaceList.Count == 0) MultiplayerSession.LoadLobbyAvatarPlace();
 
                 for (int i = 0; i < MultiplayerSession.LobbyAvatarPlaceList.Count; i++)
                 {
-                    if (i == Config.MultiPlayerNumber - 1)
+                    if (i == Config.multiplayer.targetPlayerNumber - 1)
                     {
                         OffsetPosition = MultiplayerSession.LobbyAvatarPlaceList[i].position;
                         OffsetAngle = MultiplayerSession.LobbyAvatarPlaceList[i].eulerAngles;
@@ -637,9 +569,9 @@ namespace CameraPlus.Behaviours
                 {
                     MultiplayerConnectedPlayerFacade player = null;
                     bool TryPlayerFacade;
-                    if (MultiplayerPlayersManagerPatch.Instance && Config.MultiPlayerNumber != 0)
+                    if (MultiplayerPlayersManagerPatch.Instance && Config.multiplayer.targetPlayerNumber != 0)
                         foreach (IConnectedPlayer connectedPlayer in MultiplayerSession.connectedPlayers)
-                            if (Config.MultiPlayerNumber - 1 == connectedPlayer.sortIndex)
+                            if (Config.multiplayer.targetPlayerNumber - 1 == connectedPlayer.sortIndex)
                             {
                                 TryPlayerFacade = MultiplayerPlayersManagerPatch.Instance.TryGetConnectedPlayerController(connectedPlayer.userId, out player);
                                 if (TryPlayerFacade && player != null)
@@ -660,17 +592,17 @@ namespace CameraPlus.Behaviours
         public string AddMovementScript()
         {
             string songScriptPath = String.Empty;
-            if (Config.VMCProtocolMode == "receiver") return "ExternalReceiver Enabled";
+            if (Config.vmcProtocol.mode == VMCProtocolMode.Receiver) return "ExternalReceiver Enabled";
 
-            if (Config.movementScriptPath != String.Empty || Config.songSpecificScript)
+            if (Config.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
             {
                 if (_cameraMovement)
                     _cameraMovement.Shutdown();
 
-                if (CustomPreviewBeatmapLevelPatch.customLevelPath != String.Empty && Config.songSpecificScript)
+                if (CustomPreviewBeatmapLevelPatch.customLevelPath != String.Empty && Config.movementScript.songSpecificScript)
                     songScriptPath = CustomPreviewBeatmapLevelPatch.customLevelPath;
-                else if (File.Exists(Path.Combine(CameraUtilities.scriptPath, Path.GetFileName(Config.movementScriptPath))))
-                    songScriptPath = Path.Combine(CameraUtilities.scriptPath, Path.GetFileName(Config.movementScriptPath));
+                else if (File.Exists(Path.Combine(CameraUtilities.scriptPath, Path.GetFileName(Config.movementScript.movementScript))))
+                    songScriptPath = Path.Combine(CameraUtilities.scriptPath, Path.GetFileName(Config.movementScript.movementScript));
                 else
                     return "Not Find Script";
 
@@ -697,19 +629,29 @@ namespace CameraPlus.Behaviours
             _cameraMovement = null;
             ThirdPersonPos = Config.Position;
             ThirdPersonRot = Config.Rotation;
-            SetFOV();
+            _cam.fieldOfView = Config.fov;
             CreateScreenRenderTexture();
         }
 
         protected IEnumerator GetMainCamera()
         {
-            yield return _waitForMainCamera;
+            if (SceneManager.GetActiveScene().name == "GameCore")
+            {
+                while (!MainCameraPatch.isGameCameraEnable)
+                    yield return null;
+            }
+            else
+            {
+                while (Camera.main == null)
+                    yield return null;
+            }
             _mainCamera = Camera.main;
         }
 
         protected IEnumerator Get360Managers()
         {
-            yield return _waitForMainCamera;
+            yield return null;
+            StartCoroutine(GetMainCamera());
 
             _beatLineManager = null;
             _environmentSpawnRotation = null;
@@ -724,86 +666,7 @@ namespace CameraPlus.Behaviours
                 this._yAngle = _beatLineManager.midRotation;
         }
 
-        internal virtual void SetFOV()
-        {
-            if (_cam == null) return;
-            _cam.fieldOfView = Config.fov;
-        }
-
-        internal virtual void FOV(float FOV)
-        {
-            _cam.fieldOfView = FOV;
-        }
-
-        internal virtual float GetFOV()
-        {
-            return _cam.fieldOfView;
-        }
-
-        internal virtual void SetCullingMask()
-        {
-            int builder = Camera.main.cullingMask;
-            if (Config.transparentWalls)
-                builder &= ~(1 << TransparentWallsPatch.WallLayerMask);
-            else
-                builder |= (1 << TransparentWallsPatch.WallLayerMask);
-            if (Config.avatar)
-            {
-                if (Config.thirdPerson || Config.use360Camera)
-                {
-                    builder |= 1 << Layer.OnlyInThirdPerson;
-                    builder &= ~(1 << Layer.OnlyInFirstPerson);
-                }
-                else
-                {
-                    builder |= 1 << Layer.OnlyInFirstPerson;
-                    builder &= ~(1 << Layer.OnlyInThirdPerson);
-                }
-                builder |= 1 << Layer.AlwaysVisible;
-            }
-            else
-            {
-                builder &= ~(1 << Layer.OnlyInThirdPerson);
-                builder &= ~(1 << Layer.OnlyInFirstPerson);
-                builder &= ~(1 << Layer.AlwaysVisible);
-            }
-            if (Config.debri != "link")
-            {
-                if (Config.debri == "show")
-                    builder |= (1 << Layer.NotesDebriLayer);
-                else
-                    builder &= ~(1 << Layer.NotesDebriLayer);
-            }
-            if (Config.HideUI)
-                builder &= ~(1 << Layer.UI);
-            else
-                builder |= (1 << Layer.UI);
-
-            if (Config.Saber)
-                builder |= 1 << Layer.Saber;
-            else
-                builder &= ~(1 << Layer.Saber);
-
-            if (Config.WallFrame)
-                builder |= 1 << Layer.Obstracle;
-            else
-                builder &= ~(1 << Layer.Obstracle);
-
-            if (Config.Notes)
-            {
-                builder &= ~(1 << Layer.CustomNoteLayer);
-                builder |= 1 << Layer.Notes;
-            }
-            else
-            {
-                builder &= ~(1 << Layer.CustomNoteLayer);
-                builder &= ~(1 << Layer.Notes);
-            }
-
-            _cam.cullingMask = builder;
-        }
-
-        public bool IsWithinRenderArea(Vector2 mousePos, Config c)
+        public bool IsWithinRenderArea(Vector2 mousePos, CameraConfig c)
         {
             if (mousePos.x < c.screenPosX) return false;
             if (mousePos.x > c.screenPosX + c.screenWidth) return false;
@@ -815,23 +678,23 @@ namespace CameraPlus.Behaviours
         public bool IsTopmostRenderAreaAtPos(Vector2 mousePos)
         {
             if (!IsWithinRenderArea(mousePos, Config)) return false;
-            foreach (CameraPlusInstance c in Plugin.cameraController.Cameras.Values.ToArray())
+            foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.ToArray())
             {
-                if (c.Instance == this) continue;
-                if (!IsWithinRenderArea(mousePos, c.Config) && !c.Instance._mouseHeld) continue;
+                if (c == this) continue;
+                if (!IsWithinRenderArea(mousePos, c.Config) && !c._mouseHeld) continue;
                 if (c.Config.layer > Config.layer)
                 {
                     return false;
                 }
 
                 if (c.Config.layer == Config.layer &&
-                    c.Instance._lastRenderUpdate > _lastRenderUpdate)
+                    c._lastRenderUpdate > _lastRenderUpdate)
                 {
                     return false;
                 }
 
-                if (c.Instance._mouseHeld && (c.Instance._isMoving ||
-                    c.Instance._isResizing || c.Instance._contextMenuOpen))
+                if (c._mouseHeld && (c._isMoving ||
+                    c._isResizing || c._contextMenuOpen))
                 {
                     return false;
                 }
@@ -841,10 +704,10 @@ namespace CameraPlus.Behaviours
 
         public static CameraPlusBehaviour GetTopmostInstanceAtCursorPos()
         {
-            foreach (CameraPlusInstance c in Plugin.cameraController.Cameras.Values.ToArray())
+            foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.ToArray())
             {
-                if (c.Instance._isTopmostAtCursorPos)
-                    return c.Instance;
+                if (c._isTopmostAtCursorPos)
+                    return c;
             }
             return null;
         }
@@ -991,7 +854,7 @@ namespace CameraPlus.Behaviours
                 }
             }
 
-            if (holdingLeftClick && !Config.fitToCanvas && !Config.LockScreen)
+            if (holdingLeftClick && !Config.fitToCanvas && !Config.cameraLock.lockScreen)
             {
                 if (!_mouseHeld)
                 {
@@ -1063,9 +926,9 @@ namespace CameraPlus.Behaviours
         }
         void OnGUI()
         {
-            if (MultiplayerSession.connectedPlayers != null && Config.DisplayMultiPlayerNameInfo)
+            if (MultiplayerSession.connectedPlayers != null && Config.multiplayer.displayPlayerInfo)
                 foreach (IConnectedPlayer connectedPlayer in MultiplayerSession.connectedPlayers)
-                    if (Config.MultiPlayerNumber - 1 == connectedPlayer.sortIndex)
+                    if (Config.multiplayer.targetPlayerNumber - 1 == connectedPlayer.sortIndex)
                     {
                         int size = 0;
                         var offsetY = Screen.height / 2;

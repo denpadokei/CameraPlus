@@ -10,33 +10,29 @@ namespace CameraPlus.UI
         internal void DiplayMenu(CameraPlusBehaviour parentBehaviour, ContextMenu contextMenu, Vector2 menuPos)
         {
             GUI.Box(new Rect(menuPos.x, menuPos.y + 25, 300, 55), new GUIContent("MovementScript Method"));
-            if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 45, 145, 30), new GUIContent("Tick UnityTimer"), !parentBehaviour.Config.movementAudioSync ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 45, 145, 30), new GUIContent("Tick UnityTimer"), !parentBehaviour.Config.movementScript.useAudioSync ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
-                parentBehaviour.Config.movementAudioSync = false;
-                parentBehaviour.SetCullingMask();
+                parentBehaviour.Config.movementScript.useAudioSync = false;
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 45, 145, 30), new GUIContent("Tick AudioTimer"), parentBehaviour.Config.movementAudioSync ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 45, 145, 30), new GUIContent("Tick AudioTimer"), parentBehaviour.Config.movementScript.useAudioSync ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
-                parentBehaviour.Config.movementAudioSync = true;
-                parentBehaviour.SetCullingMask();
+                parentBehaviour.Config.movementScript.useAudioSync = true;
                 parentBehaviour.Config.Save();
             }
 
             GUI.Box(new Rect(menuPos.x, menuPos.y + 80, 300, 55), new GUIContent("Song-specific script"));
-            if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 100, 145, 30), new GUIContent("Enable"), parentBehaviour.Config.songSpecificScript ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 100, 145, 30), new GUIContent("Enable"), parentBehaviour.Config.movementScript.songSpecificScript ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
-                parentBehaviour.Config.songSpecificScript = true;
-                parentBehaviour.SetCullingMask();
+                parentBehaviour.Config.movementScript.songSpecificScript = true;
                 parentBehaviour.Config.Save();
                 parentBehaviour.AddMovementScript();
             }
-            if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 100, 145, 30), new GUIContent("Disable"), !parentBehaviour.Config.songSpecificScript ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 100, 145, 30), new GUIContent("Disable"), !parentBehaviour.Config.movementScript.songSpecificScript ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
-                parentBehaviour.Config.songSpecificScript = false;
-                parentBehaviour.SetCullingMask();
+                parentBehaviour.Config.movementScript.songSpecificScript = false;
                 parentBehaviour.Config.Save();
-                if (parentBehaviour.Config.movementScriptPath == string.Empty)
+                if (parentBehaviour.Config.movementScript.movementScript == string.Empty)
                     parentBehaviour.ClearMovementScript();
                 else
                     parentBehaviour.AddMovementScript();
@@ -55,19 +51,19 @@ namespace CameraPlus.UI
             {
                 if (i < contextMenu.scriptName.Length)
                 {
-                    if (GUI.Button(new Rect(menuPos.x, menuPos.y + (i - contextMenu.scriptPage * 5) * 30 + 170, 300, 30), new GUIContent(contextMenu.scriptName[i]), CameraUtilities.CurrentMovementScript(parentBehaviour.Config.movementScriptPath) == contextMenu.scriptName[i] ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                    if (GUI.Button(new Rect(menuPos.x, menuPos.y + (i - contextMenu.scriptPage * 5) * 30 + 170, 300, 30), new GUIContent(contextMenu.scriptName[i]), CameraUtilities.CurrentMovementScript(parentBehaviour.Config.movementScript.movementScript) == contextMenu.scriptName[i] ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
                     {
-                        parentBehaviour.Config.movementScriptPath = contextMenu.scriptName[i];
+                        parentBehaviour.Config.movementScript.movementScript = contextMenu.scriptName[i];
                         parentBehaviour.Config.Save();
                         parentBehaviour.AddMovementScript();
                     }
                 }
             }
-            if (GUI.Button(new Rect(menuPos.x + 50, menuPos.y + 330, 200, 40), new GUIContent("Movement Off"), CameraUtilities.CurrentMovementScript(parentBehaviour.Config.movementScriptPath) == string.Empty ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 50, menuPos.y + 330, 200, 40), new GUIContent("Movement Off"), CameraUtilities.CurrentMovementScript(parentBehaviour.Config.movementScript.movementScript) == string.Empty ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
-                if (parentBehaviour.Config.movementScriptPath != string.Empty)
+                if (parentBehaviour.Config.movementScript.movementScript != string.Empty)
                 {
-                    parentBehaviour.Config.movementScriptPath = String.Empty;
+                    parentBehaviour.Config.movementScript.movementScript = String.Empty;
                     parentBehaviour.Config.Save();
                     parentBehaviour.ClearMovementScript();
                 }

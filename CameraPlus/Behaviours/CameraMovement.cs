@@ -165,11 +165,10 @@ namespace CameraPlus.Behaviours
         {
             if (!dataLoaded || _paused) return;
 
-            if (_cameraPlus.Config.movementAudioSync)
+            if (_cameraPlus.Config.movementScript.useAudioSync)
             {
                 if (AudioTimeSyncControllerPatch.Instance == null)
                     return;
-
                 while (movementNextStartTime <= AudioTimeSyncControllerPatch.Instance.songTime)
                     UpdatePosAndRot();
 
@@ -190,7 +189,7 @@ namespace CameraPlus.Behaviours
             _cameraPlus.ThirdPersonPos = LerpVector3(StartPos, EndPos, Ease(movePerc));
             _cameraPlus.ThirdPersonRot = LerpVector3(StartRot, EndRot, Ease(movePerc));
             _cameraPlus.turnToHeadOffset = LerpVector3(StartHeadOffset, EndHeadOffset, Ease(movePerc));
-            _cameraPlus.FOV(Mathf.Lerp(StartFOV,EndFOV,Ease(movePerc)));
+            _cameraPlus.FOV=Mathf.Lerp(StartFOV,EndFOV,Ease(movePerc));
         }
 
         protected Vector3 LerpVector3(Vector3 from, Vector3 to, float percent)
@@ -269,7 +268,7 @@ namespace CameraPlus.Behaviours
             if (eventID >= data.Movements.Count)
                 eventID = 0;
 
-            _cameraPlus.turnToHead = data.TurnToHeadUseCameraSetting ? _cameraPlus.Config.turnToHead : data.Movements[eventID].TurnToHead;
+            _cameraPlus.turnToHead = data.TurnToHeadUseCameraSetting ? _cameraPlus.Config.cameraExtensions.turnToHead : data.Movements[eventID].TurnToHead;
             easeTransition = data.Movements[eventID].EaseTransition;
 
             StartRot = new Vector3(data.Movements[eventID].StartRot.x, data.Movements[eventID].StartRot.y, data.Movements[eventID].StartRot.z);
@@ -292,7 +291,7 @@ namespace CameraPlus.Behaviours
 
             FindShortestDelta(ref StartRot, ref EndRot);
 
-            if (_cameraPlus.Config.movementAudioSync)
+            if (_cameraPlus.Config.movementScript.useAudioSync)
             {
                 movementStartTime = movementNextStartTime;
                 movementEndTime = movementNextStartTime + data.Movements[eventID].Duration;

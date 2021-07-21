@@ -5,7 +5,7 @@ using CameraPlus.Camera2Utils;
 
 namespace CameraPlus.Configuration
 {
-    public class Config
+    public class PreviousConfig
     {
         public string FilePath { get; }
         public bool LockScreen = false;
@@ -70,106 +70,8 @@ namespace CameraPlus.Configuration
         public string VMCProtocolMode = "disable";
         public string VMCProtocolAddress = "127.0.0.1";
         public int VMCProtocolPort = 39540;
-        //public int maxFps = 90;
 
-        public event Action<Config> ConfigChangedEvent;
-
-        private readonly FileSystemWatcher _configWatcher;
-        private bool _saving;
-
-        public Vector2 ScreenPosition {
-            get {
-                return new Vector2(screenPosX, screenPosY);
-            }
-        }
-
-        public Vector2 ScreenSize {
-            get {
-                return new Vector2(screenWidth, screenHeight);
-            }
-        }
-
-        public Vector3 Position {
-            get {
-                return new Vector3(posx, posy, posz);
-            }
-            set {
-                posx = value.x;
-                posy = value.y;
-                posz = value.z;
-            }
-        }
-
-        public Vector3 DefaultPosition {
-            get {
-                return new Vector3(0f, 2f, -1.2f);
-            }
-        }
-
-        public Vector3 Rotation {
-            get {
-                return new Vector3(angx, angy, angz);
-            }
-            set {
-                angx = value.x;
-                angy = value.y;
-                angz = value.z;
-            }
-        }
-
-        public Vector3 DefaultRotation {
-            get {
-                return new Vector3(15f, 0f, 0f);
-            }
-        }
-
-        public Vector3 FirstPersonPositionOffset {
-            get {
-                return new Vector3(firstPersonPosOffsetX, firstPersonPosOffsetY, firstPersonPosOffsetZ);
-            }
-            set {
-                firstPersonPosOffsetX = value.x;
-                firstPersonPosOffsetY = value.y;
-                firstPersonPosOffsetZ = value.z;
-            }
-        }
-        public Vector3 FirstPersonRotationOffset {
-            get {
-                return new Vector3(firstPersonRotOffsetX, firstPersonRotOffsetY, firstPersonRotOffsetZ);
-            }
-            set {
-                firstPersonRotOffsetX = value.x;
-                firstPersonRotOffsetY = value.y;
-                firstPersonRotOffsetZ = value.z;
-            }
-        }
-
-        public Vector3 DefaultFirstPersonPositionOffset {
-            get {
-                return new Vector3(0, 0, 0);
-            }
-        }
-        public Vector3 DefaultFirstPersonRotationOffset {
-            get {
-                return new Vector3(0, 0, 0);
-            }
-        }
-
-        public Vector3 TurnToHeadOffset
-        {
-            get
-            {
-                return new Vector3(turnToHeadOffsetX, turnToHeadOffsetY, turnToHeadOffsetZ);
-            }
-            set
-            {
-                turnToHeadOffsetX = value.x;
-                turnToHeadOffsetY = value.y;
-                turnToHeadOffsetZ = value.z;
-            }
-        }
-
-        public Config(string filePath)
+        public PreviousConfig(string filePath)
         {
             FilePath = filePath;
 
@@ -177,77 +79,9 @@ namespace CameraPlus.Configuration
                 Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
 
             if (File.Exists(FilePath))
-            {
-                Load();
-                var text = File.ReadAllText(FilePath);
-                if (!text.Contains("fitToCanvas") && Path.GetFileName(FilePath) == $"{Plugin.MainCamera}.cfg")
-                {
-                    fitToCanvas = true;
-                }
-                if (text.Contains("rotx"))
-                {
-                    var oldRotConfig = new OldRotConfig();
-                    ConfigSerializer.LoadConfig(oldRotConfig, FilePath);
-
-                    var euler = new Quaternion(oldRotConfig.rotx, oldRotConfig.roty, oldRotConfig.rotz, oldRotConfig.rotw).eulerAngles;
-                    angx = euler.x;
-                    angy = euler.y;
-                    angz = euler.z;
-                }
-            }
-            Save();
-
-            _configWatcher = new FileSystemWatcher(Path.GetDirectoryName(FilePath))
-            {
-                NotifyFilter = NotifyFilters.LastWrite,
-                Filter = Path.GetFileName(FilePath),
-                EnableRaisingEvents = true
-            };
-            _configWatcher.Changed += ConfigWatcherOnChanged;
+                ConfigSerializer.LoadConfig(this, FilePath);
         }
 
-        ~Config()
-        {
-            _configWatcher.Changed -= ConfigWatcherOnChanged;
-        }
-
-        public void Save()
-        {
-            _saving = true;
-            ConfigSerializer.SaveConfig(this, FilePath);
-            // sets saving back to false cause SaveConfig wont write the file at all if nothing has changed
-            // and if so the FileWatcher would not get triggered so saving would stuck at true
-            _saving = false;
-        }
-
-        public void Load()
-        {
-            ConfigSerializer.LoadConfig(this, FilePath);
-        }
-
-        private void ConfigWatcherOnChanged(object sender, FileSystemEventArgs fileSystemEventArgs)
-        {
-            if (_saving)
-            {
-                _saving = false;
-                return;
-            }
-
-            Load();
-
-            if (ConfigChangedEvent != null)
-            {
-                ConfigChangedEvent(this);
-            }
-        }
-
-        public class OldRotConfig
-        {
-            public float rotx;
-            public float roty;
-            public float rotz;
-            public float rotw;
-        }
 
         public void ConvertFromCamera2(Camera2Config config2)
         {

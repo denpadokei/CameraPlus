@@ -4,6 +4,7 @@ using IPA.Utilities;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using CameraPlus.Behaviours;
 using CameraPlus.Utilities;
 using CameraPlus.Configuration;
 
@@ -109,7 +110,7 @@ namespace CameraPlus.Camera2Utils
             while (true)
             {
                 cameraName = $"customcamera{index.ToString()}";
-                if (!(files.Where(c=> c.Name==$"{cameraName}.cfg").Count()>0))
+                if (!(files.Where(c=> c.Name==$"{cameraName}.json").Count()>0))
                     break;
                 index++;
             }
@@ -122,20 +123,20 @@ namespace CameraPlus.Camera2Utils
             if (ProfileName != "")
             {
                 cameraName = GetNextCameraName(ProfileName);
-                path = Path.Combine(pPath, ProfileName, $"{cameraName}.cfg");
+                path = Path.Combine(pPath, ProfileName, $"{cameraName}.json");
             }
             else
             {
                 cameraName = CameraUtilities.GetNextCameraName();
-                Logger.log.Notice($"Adding new config with name {cameraName}.cfg");
+                Logger.log.Notice($"Adding new config with name {cameraName}.json");
 
-                path = Path.Combine(UnityGame.UserDataPath, Plugin.Name, $"{cameraName}.cfg");
-                if (!Plugin.cameraController.rootConfig.ProfileLoadCopyMethod && Plugin.cameraController.currentProfile != null)
-                    path = Path.Combine(UnityGame.UserDataPath, "." + Plugin.Name.ToLower(), "Profiles", Plugin.cameraController.currentProfile, $"{cameraName}.cfg");
+                path = Path.Combine(UnityGame.UserDataPath, Plugin.Name, $"{cameraName}.json");
+                if (!PluginConfig.Instance.ProfileLoadCopyMethod && Plugin.cameraController.currentProfile != null)
+                    path = Path.Combine(UnityGame.UserDataPath, "." + Plugin.Name.ToLower(), "Profiles", Plugin.cameraController.currentProfile, $"{cameraName}.json");
             }
             Logger.log.Notice($"Try Adding {path}");
 
-            Config config = new Config(path);
+            PreviousConfig config = new PreviousConfig(path);
             Camera2Config config2 = null;
             string jsonConfig = File.ReadAllText(Path.Combine(cam2Path,"Cameras", jsonName));
             try
@@ -148,14 +149,14 @@ namespace CameraPlus.Camera2Utils
             }
             config.ConvertFromCamera2(config2);
 
-            foreach (CameraPlusInstance c in Plugin.cameraController.Cameras.Values.OrderBy(i => i.Config.layer))
+            foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.OrderBy(i => i.Config.layer))
             {
                 if (c.Config.layer > config.layer)
                     config.layer += (c.Config.layer - config.layer);
                 else if (c.Config.layer == config.layer)
                     config.layer++;
             }
-            config.Save();
+            //config.Save();
             CameraUtilities.ReloadCameras();
         }
 
@@ -182,14 +183,14 @@ namespace CameraPlus.Camera2Utils
             List<string> cameraList = new List<string>();
             string camName;
             DirectoryInfo dir = new DirectoryInfo(Path.Combine(pPath, ProfileName));
-            FileInfo[] files = dir.GetFiles("*.cfg");
+            FileInfo[] files = dir.GetFiles("*.json");
             if (files.Length > 0)
             {
                 foreach(FileInfo file in files)
                 {
                     camName = GetNextCamera2Name(ProfileName);
                     File.WriteAllText(Path.Combine(cam2Path,"Cameras", $"{camName}.json"), 
-                        JsonConvert.SerializeObject(new Config(file.FullName).ConvertToCamera2(), Formatting.Indented));
+                        JsonConvert.SerializeObject(new PreviousConfig(file.FullName).ConvertToCamera2(), Formatting.Indented));
                     cameraList.Add(camName);
                 }
             }

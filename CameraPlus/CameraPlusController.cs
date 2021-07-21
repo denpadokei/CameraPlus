@@ -18,9 +18,8 @@ namespace CameraPlus
     {
         internal Action<Scene, Scene> ActiveSceneChanged;
         internal static CameraPlusController instance { get; private set; }
-        internal ConcurrentDictionary<string, CameraPlusInstance> Cameras = new ConcurrentDictionary<string, CameraPlusInstance>();
+        internal ConcurrentDictionary<string, CameraPlusBehaviour> Cameras = new ConcurrentDictionary<string, CameraPlusBehaviour>();
 
-        internal RootConfig rootConfig;
         internal string currentProfile;
         internal bool MultiplayerSessionInit;
         internal bool existsVMCAvatar = false;
@@ -30,6 +29,7 @@ namespace CameraPlus
         internal Dictionary<string, Shader> Shaders = new Dictionary<string, Shader>();
         private RenderTexture _renderTexture;
         private ScreenCameraBehaviour _screenCameraBehaviour;
+        private CameraMoverPointer _cameraMovePointer;
 
         private void Awake()
         {
@@ -43,17 +43,24 @@ namespace CameraPlus
             instance = this;
 
             string path = Path.Combine(UnityGame.UserDataPath, $"{Plugin.Name}.ini");
-            rootConfig = new RootConfig(path);
+            if (File.Exists(path))
+            {
+                RootConfig rootConfig = new RootConfig(path);
+                File.Copy(path, Path.Combine(UnityGame.UserDataPath, Plugin.Name, "OldProfiles", $"{Plugin.Name}.ini"));
+                File.Delete(path);
+            }
+            
+            ConfigConverter.ProfileConverter();
+
             SceneManager.activeSceneChanged += this.OnActiveSceneChanged;
             CameraUtilities.CreateMainDirectory();
             CameraUtilities.CreateExampleScript();
 
-            if (CameraUtilities.seekBar == null)
-                CameraUtilities.CreatSeekbarTexture();
+            ConfigConverter.DefaultConfigConverter();
         }
         private void Start()
         {
-            if (rootConfig.ScreenFillBlack)
+            if (PluginConfig.Instance.ScreenFillBlack)
             {
                 _renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
                 _screenCameraBehaviour = this.gameObject.AddComponent<ScreenCameraBehaviour>();
@@ -62,6 +69,7 @@ namespace CameraPlus
             }
 
             ShaderLoad();
+            _cameraMovePointer = this.gameObject.AddComponent<CameraMoverPointer>();
             CameraUtilities.AddNewCamera(Plugin.MainCamera);
             MultiplayerSessionInit = false;
             Logger.log.Notice($"{Plugin.Name} has started");
@@ -105,32 +113,31 @@ namespace CameraPlus
             bool isRestart = isRestartingSong;
             isRestartingSong = false;
 
+            yield return waitMainCamera();
+
             if (!isRestart)
                 CameraUtilities.ReloadCameras();
 
-            IEnumerator waitForcam()
-            {
-                yield return new WaitForSeconds(0.1f);
-                while (Camera.main == null) yield return new WaitForSeconds(0.05f);
-            }
+            yield return new WaitForSeconds(0.1f);
+            while (Camera.main == null) yield return new WaitForSeconds(0.05f);
 
             if (ActiveSceneChanged != null)
             {
-                if (rootConfig.ProfileSceneChange && !isRestart)
+                if (PluginConfig.Instance.ProfileSceneChange && !isRestart)
                 {
-                    if (!MultiplayerSession.ConnectedMultiplay || rootConfig.MultiplayerProfile == "")
+                    if (!MultiplayerSession.ConnectedMultiplay || PluginConfig.Instance.MultiplayerProfile == "")
                     {
-                        if (to.name == "GameCore" && rootConfig.RotateProfile != "" && LevelDataPatch.is360Level)
-                            CameraUtilities.ProfileChange(rootConfig.RotateProfile);
-                        else if (to.name == "GameCore" && rootConfig.GameProfile != "")
-                            CameraUtilities.ProfileChange(rootConfig.GameProfile);
-                        else if ((to.name == "MainMenu" || to.name == "MenuCore" || to.name == "HealthWarning") && rootConfig.MenuProfile != "")
-                            CameraUtilities.ProfileChange(rootConfig.MenuProfile);
+                        if (to.name == "GameCore" && PluginConfig.Instance.RotateProfile != "" && LevelDataPatch.is360Level)
+                            CameraUtilities.ProfileChange(PluginConfig.Instance.RotateProfile);
+                        else if (to.name == "GameCore" && PluginConfig.Instance.GameProfile != "")
+                            CameraUtilities.ProfileChange(PluginConfig.Instance.GameProfile);
+                        else if ((to.name == "MainMenu" || to.name == "MenuCore" || to.name == "HealthWarning") && PluginConfig.Instance.MenuProfile != "")
+                            CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
                     }
                 }
 
-                yield return waitForcam();
-
+                yield return waitMainCamera();
+                
                 // Invoke each activeSceneChanged event
                 foreach (var func in ActiveSceneChanged?.GetInvocationList())
                 {
@@ -144,20 +151,26 @@ namespace CameraPlus
                             $" {ex.Message}\n{ex.StackTrace}");
                     }
                 }
+                
             }
-            else if (rootConfig.ProfileSceneChange && to.name == "HealthWarning" && rootConfig.MenuProfile != "")
-                CameraUtilities.ProfileChange(rootConfig.MenuProfile);
+            else if (PluginConfig.Instance.ProfileSceneChange && to.name == "HealthWarning" && PluginConfig.Instance.MenuProfile != "")
+                CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
 
-            yield return waitForcam();
-
-            if (to.name == "GameCore" || to.name == "MainMenu" || to.name == "MenuCore" || to.name == "MenuViewControllers" || to.name == "HealthWarning")
-            {
-                CameraUtilities.SetAllCameraCulling();
-                if (isRestart)
-                    yield return new WaitForSeconds(0.1f);
-                origin = GameObject.Find("LocalPlayerGameCore/Origin")?.transform;
-            }
+            origin = GameObject.Find("LocalPlayerGameCore/Origin")?.transform;
         }
 
+        protected IEnumerator waitMainCamera()
+        {
+            if (SceneManager.GetActiveScene().name == "GameCore")
+            {
+                while (!MainCameraPatch.isGameCameraEnable)
+                    yield return null;
+            }
+            else
+            {
+                while (Camera.main == null)
+                    yield return null;
+            }
+        }
     }
 }
