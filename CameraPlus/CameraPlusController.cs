@@ -137,7 +137,7 @@ namespace CameraPlus
                             CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
                     }
                 }
-
+                
                 yield return waitMainCamera();
                 // Invoke each activeSceneChanged event
                 foreach (var func in ActiveSceneChanged?.GetInvocationList())
@@ -152,7 +152,6 @@ namespace CameraPlus
                             $" {ex.Message}\n{ex.StackTrace}");
                     }
                 }
-                
             }
             else if (PluginConfig.Instance.ProfileSceneChange && to.name == "HealthWarning" && PluginConfig.Instance.MenuProfile != "")
                 CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);

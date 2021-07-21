@@ -323,7 +323,6 @@ namespace CameraPlus.Configuration
                         builder |= (1 << Layer.NotesDebriLayer);
                     else
                         builder &= ~(1 << Layer.NotesDebriLayer);
-                    Logger.log.Notice($"Debris {PlayerSettingPatch.playerSetting.reduceDebris.ToString()}");
                 }
             }
 

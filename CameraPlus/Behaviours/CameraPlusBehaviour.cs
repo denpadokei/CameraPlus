@@ -277,73 +277,70 @@ namespace CameraPlus.Behaviours
 
         internal virtual void CreateScreenRenderTexture()
         {
-            HMMainThreadDispatcher.instance.Enqueue(delegate
+            var replace = false;
+            if (_camRenderTexture == null)
             {
-                var replace = false;
-                if (_camRenderTexture == null)
+                _camRenderTexture = new RenderTexture(1, 1, 24);
+                replace = true;
+            }
+            else
+            {
+                if (Config.fitToCanvas != _prevFitToCanvas || Config.antiAliasing != _prevAA || Config.screenPosX != _prevScreenPosX || Config.screenPosY != _prevScreenPosY || Config.renderScale != _prevRenderScale || Config.screenHeight != _prevScreenHeight || Config.screenWidth != _prevScreenWidth || Config.layer != _prevLayer)
                 {
-                    _camRenderTexture = new RenderTexture(1, 1, 24);
                     replace = true;
+
+                    _cam.targetTexture = null;
+                    _screenCamera.SetRenderTexture(null);
+                    _screenCamera.SetCameraInfo(new Vector2(0, 0), new Vector2(0, 0), -1000);
+
+                    _camRenderTexture.Release();
+
                 }
-                else
-                {
-                    if (Config.fitToCanvas != _prevFitToCanvas || Config.antiAliasing != _prevAA || Config.screenPosX != _prevScreenPosX || Config.screenPosY != _prevScreenPosY || Config.renderScale != _prevRenderScale || Config.screenHeight != _prevScreenHeight || Config.screenWidth != _prevScreenWidth || Config.layer != _prevLayer)
-                    {
-                        replace = true;
-
-                        _cam.targetTexture = null;
-                        _screenCamera.SetRenderTexture(null);
-                        _screenCamera.SetCameraInfo(new Vector2(0, 0), new Vector2(0, 0), -1000);
-
-                        _camRenderTexture.Release();
-
-                    }
-                }
-                if (replaceFPFC)
-                {
-                    replaceFPFC = false;
-                    if (FPFCPatch.isInstanceFPFC && !FPFCPatch.instance.isActiveAndEnabled)
-                        _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer + 1000);
-                    else
-                        _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
-                }
-
-                if (!replace)
-                    return;
-
-                if (Config.fitToCanvas)
-                {
-                    Config.screenPosX = 0;
-                    Config.screenPosY = 0;
-                    Config.screenWidth = Screen.width;
-                    Config.screenHeight = Screen.height;
-                }
-                _lastRenderUpdate = DateTime.Now;
-                _camRenderTexture.width = Mathf.Clamp(Mathf.RoundToInt(Config.screenWidth * Config.renderScale), 1, int.MaxValue);
-                _camRenderTexture.height = Mathf.Clamp(Mathf.RoundToInt(Config.screenHeight * Config.renderScale), 1, int.MaxValue);
-
-                _camRenderTexture.useDynamicScale = false;
-                _camRenderTexture.antiAliasing = Config.antiAliasing;
-                //_camRenderTexture.Create();
-
-                _cam.targetTexture = _camRenderTexture;
-                _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
-                _screenCamera.SetRenderTexture(_camRenderTexture);
-
+            }
+            if (replaceFPFC)
+            {
+                replaceFPFC = false;
                 if (FPFCPatch.isInstanceFPFC && !FPFCPatch.instance.isActiveAndEnabled)
                     _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer + 1000);
                 else
                     _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
+            }
 
-                _prevFitToCanvas = Config.fitToCanvas;
-                _prevAA = Config.antiAliasing;
-                _prevRenderScale = Config.renderScale;
-                _prevScreenHeight = Config.screenHeight;
-                _prevScreenWidth = Config.screenWidth;
-                _prevLayer = Config.layer;
-                _prevScreenPosX = Config.screenPosX;
-                _prevScreenPosY = Config.screenPosY;
-            });
+            if (!replace)
+                return;
+
+            if (Config.fitToCanvas)
+            {
+                Config.screenPosX = 0;
+                Config.screenPosY = 0;
+                Config.screenWidth = Screen.width;
+                Config.screenHeight = Screen.height;
+            }
+            _lastRenderUpdate = DateTime.Now;
+            _camRenderTexture.width = Mathf.Clamp(Mathf.RoundToInt(Config.screenWidth * Config.renderScale), 1, int.MaxValue);
+            _camRenderTexture.height = Mathf.Clamp(Mathf.RoundToInt(Config.screenHeight * Config.renderScale), 1, int.MaxValue);
+
+            _camRenderTexture.useDynamicScale = false;
+            _camRenderTexture.antiAliasing = Config.antiAliasing;
+            //_camRenderTexture.Create();
+
+            _cam.targetTexture = _camRenderTexture;
+            _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
+            _screenCamera.SetRenderTexture(_camRenderTexture);
+
+            if (FPFCPatch.isInstanceFPFC && !FPFCPatch.instance.isActiveAndEnabled)
+                _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer + 1000);
+            else
+                _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
+
+            _prevFitToCanvas = Config.fitToCanvas;
+            _prevAA = Config.antiAliasing;
+            _prevRenderScale = Config.renderScale;
+            _prevScreenHeight = Config.screenHeight;
+            _prevScreenWidth = Config.screenWidth;
+            _prevLayer = Config.layer;
+            _prevScreenPosX = Config.screenPosX;
+            _prevScreenPosY = Config.screenPosY;
         }
 
         public virtual void SceneManager_activeSceneChanged(Scene from, Scene to)
@@ -353,7 +350,7 @@ namespace CameraPlus.Behaviours
             StartCoroutine(GetMainCamera());
             StartCoroutine(Get360Managers());
 
-            if (to.name == "GameCore")
+            if (SceneManager.GetActiveScene().name == "GameCore")
             {
                 if (!_cameraMovement || Config.movementScript.useAudioSync)
                 {
@@ -362,9 +359,10 @@ namespace CameraPlus.Behaviours
                 }
 
             }
-            else
-                if (Config.movementScript.useAudioSync || (!Config.movementScript.useAudioSync && Config.movementScript.movementScript == string.Empty))
+            else if (Config.movementScript.useAudioSync || (!Config.movementScript.useAudioSync && Config.movementScript.movementScript == string.Empty))
+            {
                 ClearMovementScript();
+            }
         }
 
 
@@ -607,7 +605,7 @@ namespace CameraPlus.Behaviours
                     return "Not Find Script";
 
                 _cameraMovement = _cam.gameObject.AddComponent<CameraMovement>();
-
+                Logger.log.Notice($"Script Add");
                 if (_cameraMovement.Init(this, songScriptPath))
                 {
                     ThirdPersonPos = Config.Position;
@@ -624,6 +622,8 @@ namespace CameraPlus.Behaviours
         }
         public void ClearMovementScript()
         {
+            Logger.log.Notice($"Clear Script");
+
             if (_cameraMovement)
                 _cameraMovement.Shutdown();
             _cameraMovement = null;
