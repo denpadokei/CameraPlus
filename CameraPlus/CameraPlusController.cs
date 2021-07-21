@@ -30,7 +30,7 @@ namespace CameraPlus
         private RenderTexture _renderTexture;
         private ScreenCameraBehaviour _screenCameraBehaviour;
         private CameraMoverPointer _cameraMovePointer;
-
+        private bool initialized = false;
         private void Awake()
         {
             if (instance != null)
@@ -102,7 +102,8 @@ namespace CameraPlus
         public void OnActiveSceneChanged(Scene from, Scene to)
         {
             if (isRestartingSong && to.name != "GameCore") return;
-            SharedCoroutineStarter.instance.StartCoroutine(DelayedActiveSceneChanged(from, to));
+            if (initialized || (!initialized && (to.name == "HealthWarning" || to.name == "MainMenu")))
+                SharedCoroutineStarter.instance.StartCoroutine(DelayedActiveSceneChanged(from, to));
 #if DEBUG
             Logger.log.Info($"Scene Change {from.name} to {to.name}");
 #endif
@@ -110,6 +111,7 @@ namespace CameraPlus
 
         private IEnumerator DelayedActiveSceneChanged(Scene from, Scene to)
         {
+            initialized = true;
             bool isRestart = isRestartingSong;
             isRestartingSong = false;
 
@@ -137,7 +139,6 @@ namespace CameraPlus
                 }
 
                 yield return waitMainCamera();
-                
                 // Invoke each activeSceneChanged event
                 foreach (var func in ActiveSceneChanged?.GetInvocationList())
                 {
