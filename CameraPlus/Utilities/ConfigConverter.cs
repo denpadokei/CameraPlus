@@ -23,7 +23,7 @@ namespace CameraPlus.Utilities
             if (!Directory.Exists(Path.GetDirectoryName(profilePath)))
                 Directory.CreateDirectory(Path.GetDirectoryName(profilePath));
 
-            if (!Directory.Exists(Path.GetDirectoryName(profilePath)))
+            if (!Directory.Exists(Path.GetDirectoryName(backupPath)))
                 Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
 
             DirectoryInfo dir = new DirectoryInfo(previousPath);

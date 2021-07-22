@@ -120,9 +120,11 @@ namespace CameraPlus
             if (!isRestart)
                 CameraUtilities.ReloadCameras();
 
-            yield return new WaitForSeconds(0.1f);
-            while (Camera.main == null) yield return new WaitForSeconds(0.05f);
-
+            IEnumerator waitForcam()
+            {
+                yield return new WaitForSeconds(0.1f);
+                while (Camera.main == null) yield return new WaitForSeconds(0.05f);
+            }
             if (ActiveSceneChanged != null)
             {
                 if (PluginConfig.Instance.ProfileSceneChange && !isRestart)
@@ -137,8 +139,8 @@ namespace CameraPlus
                             CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
                     }
                 }
-                
-                yield return waitMainCamera();
+                yield return waitForcam();
+
                 // Invoke each activeSceneChanged event
                 foreach (var func in ActiveSceneChanged?.GetInvocationList())
                 {
@@ -156,7 +158,10 @@ namespace CameraPlus
             else if (PluginConfig.Instance.ProfileSceneChange && to.name == "HealthWarning" && PluginConfig.Instance.MenuProfile != "")
                 CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
 
-            origin = GameObject.Find("LocalPlayerGameCore/Origin")?.transform;
+            yield return waitForcam();
+
+            if (to.name == "GameCore")
+                origin = GameObject.Find("LocalPlayerGameCore/Origin")?.transform;
         }
 
         protected IEnumerator waitMainCamera()

@@ -238,6 +238,8 @@ namespace CameraPlus.Behaviours
             if (marionette)
                 Destroy(marionette);
 #endif
+            if (adjustParent)
+                Destroy(adjustParent);
             if (CameraUtilities.vmcPortList != null)
                 if (CameraUtilities.vmcPortList.Find(p => p == Config.vmcProtocol.port) == Config.vmcProtocol.port)
                     CameraUtilities.vmcPortList.Remove(Config.vmcProtocol.port);
