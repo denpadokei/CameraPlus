@@ -259,7 +259,6 @@ namespace CameraPlus.Behaviours
 
         protected virtual void ReadConfig()
         {
-            ThirdPerson = Config.thirdPerson;
             if (!ThirdPerson)
             {
                 transform.position = _mainCamera.transform.position;
@@ -458,7 +457,7 @@ namespace CameraPlus.Behaviours
                         transform.position += OffsetPosition;
 
                     }
-                    if (turnToHead && !FPFCPatch.isInstanceFPFC)
+                    if (turnToHead && !FPFCPatch.isInstanceFPFC && !Config.cameraExtensions.follow360map)
                     {
                         turnToTarget = Camera.main.transform;
                         turnToTarget.transform.position += turnToHeadOffset;
