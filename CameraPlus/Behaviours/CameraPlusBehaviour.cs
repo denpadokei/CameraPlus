@@ -614,8 +614,6 @@ namespace CameraPlus.Behaviours
         }
         public void ClearMovementScript()
         {
-            Logger.log.Notice($"Clear Script");
-
             if (_cameraMovement)
                 _cameraMovement.Shutdown();
             _cameraMovement = null;

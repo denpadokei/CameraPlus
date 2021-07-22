@@ -1,6 +1,7 @@
 # v6.0.0 Changes
 - Supports game version 1.16.3.  
 - Change the configuration file from ini and cfg to json file.  
+- Optimized some code.  
 
 # v5.2.4 Changes  
 - Fixed TurnToeHead offset forgetting to return.  
