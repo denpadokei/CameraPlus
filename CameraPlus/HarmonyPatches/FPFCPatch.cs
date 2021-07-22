@@ -1,14 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using HarmonyLib;
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace CameraPlus.HarmonyPatches
 {
     [HarmonyPatch]
     internal class FPFCPatch
     {
-		public static FirstPersonFlyingController instance { get; private set; }
-		public static bool isInstanceFPFC => instance != null;
+		public static FirstPersonFlyingController instance { get; private set; } = null;
+		//public static bool isInstanceFPFC => instance != null;
+		public static bool isInstanceFPFC =false;
 		static void Postfix(FirstPersonFlyingController __instance)
 		{
 			instance = __instance;
@@ -19,6 +22,24 @@ namespace CameraPlus.HarmonyPatches
 			yield return AccessTools.Method(typeof(FirstPersonFlyingController), "Start");
 			yield return AccessTools.Method(typeof(FirstPersonFlyingController), "OnEnable");
 			yield return AccessTools.Method(typeof(FirstPersonFlyingController), "OnDisable");
+		}
+		[HarmonyPatch(typeof(FirstPersonFlyingController), nameof(FirstPersonFlyingController.OnEnable))]
+		private static class FirstPersonFlyingControllerEnable
+        {
+			private static void Postfix()
+			{
+				isInstanceFPFC = true;
+				Plugin.cameraController.OnFPFCToggleEvent?.Invoke();
+			}
+		}
+		[HarmonyPatch(typeof(FirstPersonFlyingController), nameof(FirstPersonFlyingController.OnDisable))]
+		private static class FirstPersonFlyingControllerDisable
+        {
+			private static void Postfix()
+			{
+				isInstanceFPFC = false;
+				Plugin.cameraController.OnFPFCToggleEvent?.Invoke();
+			}
 		}
 	}
 }

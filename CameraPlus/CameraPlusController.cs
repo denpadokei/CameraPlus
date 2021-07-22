@@ -5,6 +5,7 @@ using System.Collections.Concurrent;
 using IPA.Utilities;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 using System.IO;
 using System.Reflection;
 using CameraPlus.HarmonyPatches;
@@ -31,6 +32,9 @@ namespace CameraPlus
         private ScreenCameraBehaviour _screenCameraBehaviour;
         private CameraMoverPointer _cameraMovePointer;
         private bool initialized = false;
+
+        internal UnityEvent OnFPFCToggleEvent = new UnityEvent();
+
         private void Awake()
         {
             if (instance != null)

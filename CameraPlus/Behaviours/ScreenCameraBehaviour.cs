@@ -22,6 +22,11 @@ namespace CameraPlus.Behaviours
             _cam.depth = layer;
         }
 
+        public void SetLayer(int layer)
+        {
+            _cam.depth = layer;
+        }
+
         public void Awake()
         {
             Logger.log.Notice("Created new screen camera behaviour component!");

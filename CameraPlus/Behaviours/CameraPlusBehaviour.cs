@@ -80,8 +80,6 @@ namespace CameraPlus.Behaviours
         private GameObject adjustOffset;
         private GameObject adjustParent;
         private ExternalSender externalSender = null;
-        private bool replaceFPFC = false;
-        private bool isFPFC = false;
         private GUIStyle _multiplayerGUIStyle = null;
         private Vector3 prevMousePos = Vector3.zero;
         private Vector3 mouseRightDownPos = Vector3.zero;
@@ -179,6 +177,8 @@ namespace CameraPlus.Behaviours
 
             if (Config.vmcProtocol.mode == VMCProtocolMode.Sender)
                 InitExternalSender();
+
+            Plugin.cameraController.OnFPFCToggleEvent.AddListener(OnFPFCToglleEvent);
         }
 
         public void InitExternalSender()
@@ -259,6 +259,7 @@ namespace CameraPlus.Behaviours
 
         protected virtual void ReadConfig()
         {
+            ThirdPerson = Config.thirdPerson;
             if (!ThirdPerson)
             {
                 transform.position = _mainCamera.transform.position;
@@ -299,15 +300,6 @@ namespace CameraPlus.Behaviours
 
                 }
             }
-            if (replaceFPFC)
-            {
-                replaceFPFC = false;
-                if (FPFCPatch.isInstanceFPFC && !FPFCPatch.instance.isActiveAndEnabled)
-                    _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer + 1000);
-                else
-                    _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
-            }
-
             if (!replace)
                 return;
 
@@ -324,7 +316,6 @@ namespace CameraPlus.Behaviours
 
             _camRenderTexture.useDynamicScale = false;
             _camRenderTexture.antiAliasing = Config.antiAliasing;
-            //_camRenderTexture.Create();
 
             _cam.targetTexture = _camRenderTexture;
             _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
@@ -344,7 +335,6 @@ namespace CameraPlus.Behaviours
             _prevScreenPosX = Config.screenPosX;
             _prevScreenPosY = Config.screenPosY;
         }
-
         public virtual void SceneManager_activeSceneChanged(Scene from, Scene to)
         {
             CloseContextMenu();
@@ -367,6 +357,22 @@ namespace CameraPlus.Behaviours
             }
         }
 
+        private void OnFPFCToglleEvent()
+        {
+            if (FPFCPatch.instance != null)
+            {
+                if (FPFCPatch.isInstanceFPFC)
+                {
+                    turnToHead = false;
+                    _screenCamera.SetLayer(Config.layer);
+                }
+                else
+                {
+                    turnToHead = Config.cameraExtensions.turnToHead;
+                    _screenCamera.SetLayer(Config.layer + 1000);
+                }
+            }
+        }
 
         protected virtual void Update()
         {
@@ -403,21 +409,6 @@ namespace CameraPlus.Behaviours
 
                 if (ThirdPerson)
                 {
-                    if (FPFCPatch.isInstanceFPFC)
-                    {
-                        if (isFPFC != FPFCPatch.isInstanceFPFC)
-                        {
-                            isFPFC = FPFCPatch.isInstanceFPFC;
-                            turnToHead = false;
-                            replaceFPFC = true;
-                            CreateScreenRenderTexture();
-                        }
-                        else
-                        {
-                            isFPFC = FPFCPatch.isInstanceFPFC;
-                            turnToHead = Config.cameraExtensions.turnToHead;
-                        }
-                    }
 #if WithVMCAvatar
                     if (Plugin.cameraController.existsVMCAvatar)
                         if (Config.vmcProtocol.mode == VMCProtocolMode.Receiver && marionette)
@@ -426,7 +417,6 @@ namespace CameraPlus.Behaviours
                                 transform.position = marionette.position;
                                 transform.rotation = marionette.rotate;
                                 _cam.fieldOfView = marionette.fov > 0 ? marionette.fov : Config.fov;
-                                Logger.log.Notice($"Receive Marionette");
                                 return;
                             }
 #endif
@@ -468,7 +458,7 @@ namespace CameraPlus.Behaviours
                         transform.position += OffsetPosition;
 
                     }
-                    if (turnToHead && !isFPFC)
+                    if (turnToHead && !FPFCPatch.isInstanceFPFC)
                     {
                         turnToTarget = Camera.main.transform;
                         turnToTarget.transform.position += turnToHeadOffset;
