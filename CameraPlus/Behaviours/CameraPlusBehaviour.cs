@@ -167,9 +167,7 @@ namespace CameraPlus.Behaviours
                 _quad.transform.eulerAngles = ThirdPersonRot;
             }
 
-            // Add our camera movement script if the movement script path is set
-            if (Config.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
-                AddMovementScript();
+            AddMovementScript();
 
             Plugin.cameraController.ActiveSceneChanged += SceneManager_activeSceneChanged;
             SceneManager_activeSceneChanged(new Scene(), new Scene());
@@ -336,20 +334,6 @@ namespace CameraPlus.Behaviours
             CloseContextMenu();
 
             StartCoroutine(GetMainCamera());
-
-            if (SceneManager.GetActiveScene().name == "GameCore")
-            {
-                if (!_cameraMovement || Config.movementScript.useAudioSync)
-                {
-                    string scriptpath = AddMovementScript();
-                    Logger.log.Notice($"{this.name} Add MoveScript \"{Path.GetFileName(scriptpath)}\" successfully initialized! {Convert.ToString(_cam.cullingMask, 16)}");
-                }
-
-            }
-            else if (Config.movementScript.useAudioSync || (!Config.movementScript.useAudioSync && Config.movementScript.movementScript == string.Empty))
-            {
-                ClearMovementScript();
-            }
         }
 
         private void OnFPFCToglleEvent()
