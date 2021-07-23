@@ -320,10 +320,7 @@ namespace CameraPlus.Behaviours
             _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
             _screenCamera.SetRenderTexture(_camRenderTexture);
 
-            if (FPFCPatch.isInstanceFPFC && !FPFCPatch.instance.isActiveAndEnabled)
-                _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer + 1000);
-            else
-                _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
+            _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
 
             _prevFitToCanvas = Config.fitToCanvas;
             _prevAA = Config.antiAliasing;
@@ -339,7 +336,6 @@ namespace CameraPlus.Behaviours
             CloseContextMenu();
 
             StartCoroutine(GetMainCamera());
-            StartCoroutine(Get360Managers());
 
             if (SceneManager.GetActiveScene().name == "GameCore")
             {
@@ -635,24 +631,6 @@ namespace CameraPlus.Behaviours
                     yield return null;
             }
             _mainCamera = Camera.main;
-        }
-
-        protected IEnumerator Get360Managers()
-        {
-            yield return null;
-            StartCoroutine(GetMainCamera());
-
-            _beatLineManager = null;
-            _environmentSpawnRotation = null;
-
-            if (BeatLineManagerPatch.Instance)
-            {
-                _beatLineManager = BeatLineManagerPatch.Instance;
-                _environmentSpawnRotation = EnvironmentSpawnRotationPatch.Instance;
-            }
-
-            if (_beatLineManager)
-                this._yAngle = _beatLineManager.midRotation;
         }
 
         public bool IsWithinRenderArea(Vector2 mousePos, CameraConfig c)
