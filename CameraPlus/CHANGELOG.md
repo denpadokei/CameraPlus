@@ -1,3 +1,6 @@
+# v6.0.1 Changes
+- Missing folder integrity check when backing up old settings. 
+
 # v6.0.0 Changes
 - Supports game version 1.16.3.  
 - Change the configuration file from ini and cfg to json file.  

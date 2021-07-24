@@ -38,8 +38,11 @@ namespace CameraPlus.Utilities
                                 $"{fi.Name.Substring(0, fi.Name.Length - fi.Extension.Length)}.json"));
                     }
                     Logger.log.Notice($"Profile Convert : {dirInfo.Name}");
-                    CameraUtilities.DirectoryCopy(dirInfo.FullName, Path.Combine(backupPath, dirInfo.Name), true);
-                    DirecrtoryDelete(dirInfo.FullName);
+                    if (!Directory.Exists(Path.Combine(backupPath, dirInfo.Name)))
+                    {
+                        CameraUtilities.DirectoryCopy(dirInfo.FullName, Path.Combine(backupPath, dirInfo.Name), true);
+                        DirecrtoryDelete(dirInfo.FullName);
+                    }
                 }
             }
         }
