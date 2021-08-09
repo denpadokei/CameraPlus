@@ -58,7 +58,7 @@ namespace CameraPlus.Utilities
                 cc = PreviousConfigToCameraConfig(pc,
                         Path.Combine(UnityGame.UserDataPath, Plugin.Name,
                         $"{fi.Name.Substring(0, fi.Name.Length - fi.Extension.Length)}.json"));
-                File.Copy(fi.FullName, Path.Combine(UnityGame.UserDataPath, Plugin.Name, "OldProfiles", fi.Name));
+                File.Copy(fi.FullName, Path.Combine(UnityGame.UserDataPath, Plugin.Name, "OldProfiles", fi.Name),true);
                 File.Delete(fi.FullName);
                 Logger.log.Notice($"Profile Convert : {fi.Name}");
             }

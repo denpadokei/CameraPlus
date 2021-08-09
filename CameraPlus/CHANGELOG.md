@@ -1,3 +1,8 @@
+# v6.0.2 Changes
+- Fixed the problem that it cannot be started when cfg data remains in UserData/CameraPlus.  
+- Fixed an issue where profiles were not loaded immediately after launch when using GottaGoFast.  
+- Fixed an issue where displaying debris in-game links was failing.  
+
 # v6.0.1 Changes
 - Missing folder integrity check when backing up old settings. 
 

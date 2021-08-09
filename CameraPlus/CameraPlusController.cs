@@ -132,22 +132,23 @@ namespace CameraPlus
                 yield return new WaitForSeconds(0.1f);
                 while (Camera.main == null) yield return new WaitForSeconds(0.05f);
             }
+
+            if (PluginConfig.Instance.ProfileSceneChange && !isRestart)
+            {
+                if (!MultiplayerSession.ConnectedMultiplay || PluginConfig.Instance.MultiplayerProfile == "")
+                {
+                    if (to.name == "GameCore" && PluginConfig.Instance.RotateProfile != "" && LevelDataPatch.is360Level)
+                        CameraUtilities.ProfileChange(PluginConfig.Instance.RotateProfile);
+                    else if (to.name == "GameCore" && PluginConfig.Instance.GameProfile != "")
+                        CameraUtilities.ProfileChange(PluginConfig.Instance.GameProfile);
+                    else if ((to.name == "MainMenu" || to.name == "MenuCore" || to.name == "HealthWarning") && PluginConfig.Instance.MenuProfile != "")
+                        CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
+                }
+            }
+
             if (ActiveSceneChanged != null)
             {
-                if (PluginConfig.Instance.ProfileSceneChange && !isRestart)
-                {
-                    if (!MultiplayerSession.ConnectedMultiplay || PluginConfig.Instance.MultiplayerProfile == "")
-                    {
-                        if (to.name == "GameCore" && PluginConfig.Instance.RotateProfile != "" && LevelDataPatch.is360Level)
-                            CameraUtilities.ProfileChange(PluginConfig.Instance.RotateProfile);
-                        else if (to.name == "GameCore" && PluginConfig.Instance.GameProfile != "")
-                            CameraUtilities.ProfileChange(PluginConfig.Instance.GameProfile);
-                        else if ((to.name == "MainMenu" || to.name == "MenuCore" || to.name == "HealthWarning") && PluginConfig.Instance.MenuProfile != "")
-                            CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
-                    }
-                }
                 yield return waitForcam();
-
                 // Invoke each activeSceneChanged event
                 foreach (var func in ActiveSceneChanged?.GetInvocationList())
                 {

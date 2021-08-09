@@ -332,8 +332,8 @@ namespace CameraPlus.Behaviours
         public virtual void SceneManager_activeSceneChanged(Scene from, Scene to)
         {
             CloseContextMenu();
-
             StartCoroutine(GetMainCamera());
+            Config.SetCullingMask();
         }
 
         private void OnFPFCToglleEvent()

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using CameraPlus.Utilities;
 
 namespace CameraPlus.HarmonyPatches
 {
@@ -14,7 +15,17 @@ namespace CameraPlus.HarmonyPatches
             Instance = __instance;
         }
     }
-
+    [HarmonyPatch(typeof(AudioTimeSyncController), nameof(AudioTimeSyncController.StartSong))]
+    static class HookAudioTimeSyncController
+    {
+        static void Postfix(AudioTimeSyncController __instance)
+        {
+#if DEBUG
+            Logger.log.Notice("AudioTimeSyncController StartSong");
+#endif
+            CameraUtilities.SetAllCameraCulling();
+        }
+    }
     [HarmonyPatch(typeof(AudioTimeSyncController), nameof(AudioTimeSyncController.StopSong))]
     internal class AudioTimeSyncControllerPatch2
     {
