@@ -54,11 +54,14 @@ namespace CameraPlus.Utilities
             DirectoryInfo dirInfo = new DirectoryInfo(Path.Combine(UnityGame.UserDataPath, Plugin.Name));
             foreach (FileInfo fi in dirInfo.GetFiles("*.cfg"))
             {
+                if (!Directory.Exists(Path.GetDirectoryName(backupPath)))
+                    Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
+
                 pc = new PreviousConfig(fi.FullName);
                 cc = PreviousConfigToCameraConfig(pc,
                         Path.Combine(UnityGame.UserDataPath, Plugin.Name,
                         $"{fi.Name.Substring(0, fi.Name.Length - fi.Extension.Length)}.json"));
-                File.Copy(fi.FullName, Path.Combine(UnityGame.UserDataPath, Plugin.Name, "OldProfiles", fi.Name),true);
+                File.Copy(fi.FullName, Path.Combine(backupPath, fi.Name),true);
                 File.Delete(fi.FullName);
                 Logger.log.Notice($"Profile Convert : {fi.Name}");
             }

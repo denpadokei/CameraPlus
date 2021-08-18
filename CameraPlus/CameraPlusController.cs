@@ -51,7 +51,7 @@ namespace CameraPlus
             if (File.Exists(path))
             {
                 RootConfig rootConfig = new RootConfig(path);
-                if (!File.Exists(backupPath))
+                if (!Directory.Exists(backupPath))
                     Directory.CreateDirectory(backupPath);
                 File.Copy(path, Path.Combine(backupPath, $"{Plugin.Name}.ini"), true);
                 File.Delete(path);

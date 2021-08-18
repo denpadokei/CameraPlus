@@ -1,3 +1,6 @@
+# v6.0.3 Changes
+- #18 Fixed omission of setting conversion check.  
+
 # v6.0.2 Changes
 - Fixed the problem that it cannot be started when cfg data remains in UserData/CameraPlus.  
 - Fixed an issue where profiles were not loaded immediately after launch when using GottaGoFast.  
