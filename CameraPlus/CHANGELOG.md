@@ -1,4 +1,4 @@
-# v6.0.3 Changes
+# v6.0.4 Changes
 - #18 Fixed omission of setting conversion check.  
 
 # v6.0.2 Changes

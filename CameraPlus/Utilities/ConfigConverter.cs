@@ -17,14 +17,14 @@ namespace CameraPlus.Utilities
             PreviousConfig previousConfig;
             CameraConfig cameraConfig;
 
-            if (!Directory.Exists(Path.GetDirectoryName(previousPath)))
+            if (!Directory.Exists(previousPath))
                 return;
 
-            if (!Directory.Exists(Path.GetDirectoryName(profilePath)))
-                Directory.CreateDirectory(Path.GetDirectoryName(profilePath));
+            if (!Directory.Exists(profilePath))
+                Directory.CreateDirectory(profilePath);
 
-            if (!Directory.Exists(Path.GetDirectoryName(backupPath)))
-                Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
+            if (!Directory.Exists(backupPath))
+                Directory.CreateDirectory(backupPath);
 
             DirectoryInfo dir = new DirectoryInfo(previousPath);
             foreach(var dirInfo in dir.GetDirectories())
@@ -54,8 +54,8 @@ namespace CameraPlus.Utilities
             DirectoryInfo dirInfo = new DirectoryInfo(Path.Combine(UnityGame.UserDataPath, Plugin.Name));
             foreach (FileInfo fi in dirInfo.GetFiles("*.cfg"))
             {
-                if (!Directory.Exists(Path.GetDirectoryName(backupPath)))
-                    Directory.CreateDirectory(Path.GetDirectoryName(backupPath));
+                if (!Directory.Exists(backupPath))
+                    Directory.CreateDirectory(backupPath);
 
                 pc = new PreviousConfig(fi.FullName);
                 cc = PreviousConfigToCameraConfig(pc,
