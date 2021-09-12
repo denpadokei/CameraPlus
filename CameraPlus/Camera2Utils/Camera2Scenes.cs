@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 
 namespace CameraPlus.Camera2Utils
 {
+    //refer from Camera2 v0.5.3.
     public enum SceneTypes
     {
         Menu,
@@ -11,6 +12,7 @@ namespace CameraPlus.Camera2Utils
         Playing360,
         PlayingModmap,
         PlayingMulti,
+        SpectatingMulti,
         Replay,
         FPFC
     }

@@ -7,7 +7,7 @@ using Newtonsoft.Json.Linq;
 using CameraPlus.Behaviours;
 using CameraPlus.HarmonyPatches;
 using CameraPlus.Utilities;
-using System.Globalization;
+using CameraPlus.Camera2Utils;
 
 namespace CameraPlus.Configuration
 {
@@ -68,6 +68,8 @@ namespace CameraPlus.Configuration
         private multiplayerElemetns _multiplayer = new multiplayerElemetns();
         [JsonProperty("VMCProtocol")]
         private vmcProtocolElements _vmcProtocol = new vmcProtocolElements();
+        [JsonProperty("WebCamera")]
+        private webCameraElements _webCameraElements = new webCameraElements();
 
         public bool thirdPerson { 
             get { 
@@ -108,6 +110,7 @@ namespace CameraPlus.Configuration
         public cameraExtensionsElements cameraExtensions { get => _cameraExtensions; set { _cameraExtensions = value; } }
         public multiplayerElemetns multiplayer { get => _multiplayer; set { _multiplayer = value; } }
         public vmcProtocolElements vmcProtocol { get => _vmcProtocol; set { _vmcProtocol = value; } }
+        public webCameraElements webCamera { get => _webCameraElements; set { _webCameraElements = value; } }
         public bool PreviewCamera { get => _visibleObject.previewCamera; 
             set { 
                 _visibleObject.previewCamera = value;
@@ -126,7 +129,7 @@ namespace CameraPlus.Configuration
         private bool _saving = false;
         public event Action<CameraConfig> ConfigChangedEvent;
         private readonly FileSystemWatcher _configWatcher;
-
+        internal bool configLoaded = false;
         public Vector2 ScreenPosition{
             get{
                 return new Vector2(_windowRect.x, _windowRect.y);
@@ -229,7 +232,15 @@ namespace CameraPlus.Configuration
             if (!Directory.Exists(Path.GetDirectoryName(FilePath)))
                 Directory.CreateDirectory(Path.GetDirectoryName(FilePath));
             if (File.Exists(FilePath))
-                Load();
+            {
+                if (Load())
+                    configLoaded = true;
+                else
+                {
+                    configLoaded = false;
+                    return;
+                }
+            }
             else
             {
                 _thirdPersonPos.y = 2.0f;
@@ -253,19 +264,30 @@ namespace CameraPlus.Configuration
 
         public void Save()
         {
+            string json;
             _saving = true;
             try{
-                File.WriteAllText(FilePath, JsonConvert.SerializeObject(this, Formatting.Indented));
+                json = JsonConvert.SerializeObject(this, Formatting.Indented);
+                File.WriteAllText(FilePath, json);
             }
             catch (Exception ex){
                 Logger.log.Error($"Failed to save {cam.name}\n{ex}");
             }
             _saving = false;
         }
-        public void Load()
+        public bool Load()
         {
-            if (File.Exists(FilePath))
-                JsonConvert.PopulateObject(File.ReadAllText(FilePath), this);
+            try
+            {
+                if (File.Exists(FilePath))
+                    JsonConvert.PopulateObject(File.ReadAllText(FilePath), this);
+            }
+            catch(Exception ex)
+            {
+                Logger.log.Error($"Config json read error.\n{ex.Message}");
+                return false;
+            }
+            return true;
         }
 
         private void ConfigWatcherOnChanged(object sender, FileSystemEventArgs fileSystemEventArgs)
@@ -359,9 +381,85 @@ namespace CameraPlus.Configuration
 
             cam._cam.cullingMask = builder;
         }
+
+        internal void ConvertFromCamera2(Camera2Config config2)
+        {
+            fov = config2.FOV;
+            antiAliasing = config2.antiAliasing;
+            renderScale = config2.renderScale;
+            cameraExtensions.rotation360Smooth = config2.follow360.smoothing;
+            if (config2.type == Camera2Utils.CameraType.FirstPerson)
+                thirdPerson = false;
+            else
+                thirdPerson = true;
+            if (config2.worldCamVisibility != WorldCamVisibility.Hidden)
+                layerSetting.previewCamera = true;
+            else
+                layerSetting.previewCamera = false;
+            cameraExtensions.follow360map = config2.follow360.enabled;
+            thirdPersonPos.x = firstPersonPos.x = config2.targetPos.x;
+            thirdPersonPos.y = firstPersonPos.y = config2.targetPos.y;
+            thirdPersonPos.z = firstPersonPos.z = config2.targetPos.z;
+            thirdPersonRot.x = firstPersonRot.x = config2.targetRot.x;
+            thirdPersonRot.y = firstPersonRot.y = config2.targetRot.y;
+            thirdPersonRot.z = firstPersonRot.z = config2.targetRot.z;
+            cameraExtensions.followNoodlePlayerTrack = config2.modmapExtensions.moveWithMap;
+            screenWidth = (int)config2.viewRect.width;
+            if (screenWidth <= 0) screenWidth = Screen.width;
+            screenHeight = (int)config2.viewRect.height;
+            if (screenHeight <= 0) screenHeight = Screen.height;
+            screenPosX = (int)config2.viewRect.x;
+            screenPosY = (int)config2.viewRect.y;
+            layer = config2.layer;
+            fitToCanvas = false;
+            if (config2.visibleObject.Walls == WallVisiblity.Hidden)
+                layerSetting.wall = false;
+            else
+                layerSetting.wall = true;
+            layerSetting.avatar = config2.visibleObject.Avatar==Camera2Utils.AvatarVisibility.Hidden ? false : true;
+            layerSetting.debris = config2.visibleObject.Debris ? DebriVisibility.Visible : DebriVisibility.Hidden;
+            layerSetting.ui = config2.visibleObject.UI;
+            cameraExtensions.firstPersonCameraForceUpRight = config2.Smoothfollow.forceUpright;
+        }
+
+        internal Camera2Config ConvertToCamera2()
+        {
+            Camera2Config config2 = new Camera2Config();
+            config2.visibleObject = new visibleObjectsElement();
+            config2.viewRect = new viewRectElement();
+            config2.Smoothfollow = new SmoothfollowElement();
+            config2.follow360 = new Follow360Element();
+            config2.modmapExtensions = new ModmapExtensionsElement();
+            config2.targetPos = new targetPosElement();
+            config2.targetRot = new targetRotElement();
+            config2.visibleObject.Walls = layerSetting.wall ? Camera2Utils.WallVisiblity.Visible : Camera2Utils.WallVisiblity.Hidden;
+            config2.visibleObject.Debris = layerSetting.debris==DebriVisibility.Hidden ? false : true;
+            config2.visibleObject.UI = layerSetting.ui;
+            config2.visibleObject.Avatar = layerSetting.avatar ? Camera2Utils.AvatarVisibility.Visible : Camera2Utils.AvatarVisibility.Hidden;
+            config2.type = thirdPerson? Camera2Utils.CameraType.Positionable : Camera2Utils.CameraType.FirstPerson;
+            config2.FOV = fov;
+            config2.layer = layer + 1000;
+            config2.renderScale = (renderScale >= 0.99f) ? Math.Max(1.2f, renderScale) : renderScale;
+            config2.antiAliasing = (renderScale >= 0.99f) ? Math.Max(antiAliasing, 2) : antiAliasing;
+            config2.viewRect.x = screenPosX;
+            config2.viewRect.y = screenPosY;
+            config2.viewRect.width = fitToCanvas ? -1 : screenWidth;
+            config2.viewRect.height = fitToCanvas ? -1 : screenHeight;
+            config2.Smoothfollow.position = cameraExtensions.positionSmooth;
+            config2.Smoothfollow.rotation = cameraExtensions.rotationSmooth;
+            config2.Smoothfollow.forceUpright = cameraExtensions.firstPersonCameraForceUpRight;
+            config2.follow360.enabled = cameraExtensions.follow360map;
+            config2.follow360.smoothing = cameraExtensions.rotation360Smooth;
+            config2.modmapExtensions.moveWithMap = cameraExtensions.followNoodlePlayerTrack;
+            config2.targetPos.x = thirdPerson ? thirdPersonPos.x : FirstPersonPositionOffset.x;
+            config2.targetPos.y = thirdPerson ? thirdPersonPos.y : FirstPersonPositionOffset.y;
+            config2.targetPos.z = thirdPerson ? thirdPersonPos.z : FirstPersonPositionOffset.z;
+            config2.targetRot.x = thirdPerson ? thirdPersonRot.x : FirstPersonRotationOffset.x;
+            config2.targetRot.y = thirdPerson ? thirdPersonRot.y : FirstPersonRotationOffset.y;
+            config2.targetRot.z = thirdPerson ? thirdPersonRot.z : FirstPersonRotationOffset.z;
+            return config2;
+        }
     }
-
-
 
     public class cameraLockElements
     {
@@ -453,6 +551,31 @@ namespace CameraPlus.Configuration
         [JsonProperty("Port")]
         public int port = 39540;
     }
-
-
+    [JsonObject(MemberSerialization.OptIn)]
+    public class webCameraElements
+    {
+        [JsonProperty("WebCameraName")]
+        public string name = string.Empty;
+        [JsonProperty("ChromaKeyColor")]
+        private float[] color = new float[] { 0f, 0f, 0f };
+        [JsonProperty("ChromaKeyHue")]
+        public float hue = 0f;
+        [JsonProperty("ChromaKeySaturation")]
+        public float saturation = 0f;
+        [JsonProperty("ChromaKeyBrightness")]
+        public float brightness = 0f;
+        public Color chromaKeyColor
+        {
+            get
+            {
+                return new Color(color[0], color[1], color[2], 0);
+            }
+            set
+            {
+                color[0] = value.r;
+                color[1] = value.g;
+                color[2] = value.b;
+            }
+        }
+    }
 }

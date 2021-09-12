@@ -25,6 +25,8 @@ namespace CameraPlus.Behaviours
 			_cameraCube.name = "CameraCube";
 			_cameraCube.layer = PluginConfig.Instance.CameraQuadLayer;
 			_cameraCube.transform.SetParent(transform);
+			_cameraCube.transform.localPosition = Vector3.zero;
+			_cameraCube.transform.localEulerAngles = Vector3.zero;
 
 			_cameraQuad = GameObject.CreatePrimitive(PrimitiveType.Quad);
 			DontDestroyOnLoad(_cameraQuad);

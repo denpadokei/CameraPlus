@@ -14,7 +14,6 @@ namespace CameraPlus.Camera2Utils
     {
         public static string currentlyScenesSelected = "None";
         private static string cam2Path = Path.Combine(UnityGame.UserDataPath, "Camera2");
-        private static string pPath = Path.Combine(UnityGame.UserDataPath, "." + Plugin.Name.ToLower(), "Profiles");
         private static List<SceneTypes> enumScenes = null;
 
         public static void Init()
@@ -48,7 +47,7 @@ namespace CameraPlus.Camera2Utils
                     Logger.log.Error("No ProfileName in LoadCamera2Scene");
                     return;
                 }
-                CameraUtilities.DirectoryCreate(Path.Combine(pPath, ProfileName));
+                CameraUtilities.DirectoryCreate(Path.Combine(CameraUtilities.profilePath, ProfileName));
                 for (int i = 0; i < cameraList.Count; i++)
                     Camera2ConfigLoader(Path.Combine(cam2Path,"Cameras", $"{cameraList[i]}.json"), ProfileName);
             }
@@ -98,7 +97,7 @@ namespace CameraPlus.Camera2Utils
         private static string GetNextCameraName(string ProfileName="")
         {
             if (ProfileName == "") return string.Empty;
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(pPath, ProfileName));
+            DirectoryInfo dir = new DirectoryInfo(Path.Combine(CameraUtilities.profilePath, ProfileName));
             FileInfo[] files = dir.GetFiles();
             if (files.Length <= 0)
             {
@@ -123,7 +122,7 @@ namespace CameraPlus.Camera2Utils
             if (ProfileName != "")
             {
                 cameraName = GetNextCameraName(ProfileName);
-                path = Path.Combine(pPath, ProfileName, $"{cameraName}.json");
+                path = Path.Combine(CameraUtilities.profilePath, ProfileName, $"{cameraName}.json");
             }
             else
             {
@@ -136,7 +135,7 @@ namespace CameraPlus.Camera2Utils
             }
             Logger.log.Notice($"Try Adding {path}");
 
-            PreviousConfig config = new PreviousConfig(path);
+            CameraConfig config = new CameraConfig(path);
             Camera2Config config2 = null;
             string jsonConfig = File.ReadAllText(Path.Combine(cam2Path,"Cameras", jsonName));
             try
@@ -182,7 +181,7 @@ namespace CameraPlus.Camera2Utils
         {
             List<string> cameraList = new List<string>();
             string camName;
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(pPath, ProfileName));
+            DirectoryInfo dir = new DirectoryInfo(Path.Combine(CameraUtilities.profilePath, ProfileName));
             FileInfo[] files = dir.GetFiles("*.json");
             if (files.Length > 0)
             {
@@ -190,7 +189,7 @@ namespace CameraPlus.Camera2Utils
                 {
                     camName = GetNextCamera2Name(ProfileName);
                     File.WriteAllText(Path.Combine(cam2Path,"Cameras", $"{camName}.json"), 
-                        JsonConvert.SerializeObject(new PreviousConfig(file.FullName).ConvertToCamera2(), Formatting.Indented));
+                        JsonConvert.SerializeObject(new CameraConfig(file.FullName).ConvertToCamera2(), Formatting.Indented));
                     cameraList.Add(camName);
                 }
             }

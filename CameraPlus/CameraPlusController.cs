@@ -12,6 +12,7 @@ using CameraPlus.HarmonyPatches;
 using CameraPlus.Configuration;
 using CameraPlus.Behaviours;
 using CameraPlus.Utilities;
+using CameraPlus.VMCProtocol;
 
 namespace CameraPlus
 {
@@ -34,6 +35,12 @@ namespace CameraPlus
         private bool initialized = false;
 
         internal UnityEvent OnFPFCToggleEvent = new UnityEvent();
+
+        internal ExternalSender externalSender = null;
+
+        private WebCamTexture _webCamTexture = null;
+        internal WebCamDevice[] webCamDevices;
+        private WebCamCalibrator _webCamCal;
 
         private void Awake()
         {
@@ -81,8 +88,13 @@ namespace CameraPlus
             MultiplayerSessionInit = false;
             Logger.log.Notice($"{Plugin.Name} has started");
 
+            externalSender = new GameObject("ExternalSender").AddComponent<ExternalSender>();
+            externalSender.transform.SetParent(transform);
+
             if (CustomUtils.IsModInstalled("VMCAvatar"))
                 existsVMCAvatar = true;
+            _webCamTexture = new WebCamTexture();
+            webCamDevices = WebCamTexture.devices;
         }
         private void ShaderLoad()
         {
@@ -170,9 +182,15 @@ namespace CameraPlus
 
             if (to.name == "GameCore")
                 origin = GameObject.Find("LocalPlayerGameCore/Origin")?.transform;
+            if (to.name == "MainMenu")
+            {
+                var chat = GameObject.Find("ChatDisplay");
+                if (chat)
+                    chat.layer = Layer.UI;
+            }
         }
 
-        protected IEnumerator waitMainCamera()
+        internal IEnumerator waitMainCamera()
         {
             if (SceneManager.GetActiveScene().name == "GameCore")
             {
@@ -184,6 +202,33 @@ namespace CameraPlus
                 while (Camera.main == null)
                     yield return null;
             }
+        }
+
+        internal string[] WebCameraList()
+        {
+            string[] webcamera = new string[] { };
+            List<string> list = new List<string>();
+            if (_webCamTexture)
+            {
+                for (int i = 0; i < webCamDevices.Length; i++)
+                    list.Add(webCamDevices[i].name);
+                webcamera = list.ToArray();
+            }
+            return webcamera;
+        }
+
+        internal void WebCameraCalibration(CameraPlusBehaviour camplus)
+        {
+            _webCamCal = new GameObject("WebCamCalScreen").AddComponent<WebCamCalibrator>();
+            _webCamCal.transform.SetParent(this.transform);
+            _webCamCal.Init();
+            _webCamCal.AddCalibrationScreen(camplus, Camera.main);
+        }
+
+        internal void DestroyCalScreen()
+        {
+            if (_webCamCal)
+                Destroy(_webCamCal.gameObject);
         }
     }
 }

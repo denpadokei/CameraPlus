@@ -1,3 +1,11 @@
+# v6.1.0 Changes
+- Added webcam import like LIV.
+- Enabled Sender of VMC Protocol, not limited to FitToCanvas. The code of VMC Protocol has been changed accordingly.  
+- Added the process to exclude when there is json other than CameraPlus in the target folder of the profile.  
+- Implemented the conversion from json to Camera2 of CameraPlus that was left unattended after v6.0.0.  
+- EnhancedStreamChat window now moves to the UI layer when it is visible.  
+  This means that when you hide the UI from CameraPlus, the ESC window will also disappear.
+
 # v6.0.4 Changes
 - #18 Fixed omission of setting conversion check.  
 

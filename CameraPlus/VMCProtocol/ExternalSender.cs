@@ -1,66 +1,75 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using CameraPlus.Behaviours;
 
 namespace CameraPlus.VMCProtocol
 {
     public class ExternalSender : MonoBehaviour
     {
-        public static ExternalSender Instance = null;
-        private Task task;
-        public Camera camera = null;
-        public Vector3 position = new Vector3();
-        public Quaternion rotation = new Quaternion();
-        public bool update = false;
-        private OscClient Client=null;
-        private bool stopThread = false;
+        internal List<SendTask> sendTasks = new List<SendTask>();
+        private Vector3 position = new Vector3();
+        private Quaternion rotation = new Quaternion();
 
-        public void SendCameraData(string address="127.0.0.1", int port = 39540)
+        internal class SendTask
         {
-            if (Instance != null)
-            {
-                Logger.log.Warn($"Instance of {GetType().Name} already exists, destroying.");
-                GameObject.DestroyImmediate(this);
-                return;
-            }
-            GameObject.DontDestroyOnLoad(this);
-            Instance = this;
-            stopThread = false;
-            this.Client = new OscClient(address, port);
-            if (this.Client!=null)
-                Logger.log.Notice($"Instance of {GetType().Name} Starting.");
-            else
-                Logger.log.Error($"Instance of {GetType().Name} Not Starting.");
-            this.task = Task.Run(() => SendData());
+            internal CameraPlusBehaviour parentBehaviour = null;
+            internal OscClient client = null;
         }
 
-        private void SendData()
+        internal void AddSendTask(CameraPlusBehaviour camplus,string address = "127.0.0.1", int port = 39540)
         {
-            while (true)
+            SendTask sendTask = new SendTask();
+            sendTask.parentBehaviour = camplus;
+            sendTask.client = new OscClient(address, port);
+            if (sendTask.client != null)
             {
+                Logger.log.Notice($"Instance of OscClient {address}:{port} Starting.");
+                sendTasks.Add(sendTask);
+            }
+            else
+                Logger.log.Error($"Instance of OscClient Not Starting.");
+        }
+
+        internal void RemoveTask(CameraPlusBehaviour camplus)
+        {
+            foreach(SendTask sendTask in sendTasks)
+            {
+                if (sendTask.parentBehaviour.name == camplus.name)
+                {
+                    sendTasks.Remove(sendTask);
+                    break;
+                }
+            }
+        }
+
+        private async Task SendData()
+        {
+            await Task.Run(() => {
                 try
                 {
-                    if (camera && update)
+                    foreach(SendTask sendTask in sendTasks)
                     {
-                        Client.Send("/VMC/Ext/Cam", "Camera", new float[] {
-                             position.x, position.y, position.z,
-                             rotation.x, rotation.y, rotation.z, rotation.w,
-                             camera.fieldOfView});
-                        update = false;
+                        position = sendTask.parentBehaviour.ThirdPersonPos;
+                        rotation = Quaternion.Euler(sendTask.parentBehaviour.ThirdPersonRot);
+
+                        sendTask.client.Send("/VMC/Ext/Cam", "Camera", new float[] {
+                            position.x, position.y, position.z,
+                            rotation.x, rotation.y, rotation.z, rotation.w,
+                            sendTask.parentBehaviour.FOV});
                     }
-                    if (stopThread)
-                        break;
                 }
                 catch (Exception e)
                 {
-                    Logger.log.Error($"{camera.name} ExternalSender Thread : {e}");
+                    Logger.log.Error($"ExternalSender Thread : {e}");
                 }
-            }
+            });
         }
-        private void OnDestroy()
+
+        private void Update()
         {
-            stopThread = true;
-            Task.WaitAll(task);
+         　Task.Run(() => SendData());
         }
     }
 }

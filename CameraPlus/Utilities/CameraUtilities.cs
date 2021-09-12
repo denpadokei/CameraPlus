@@ -20,7 +20,6 @@ namespace CameraPlus.Utilities
         internal static string configPath = Path.Combine(UnityGame.UserDataPath, Plugin.Name);
         internal static string scriptPath = Path.Combine(UnityGame.UserDataPath, Plugin.Name, "Scripts");
         internal static string currentlySelected = "None";
-        public static List<int> vmcPortList = null;
 
         internal static float[] mouseMoveSpeed = { -0.01f, -0.01f };//x, y
         internal static float mouseScrollSpeed = 0.5f;
@@ -180,10 +179,13 @@ namespace CameraPlus.Utilities
                     {
                         Logger.log.Notice($"Found config {filePath}!");
 
-                        var cam = new GameObject($"CamPlus_{fileName}").AddComponent<CameraPlusBehaviour>();
-                        Plugin.cameraController.Cameras.TryAdd(fileName, cam);
                         CameraConfig Config = new CameraConfig(filePath);
-                        cam.Init(Config);
+                        if (Config.configLoaded)
+                        {
+                            var cam = new GameObject($"CamPlus_{fileName}").AddComponent<CameraPlusBehaviour>();
+                            Plugin.cameraController.Cameras.TryAdd(fileName, cam);
+                            cam.Init(Config);
+                        }
                     }
                 }
             }

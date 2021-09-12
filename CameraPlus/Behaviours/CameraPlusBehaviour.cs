@@ -79,7 +79,6 @@ namespace CameraPlus.Behaviours
         private static bool _contextMenuEnabled = true;
         private GameObject adjustOffset;
         private GameObject adjustParent;
-        private ExternalSender externalSender = null;
         private GUIStyle _multiplayerGUIStyle = null;
         private Vector3 prevMousePos = Vector3.zero;
         private Vector3 mouseRightDownPos = Vector3.zero;
@@ -89,6 +88,7 @@ namespace CameraPlus.Behaviours
         private Transform turnToTarget;
         internal bool turnToHead = false;
         internal Vector3 turnToHeadOffset = Vector3.zero;
+        internal WebCamScreen webCamScreen = null;
 
 #if WithVMCAvatar
         private VMCProtocol.VMCAvatarMarionette marionette = null;
@@ -151,6 +151,8 @@ namespace CameraPlus.Behaviours
 
             _quad = new GameObject("PreviewQuad").AddComponent<CameraPreviewQuad>();
             _quad.transform.SetParent(_cam.transform);
+            _quad.transform.localPosition = Vector3.zero;
+            _quad.transform.localEulerAngles = Vector3.zero;
             _quad.Init(this);
 
             ReadConfig();
@@ -162,9 +164,6 @@ namespace CameraPlus.Behaviours
 
                 transform.position = ThirdPersonPos;
                 transform.eulerAngles = ThirdPersonRot;
-
-                _quad.transform.position = ThirdPersonPos;
-                _quad.transform.eulerAngles = ThirdPersonRot;
             }
 
             AddMovementScript();
@@ -179,21 +178,37 @@ namespace CameraPlus.Behaviours
             Plugin.cameraController.OnFPFCToggleEvent.AddListener(OnFPFCToglleEvent);
         }
 
+        internal void CreateWebCamScreen()
+        {
+            if (webCamScreen)
+            {
+                ChangeWebCamScreen();
+                return;
+            }
+            webCamScreen = new GameObject("WebCamScreen").AddComponent<WebCamScreen>();
+            webCamScreen.transform.SetParent(transform);
+            webCamScreen.AddWebCamScreen(Config.webCamera.name, this);
+        }
+        internal void ChangeWebCamScreen()
+        {
+            if (!webCamScreen)
+            {
+                CreateWebCamScreen();
+                return;
+            }
+            webCamScreen.ChangeCamera(Config.webCamera.name);
+        }
+        internal void DisableWebCamScreen()
+        {
+            if (!webCamScreen) return;
+            webCamScreen.DisconnectWebCam();
+            Destroy(webCamScreen.gameObject);
+        }
+
         public void InitExternalSender()
         {
-            if (Config.vmcProtocol.mode == VMCProtocolMode.Sender && Config.fitToCanvas)
-            {
-                if (CameraUtilities.vmcPortList == null) CameraUtilities.vmcPortList = new List<int>();
-                if (CameraUtilities.vmcPortList.Find(p => p == Config.vmcProtocol.port) == Config.vmcProtocol.port)
-                {
-                    Logger.log.Notice($"Camera \"{Path.GetFileName(Config.FilePath)}\" already use port {Config.vmcProtocol.port}");
-                    return;
-                }
-                externalSender = new GameObject("VMCProtocolCamera").AddComponent<ExternalSender>();
-                externalSender.SendCameraData(Config.vmcProtocol.address, Config.vmcProtocol.port);
-                externalSender.camera = _cam;
-                CameraUtilities.vmcPortList.Add(Config.vmcProtocol.port);
-            }
+            if (Config.vmcProtocol.mode == VMCProtocolMode.Sender)
+                Plugin.cameraController.externalSender.AddSendTask(this, Config.vmcProtocol.address, Config.vmcProtocol.port);
         }
         public void InitExternalReceiver()
         {
@@ -209,13 +224,10 @@ namespace CameraPlus.Behaviours
         {
 #if WithVMCAvatar
             if (marionette)
-                Destroy(marionette);
+                Destroy(marionette.gameObject);
 #endif
-            if (CameraUtilities.vmcPortList != null)
-                if (CameraUtilities.vmcPortList.Find(p => p == Config.vmcProtocol.port) == Config.vmcProtocol.port)
-                    CameraUtilities.vmcPortList.Remove(Config.vmcProtocol.port);
-            if (externalSender)
-                Destroy(externalSender);
+            Plugin.cameraController.externalSender.RemoveTask(this);
+
             if (Config.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
                 AddMovementScript();
         }
@@ -238,11 +250,8 @@ namespace CameraPlus.Behaviours
 #endif
             if (adjustParent)
                 Destroy(adjustParent);
-            if (CameraUtilities.vmcPortList != null)
-                if (CameraUtilities.vmcPortList.Find(p => p == Config.vmcProtocol.port) == Config.vmcProtocol.port)
-                    CameraUtilities.vmcPortList.Remove(Config.vmcProtocol.port);
-            if (externalSender)
-                Destroy(externalSender);
+
+            Plugin.cameraController.externalSender.RemoveTask(this);
 
             if (_screenCamera)
                 Destroy(_screenCamera.gameObject);
@@ -443,16 +452,6 @@ namespace CameraPlus.Behaviours
                         turnToTarget.transform.position += turnToHeadOffset;
                         transform.LookAt(turnToTarget);
                         turnToTarget.transform.position -= turnToHeadOffset;
-                    }
-
-                    _quad.transform.position = transform.position;
-                    _quad.transform.eulerAngles = transform.eulerAngles;
-
-                    if (externalSender != null & Config.vmcProtocol.mode == VMCProtocolMode.Sender)
-                    {
-                        externalSender.position = ThirdPersonPos;
-                        externalSender.rotation = Quaternion.Euler(ThirdPersonRot);
-                        externalSender.update = true;
                     }
                     return;
                 }
@@ -849,6 +848,7 @@ namespace CameraPlus.Behaviours
                 Config.screenHeight = Mathf.Clamp(Config.screenHeight, 100, Screen.height);
                 Config.screenPosX = Mathf.Clamp(Config.screenPosX, 0, Screen.width - Config.screenWidth);
                 Config.screenPosY = Mathf.Clamp(Config.screenPosY, 0, Screen.height - Config.screenHeight);
+                webCamScreen?.ChangeWebCamRectScale(Config.screenHeight);
 
                 CreateScreenRenderTexture();
             }

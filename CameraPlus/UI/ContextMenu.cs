@@ -15,7 +15,7 @@ namespace CameraPlus.UI
             Multiplayer,
             Profile,
             MovementScript,
-            Camera2Converter,
+            SettingConverter,
             ExternalLink
         }
         internal Vector2 menuPos
@@ -33,20 +33,22 @@ namespace CameraPlus.UI
         internal MenuState MenuMode = MenuState.MenuTop;
         internal CameraPlusBehaviour parentBehaviour;
         internal string[] scriptName;
-        internal int scriptPage;
+        internal int scriptPage = 0;
+        internal string[] webCameraName;
+        internal int webCameraPage = 0;
         internal Texture2D texture = null;
         internal Texture2D Cameratexture = null;
         internal GUIStyle CustomEnableStyle = null;
         internal GUIStyle CustomDisableStyle = null;
         internal GUIStyle ProfileStyle = null;
 
-        private MenuDisplayObject menuDisplayObject;
-        private MenuLayout menuLayout;
-        private MenuMultiplayer menuMultiplayer;
-        private MenuProfile menuProfile;
-        private MenuMovementScript menuMovementScript;
-        private MenuCamera2 menuCamera2Converter;
-        private MenuExternalLink menuExternalLink;
+        private MenuDisplayObject menuDisplayObject = new MenuDisplayObject();
+        private MenuLayout menuLayout = new MenuLayout();
+        private MenuMultiplayer menuMultiplayer = new MenuMultiplayer();
+        private MenuProfile menuProfile = new MenuProfile();
+        private MenuMovementScript menuMovementScript = new MenuMovementScript();
+        private MenuSettingConverter menuSettingConverter = new MenuSettingConverter();
+        private MenuExternalLink menuExternalLink = new MenuExternalLink();
 
         public void EnableMenu(Vector2 mousePos, CameraPlusBehaviour parentBehaviour)
         {
@@ -54,17 +56,8 @@ namespace CameraPlus.UI
             mousePosition = mousePos;
             showMenu = true;
             this.parentBehaviour = parentBehaviour;
-            MenuMode = 0;
-            scriptName = null;
-            scriptPage = 0;
-
-            menuDisplayObject = new MenuDisplayObject();
-            menuLayout = new MenuLayout();
-            menuMultiplayer = new MenuMultiplayer();
-            menuProfile = new MenuProfile();
-            menuMovementScript = new MenuMovementScript();
-            menuCamera2Converter = new MenuCamera2();
-            menuExternalLink = new MenuExternalLink();
+            scriptName = CameraUtilities.MovementScriptList();
+            webCameraName = Plugin.cameraController.WebCameraList();
 
             if (this.parentBehaviour.Config.cameraLock.lockScreen)
                 texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Lock.png");
@@ -227,9 +220,9 @@ namespace CameraPlus.UI
                         MenuMode = MenuState.MovementScript;
                         scriptName = CameraUtilities.MovementScriptList();
                     }
-                    if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 385, 145, 40), new GUIContent("Camera2 Converter")))
+                    if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 385, 145, 40), new GUIContent("Setting Converter")))
                     {
-                        MenuMode = MenuState.Camera2Converter;
+                        MenuMode = MenuState.SettingConverter;
                         Camera2ConfigExporter.Init();
                     }
                     if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 385, 145, 40), new GUIContent("External linkage")))
@@ -262,8 +255,8 @@ namespace CameraPlus.UI
                     menuProfile.DiplayMenu(parentBehaviour, this, menuPos);
                 else if (MenuMode == MenuState.MovementScript)
                     menuMovementScript.DiplayMenu(parentBehaviour, this, menuPos);
-                else if (MenuMode == MenuState.Camera2Converter)
-                    menuCamera2Converter.DiplayMenu(parentBehaviour, this, menuPos);
+                else if (MenuMode == MenuState.SettingConverter)
+                    menuSettingConverter.DiplayMenu(parentBehaviour, this, menuPos);
                 else if (MenuMode == MenuState.ExternalLink)
                     menuExternalLink.DiplayMenu(parentBehaviour, this, menuPos);
                 GUI.matrix = originalMatrix;

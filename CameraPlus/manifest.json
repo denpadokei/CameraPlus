@@ -3,11 +3,11 @@
   "id": "CameraPlus",
   "name": "CameraPlus",
   "author": "Various Modders",
-  "version": "6.0.4",
+  "version": "6.1.0",
   "description": "CameraPlus is a Beat Saber mod that allows for multiple wide FOV cameras with smoothed movement.",
   "gameVersion": "1.16.4",
   "dependsOn": {
-    "BSIPA": "^4.1.6"
+    "BSIPA": "^4.2.0"
   },
   "features": []
 }

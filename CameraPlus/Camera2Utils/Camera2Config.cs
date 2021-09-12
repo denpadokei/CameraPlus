@@ -1,48 +1,57 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace CameraPlus.Camera2Utils
 {
-    internal enum CameraType
+    //refer from Camera2 v0.5.3.
+
+    public enum CameraType
     {
         FirstPerson,
         Attached, //Unused for now, but mostly implemented - For parenting to arbitrary things like possibly to a saber, etc.
         Positionable
     }
-    internal enum WallVisiblity
+    public enum WallVisiblity
     {
         Visible,
         Transparent,
         Hidden
     }
-    internal enum WorldCamVisibility
+    public enum WorldCamVisibility
     {
         Visible = 0,
         HiddenWhilePlaying,
         Hidden = 2,
     }
-    internal enum NoteVisibility
+    public enum NoteVisibility
     {
         Hidden,
         Visible,
         ForceCustomNotes
     }
+    public enum AvatarVisibility
+    {
+        Hidden,
+        Visible,
+        ForceVisibleInFP
+    }
     [JsonObject("visibleObjects")]
     public class visibleObjectsElement
     {
-        [JsonProperty("Walls")]
-        public string Walls { get; set; }
+        [JsonConverter(typeof(StringEnumConverter)), JsonProperty("Walls")]
+        public WallVisiblity Walls { get; set; }
         [JsonProperty("Debris")]
         public bool Debris { get; set; }
         [JsonProperty("UI")]
         public bool UI { get; set; }
-        [JsonProperty("Avatar")]
-        public bool Avatar { get; set; }
+        [JsonConverter(typeof(StringEnumConverter)), JsonProperty("Avatar")]
+        public AvatarVisibility Avatar { get; set; }
         [JsonProperty("Floor")]
         public bool Floor { get; set; }
         [JsonProperty("CutParticles")]
         public bool CutParticles { get; set; }
-        [JsonProperty("Notes")]
-        public string Notes { get; set; }
+        [JsonConverter(typeof(StringEnumConverter)), JsonProperty("Notes")]
+        public NoteVisibility Notes { get; set; }
     }
 
     [JsonObject("viewRect")]
@@ -56,6 +65,8 @@ namespace CameraPlus.Camera2Utils
         public float width { get; set; }
         [JsonProperty("height")]
         public float height { get; set; }
+        [JsonProperty("locked")]
+        public bool locked { get; set; }
     }
 
     [JsonObject("FPSLimiter")]
@@ -131,13 +142,15 @@ namespace CameraPlus.Camera2Utils
     [JsonObject("Camera2Config")]
     public class Camera2Config
     {
-        public string type { get; set; }
-        public string worldCamVisibility { get; set; }
-        public float FOV { get; set; }
+        [JsonConverter(typeof(StringEnumConverter)), JsonProperty("type")]
+        public CameraType type { get; set; }
+        [JsonConverter(typeof(StringEnumConverter)), JsonProperty("worldCamVisibility")]
+        public WorldCamVisibility worldCamVisibility { get; set; }
         public float previewScreenSize { get; set; }
+        public float FOV { get; set; }
         public int layer { get; set; }
-        public int antiAliasing { get; set; }
-        public float renderScale { get; set; }
+        public int antiAliasing { get; set; } // 1,2,4,8
+        public float renderScale { get; set; } // 0.20 - 3.00
         public visibleObjectsElement visibleObject { get; set; }
         public viewRectElement viewRect { get; set; }
 
