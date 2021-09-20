@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 using CameraPlus.Utilities;
@@ -100,8 +96,13 @@ namespace CameraPlus.Behaviours
                             }
                             float fov = Vector3.Angle(leftNormalize - _camPosition, rightNormalize - _camPosition);
                             Vector3 center = (leftNormalize + rightNormalize) * 0.5f;
+                            float rot = Mathf.Atan2(leftNormalize.y-rightNormalize.y, Vector3.Distance(rightNormalize, leftNormalize)) * Mathf.Rad2Deg;
+
                             _targetBehaviour.ThirdPersonRot = Quaternion.LookRotation(center - _camPosition).eulerAngles;
+                            _targetBehaviour.ThirdPersonRot.z = rot;
                             _targetBehaviour.Config.Rotation = Quaternion.LookRotation(center - _camPosition).eulerAngles;
+                            _targetBehaviour.Config.RotationZ = rot;
+
                             _targetBehaviour.FOV = fov;
                             _targetBehaviour.Config.fov = fov;
                             Plugin.cameraController.DestroyCalScreen();

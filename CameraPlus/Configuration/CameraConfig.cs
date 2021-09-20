@@ -160,6 +160,11 @@ namespace CameraPlus.Configuration
                 _thirdPersonRot.z = value.z;
             }
         }
+        public float RotationZ
+        {
+            get { return _thirdPersonRot.z; }
+            set { _thirdPersonRot.z = value; }
+        }
         public Vector3 DefaultPosition
         {
             get
@@ -556,6 +561,8 @@ namespace CameraPlus.Configuration
     {
         [JsonProperty("WebCameraName")]
         public string name = string.Empty;
+        [JsonProperty("AutoConnect")]
+        public bool autoConnect = false;
         [JsonProperty("ChromaKeyColor")]
         private float[] color = new float[] { 0f, 0f, 0f };
         [JsonProperty("ChromaKeyHue")]

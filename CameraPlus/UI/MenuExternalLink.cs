@@ -86,6 +86,18 @@ namespace CameraPlus.UI
                     parentBehaviour.DisableWebCamScreen();
                 }
                 /*
+                GUI.Box(new Rect(menuPos.x, menuPos.y + 325, 300, 50), new GUIContent("Auto Connect"));
+                if (GUI.Button(new Rect(menuPos.x, menuPos.y + 345, 150, 30), new GUIContent("Enable"), parentBehaviour.Config.webCamera.autoConnect ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                {
+                    parentBehaviour.Config.webCamera.autoConnect = true;
+                    parentBehaviour.Config.Save();
+                }
+                if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 345, 150, 30), new GUIContent("Disable"), !parentBehaviour.Config.webCamera.autoConnect ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                {
+                    parentBehaviour.Config.webCamera.autoConnect = false;
+                    parentBehaviour.Config.Save();
+                }
+                */
                 if (parentBehaviour.webCamScreen)
                 {
                     GUI.Box(new Rect(menuPos.x, menuPos.y + 325, 300, 120), "ChromaKey");
@@ -103,7 +115,6 @@ namespace CameraPlus.UI
                     GUI.Box(new Rect(menuPos.x + 200, menuPos.y + 385, 100, 40), "Brightness");
                     parentBehaviour.webCamScreen.ChromakeyBrightness = GUI.HorizontalSlider(new Rect(menuPos.x + 205, menuPos.y + 405, 90, 20), parentBehaviour.webCamScreen.ChromakeyBrightness, 0, 1);
                 }
-                */
 
             }
 

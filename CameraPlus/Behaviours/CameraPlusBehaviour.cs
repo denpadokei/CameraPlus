@@ -176,6 +176,9 @@ namespace CameraPlus.Behaviours
                 InitExternalSender();
 
             Plugin.cameraController.OnFPFCToggleEvent.AddListener(OnFPFCToglleEvent);
+
+            if (Config.webCamera.autoConnect)
+                CreateWebCamScreen();
         }
 
         internal void CreateWebCamScreen()
