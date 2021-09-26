@@ -224,7 +224,12 @@ namespace CameraPlus
             _webCamCal.Init();
             _webCamCal.AddCalibrationScreen(camplus, Camera.main);
         }
-
+        internal bool inProgressCalibration()
+        {
+            if (_webCamCal)
+                return true;
+            return false;
+        }
         internal void DestroyCalScreen()
         {
             if (_webCamCal)

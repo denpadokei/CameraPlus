@@ -256,6 +256,9 @@ namespace CameraPlus.Behaviours
 
             Plugin.cameraController.externalSender.RemoveTask(this);
 
+            if (webCamScreen)
+                DisableWebCamScreen();
+
             if (_screenCamera)
                 Destroy(_screenCamera.gameObject);
             if (_quad)

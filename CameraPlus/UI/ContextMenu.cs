@@ -16,7 +16,8 @@ namespace CameraPlus.UI
             Profile,
             MovementScript,
             SettingConverter,
-            ExternalLink
+            ExternalLink,
+            ChromaKey
         }
         internal Vector2 menuPos
         {
@@ -42,13 +43,14 @@ namespace CameraPlus.UI
         internal GUIStyle CustomDisableStyle = null;
         internal GUIStyle ProfileStyle = null;
 
-        private MenuDisplayObject menuDisplayObject = new MenuDisplayObject();
-        private MenuLayout menuLayout = new MenuLayout();
-        private MenuMultiplayer menuMultiplayer = new MenuMultiplayer();
-        private MenuProfile menuProfile = new MenuProfile();
-        private MenuMovementScript menuMovementScript = new MenuMovementScript();
-        private MenuSettingConverter menuSettingConverter = new MenuSettingConverter();
-        private MenuExternalLink menuExternalLink = new MenuExternalLink();
+        private MenuDisplayObject _menuDisplayObject = new MenuDisplayObject();
+        private MenuLayout _menuLayout = new MenuLayout();
+        private MenuMultiplayer _menuMultiplayer = new MenuMultiplayer();
+        private MenuProfile _menuProfile = new MenuProfile();
+        private MenuMovementScript _menuMovementScript = new MenuMovementScript();
+        private MenuSettingConverter _menuSettingConverter = new MenuSettingConverter();
+        private MenuExternalLink _menuExternalLink = new MenuExternalLink();
+        private MenuChromakey _menuChromakey = new MenuChromakey();
 
         public void EnableMenu(Vector2 mousePos, CameraPlusBehaviour parentBehaviour)
         {
@@ -246,19 +248,21 @@ namespace CameraPlus.UI
                         parentBehaviour.CloseContextMenu();
                 }
                 else if (MenuMode == MenuState.DisplayObject)
-                    menuDisplayObject.DiplayMenu(parentBehaviour, this, menuPos);
+                    _menuDisplayObject.DiplayMenu(parentBehaviour, this, menuPos);
                 else if (MenuMode == MenuState.Layout)
-                    menuLayout.DiplayMenu(parentBehaviour, this, menuPos);
+                    _menuLayout.DiplayMenu(parentBehaviour, this, menuPos);
                 else if (MenuMode == MenuState.Multiplayer)
-                    menuMultiplayer.DiplayMenu(parentBehaviour, this, menuPos);
+                    _menuMultiplayer.DiplayMenu(parentBehaviour, this, menuPos);
                 else if (MenuMode == MenuState.Profile)
-                    menuProfile.DiplayMenu(parentBehaviour, this, menuPos);
+                    _menuProfile.DiplayMenu(parentBehaviour, this, menuPos);
                 else if (MenuMode == MenuState.MovementScript)
-                    menuMovementScript.DiplayMenu(parentBehaviour, this, menuPos);
+                    _menuMovementScript.DiplayMenu(parentBehaviour, this, menuPos);
                 else if (MenuMode == MenuState.SettingConverter)
-                    menuSettingConverter.DiplayMenu(parentBehaviour, this, menuPos);
+                    _menuSettingConverter.DiplayMenu(parentBehaviour, this, menuPos);
                 else if (MenuMode == MenuState.ExternalLink)
-                    menuExternalLink.DiplayMenu(parentBehaviour, this, menuPos);
+                    _menuExternalLink.DiplayMenu(parentBehaviour, this, menuPos);
+                else if (MenuMode == MenuState.ChromaKey)
+                    _menuChromakey.DiplayMenu(parentBehaviour, this, menuPos);
                 GUI.matrix = originalMatrix;
             }
         }

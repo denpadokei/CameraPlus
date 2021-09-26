@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 
 namespace CameraPlus.Behaviours
 {
@@ -10,10 +11,11 @@ namespace CameraPlus.Behaviours
         internal RawImage rawImage;
         internal WebCamTexture webCamTexture = null;
         internal int selectedCamera = 0;
-        internal GameObject webCamObject = null;
         internal Canvas webCamCanvas = null;
         private RectTransform rect;
         private Material rawMaterial = new Material(Plugin.cameraController.Shaders["ChromaKey/Unlit/Cutout"]);
+
+        internal bool colorPickState = false;
 
         internal void Init(RawImage raw, string webCamName)
         {
@@ -35,13 +37,11 @@ namespace CameraPlus.Behaviours
         }
         internal float ChromakeyR
         {
-            get
-            {
+            get{
                 Color col = rawMaterial.GetColor("_ChromaKeyColor");
                 return col.r;
             }
-            set
-            {
+            set{
                 Color col = rawMaterial.GetColor("_ChromaKeyColor");
                 col.r = value;
                 rawMaterial.SetColor("_ChromaKeyColor", new Color(col.r, col.g, col.b, 0));
@@ -49,13 +49,11 @@ namespace CameraPlus.Behaviours
         }
         internal float ChromakeyG
         {
-            get
-            {
+            get{
                 Color col = rawMaterial.GetColor("_ChromaKeyColor");
                 return col.g;
             }
-            set
-            {
+            set{
                 Color col = rawMaterial.GetColor("_ChromaKeyColor");
                 col.g = value;
                 rawMaterial.SetColor("_ChromaKeyColor", new Color(col.r, col.g, col.b, 0));
@@ -63,13 +61,11 @@ namespace CameraPlus.Behaviours
         }
         internal float ChromakeyB
         {
-            get
-            {
+            get{
                 Color col = rawMaterial.GetColor("_ChromaKeyColor");
                 return col.b;
             }
-            set
-            {
+            set{
                 Color col = rawMaterial.GetColor("_ChromaKeyColor");
                 col.b = value;
                 rawMaterial.SetColor("_ChromaKeyColor", new Color(col.r, col.g, col.b, 0));
@@ -78,41 +74,52 @@ namespace CameraPlus.Behaviours
 
         internal float ChromakeyHue
         {
-            get
-            {
+            get{
                 return rawMaterial.GetFloat("_ChromaKeyHueRange");
             }
-            set
-            {
+            set{
                 rawMaterial.SetFloat("_ChromaKeyHueRange", value);
             }
         }
         internal float ChromakeySaturation
         {
-            get
-            {
+            get{
                 return rawMaterial.GetFloat("_ChromaKeySaturationRange");
             }
-            set
-            {
+            set{ 
                 rawMaterial.SetFloat("_ChromaKeySaturationRange", value);
             }
         }
         internal float ChromakeyBrightness
         {
-            get
-            {
+            get{
                 return rawMaterial.GetFloat("_ChromaKeyBrightnessRange");
             }
-            set
-            {
+            set{
                 rawMaterial.SetFloat("_ChromaKeyBrightnessRange", value);
             }
+        }
+        private IEnumerator ColorPickCoroutine()
+        {
+            yield return new WaitForEndOfFrame();
+            Texture2D texture = new Texture2D(1, 1, TextureFormat.RGB24, false);
+            Vector2 pos = Input.mousePosition;
+            texture.ReadPixels(new Rect(pos.x, pos.y, 1, 1), 0, 0);
+            Color color = texture.GetPixel(0, 0);
+            ChromakeyColor(color.r, color.g, color.b);
         }
         private void Update()
         {
             if (webCamCanvas && Camera.main != null)
                 webCamCanvas.planeDistance = Vector3.Distance(webCamCanvas.worldCamera.transform.position, Camera.main.transform.position);// - 0.5f;
+            if (colorPickState)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    StartCoroutine(ColorPickCoroutine());
+                    colorPickState = false;
+                }
+            }
         }
         internal void ChangeCamera(string webCamName)
         {
@@ -130,25 +137,23 @@ namespace CameraPlus.Behaviours
 
         internal void AddWebCamScreen(string webCamName, CameraPlusBehaviour parentBhaviour)
         {
-            webCamObject = new GameObject("WebCamCanvas");
-            webCamObject.transform.SetParent(this.transform);
-
-            webCamCanvas = webCamObject.gameObject.AddComponent<Canvas>();
+            webCamCanvas = new GameObject("WebCamCanvas").gameObject.AddComponent<Canvas>();
+            webCamCanvas.transform.SetParent(transform);
             webCamCanvas.renderMode = RenderMode.ScreenSpaceCamera;
             webCamCanvas.worldCamera = parentBhaviour._cam;
 
             webCamCanvas.planeDistance = 1;
-            CanvasScaler canvasScaler = webCamObject.gameObject.AddComponent<CanvasScaler>();
+            CanvasScaler canvasScaler = webCamCanvas.gameObject.AddComponent<CanvasScaler>();
             canvasScaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
             canvasScaler.referenceResolution = new Vector2(Screen.width, Screen.height);
             canvasScaler.matchWidthOrHeight = 1;
-            GameObject canvObj = new GameObject("RawImage");
-            canvObj.transform.SetParent(webCamObject.transform);
-            canvObj.transform.localPosition = Vector3.zero;
-            canvObj.transform.localEulerAngles = Vector3.zero;
-            RawImage raw = canvObj.AddComponent<RawImage>();
 
-            rect = canvObj.GetComponent<RectTransform>();
+            RawImage raw = new GameObject("RawImage").AddComponent<RawImage>();
+            raw.transform.SetParent(webCamCanvas.transform);
+            raw.transform.localPosition = Vector3.zero;
+            raw.transform.localEulerAngles = Vector3.zero;
+
+            rect = raw.GetComponent<RectTransform>();
             rect.anchorMin = new Vector2(0.5f, 0.5f);
             rect.anchorMax = new Vector2(0.5f, 0.5f);
             rect.pivot = new Vector2(0.5f, 0.5f);
@@ -165,8 +170,8 @@ namespace CameraPlus.Behaviours
         internal void DisconnectWebCam()
         {
             webCamTexture?.Stop();
-            if (webCamObject)
-                GameObject.Destroy(webCamObject);
+            if (webCamCanvas)
+                GameObject.Destroy(webCamCanvas.gameObject);
             webCamCanvas = null;
         }
 

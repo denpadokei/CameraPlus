@@ -77,9 +77,19 @@ namespace CameraPlus.UI
                 {
                     parentBehaviour.CreateWebCamScreen();
                 }
-                if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 295, 100, 30), "Calibration"))
+                if (!Plugin.cameraController.inProgressCalibration())
                 {
-                    Plugin.cameraController.WebCameraCalibration(parentBehaviour);
+                    if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 295, 100, 30), "Calibration"))
+                    {
+                        Plugin.cameraController.WebCameraCalibration(parentBehaviour);
+                    }
+                }
+                else
+                {
+                    if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 295, 100, 30), "Abort Cal"))
+                    {
+                        Plugin.cameraController.DestroyCalScreen();
+                    }
                 }
                 if (GUI.Button(new Rect(menuPos.x + 200, menuPos.y + 295, 100, 30), "Disconnect"))
                 {
@@ -99,7 +109,10 @@ namespace CameraPlus.UI
                 }
                 */
                 if (parentBehaviour.webCamScreen)
-                {
+                    if (GUI.Button(new Rect(menuPos.x + 100 , menuPos.y + 330, 100, 30), "Chroma Key"))
+                        contextMenu.MenuMode = ContextMenu.MenuState.ChromaKey;
+                
+                    /*
                     GUI.Box(new Rect(menuPos.x, menuPos.y + 325, 300, 120), "ChromaKey");
                     GUI.Box(new Rect(menuPos.x, menuPos.y + 345, 100, 40), "R");
                     parentBehaviour.webCamScreen.ChromakeyR = GUI.HorizontalSlider(new Rect(menuPos.x + 5, menuPos.y + 365, 90, 20), parentBehaviour.webCamScreen.ChromakeyR, 0, 1);
@@ -114,8 +127,7 @@ namespace CameraPlus.UI
                     parentBehaviour.webCamScreen.ChromakeySaturation = GUI.HorizontalSlider(new Rect(menuPos.x + 105, menuPos.y + 405, 90, 20), parentBehaviour.webCamScreen.ChromakeySaturation, 0, 1);
                     GUI.Box(new Rect(menuPos.x + 200, menuPos.y + 385, 100, 40), "Brightness");
                     parentBehaviour.webCamScreen.ChromakeyBrightness = GUI.HorizontalSlider(new Rect(menuPos.x + 205, menuPos.y + 405, 90, 20), parentBehaviour.webCamScreen.ChromakeyBrightness, 0, 1);
-                }
-
+                    */
             }
 
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close External linkage Menu")))

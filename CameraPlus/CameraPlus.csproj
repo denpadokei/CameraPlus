@@ -189,6 +189,7 @@
     <Compile Include="HarmonyPatches\MainCameraPatch.cs" />
     <Compile Include="HarmonyPatches\PlayerSettingPatch.cs" />
     <Compile Include="UI\BehaviourScriptEdit.cs" />
+    <Compile Include="UI\MenuChromakey.cs" />
     <Compile Include="UI\MenuSettingConverter.cs" />
     <Compile Include="UI\MenuDisplayObject.cs" />
     <Compile Include="UI\MenuExternalLink.cs" />
