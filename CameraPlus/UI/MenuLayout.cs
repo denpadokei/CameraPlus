@@ -284,49 +284,63 @@ namespace CameraPlus.UI
             else
             {
                 //Turn to Head Offset
-                GUI.Box(new Rect(menuPos.x, menuPos.y + 255, 300, 70), "Turn to Head Offset");
+                GUI.Box(new Rect(menuPos.x, menuPos.y + 255, 300, 65), "Turn to Head Offset");
                 //X Position
-                GUI.Box(new Rect(menuPos.x, menuPos.y + 275, 100, 50), $"X Pos:{parentBehaviour.Config.turnToHeadOffsetTransform.x.ToString("F2")}");
-                if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 295, 45, 30), new GUIContent("-")))
+                GUI.Box(new Rect(menuPos.x, menuPos.y + 270, 100, 50), $"X Pos:{parentBehaviour.Config.turnToHeadOffsetTransform.x.ToString("F2")}");
+                if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 290, 45, 30), new GUIContent("-")))
                 {
                     parentBehaviour.Config.turnToHeadOffsetTransform.x -= amountMove;
                     parentBehaviour.CreateScreenRenderTexture();
                     parentBehaviour.Config.Save();
                 }
-                if (GUI.Button(new Rect(menuPos.x + 50, menuPos.y + 295, 45, 30), new GUIContent("+")))
+                if (GUI.Button(new Rect(menuPos.x + 50, menuPos.y + 290, 45, 30), new GUIContent("+")))
                 {
                     parentBehaviour.Config.turnToHeadOffsetTransform.x += amountMove;
                     parentBehaviour.CreateScreenRenderTexture();
                     parentBehaviour.Config.Save();
                 }
                 //Y Position
-                GUI.Box(new Rect(menuPos.x + 100, menuPos.y + 275, 100, 50), $"Y Pos :{parentBehaviour.Config.turnToHeadOffsetTransform.y.ToString("F2")}");
-                if (GUI.Button(new Rect(menuPos.x + 105, menuPos.y + 295, 45, 30), new GUIContent("-")))
+                GUI.Box(new Rect(menuPos.x + 100, menuPos.y + 270, 100, 50), $"Y Pos :{parentBehaviour.Config.turnToHeadOffsetTransform.y.ToString("F2")}");
+                if (GUI.Button(new Rect(menuPos.x + 105, menuPos.y + 290, 45, 30), new GUIContent("-")))
                 {
                     parentBehaviour.Config.turnToHeadOffsetTransform.y -= amountMove;
                     parentBehaviour.CreateScreenRenderTexture();
                     parentBehaviour.Config.Save();
                 }
-                if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 295, 45, 30), new GUIContent("+")))
+                if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 290, 45, 30), new GUIContent("+")))
                 {
                     parentBehaviour.Config.turnToHeadOffsetTransform.y += amountMove;
                     parentBehaviour.CreateScreenRenderTexture();
                     parentBehaviour.Config.Save();
                 }
                 //Z Position
-                GUI.Box(new Rect(menuPos.x + 200, menuPos.y + 275, 100, 50), $"Z Pos :{parentBehaviour.Config.turnToHeadOffsetTransform.z.ToString("F2")}");
-                if (GUI.Button(new Rect(menuPos.x + 205, menuPos.y + 295, 45, 30), new GUIContent("-")))
+                GUI.Box(new Rect(menuPos.x + 200, menuPos.y + 270, 100, 50), $"Z Pos :{parentBehaviour.Config.turnToHeadOffsetTransform.z.ToString("F2")}");
+                if (GUI.Button(new Rect(menuPos.x + 205, menuPos.y + 290, 45, 30), new GUIContent("-")))
                 {
                     parentBehaviour.Config.turnToHeadOffsetTransform.z -= amountMove;
                     parentBehaviour.CreateScreenRenderTexture();
                     parentBehaviour.Config.Save();
                 }
-                if (GUI.Button(new Rect(menuPos.x + 250, menuPos.y + 295, 45, 30), new GUIContent("+")))
+                if (GUI.Button(new Rect(menuPos.x + 250, menuPos.y + 290, 45, 30), new GUIContent("+")))
                 {
                     parentBehaviour.Config.turnToHeadOffsetTransform.z += amountMove;
                     parentBehaviour.CreateScreenRenderTexture();
                     parentBehaviour.Config.Save();
                 }
+                //Turn to Head Horizontal
+                if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 325, 145, 30), new GUIContent("Horizontal Only"), parentBehaviour.Config.cameraExtensions.turnToHeadHorizontal ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                {
+                    parentBehaviour.Config.cameraExtensions.turnToHeadHorizontal = true;
+                    parentBehaviour.CreateScreenRenderTexture();
+                    parentBehaviour.Config.Save();
+                }
+                if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 325, 145, 30), new GUIContent("3 Axis"), !parentBehaviour.Config.cameraExtensions.turnToHeadHorizontal ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                {
+                    parentBehaviour.Config.cameraExtensions.turnToHeadHorizontal = false;
+                    parentBehaviour.CreateScreenRenderTexture();
+                    parentBehaviour.Config.Save();
+                }
+
             }
             if (!parentBehaviour.Config.fitToCanvas)
             {

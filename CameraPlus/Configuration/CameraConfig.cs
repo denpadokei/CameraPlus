@@ -514,6 +514,8 @@ namespace CameraPlus.Configuration
         public bool followNoodlePlayerTrack = true;
         [JsonProperty("TurnToHead")]
         public bool turnToHead = false;
+        [JsonProperty("TurnToHeadHorizontal")]
+        public bool turnToHeadHorizontal = false;
     }
     public class windowRectElement
     {
