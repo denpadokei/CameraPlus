@@ -227,7 +227,7 @@ namespace CameraPlus.Behaviours
         {
 #if WithVMCAvatar
             if (marionette)
-                Destroy(marionette.gameObject);
+                Destroy(marionette);
 #endif
             Plugin.cameraController.externalSender.RemoveTask(this);
 
