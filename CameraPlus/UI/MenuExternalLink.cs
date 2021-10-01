@@ -57,77 +57,71 @@ namespace CameraPlus.UI
                 {
                     if (contextMenu.webCameraPage > 0) contextMenu.webCameraPage--;
                 }
-                GUI.Box(new Rect(menuPos.x + 80, menuPos.y + 170, 140, 25), new GUIContent($"{contextMenu.webCameraPage + 1} / {Math.Ceiling(Decimal.Parse(contextMenu.webCameraName.Length.ToString()) / 4)}"));
+                GUI.Box(new Rect(menuPos.x + 80, menuPos.y + 170, 140, 25), new GUIContent($"{contextMenu.webCameraPage + 1} / {Math.Ceiling(Decimal.Parse(contextMenu.webCameraName.Length.ToString()) / 5)}"));
                 if (GUI.Button(new Rect(menuPos.x + 220, menuPos.y + 170, 80, 25), new GUIContent(">")))
                 {
-                    if (contextMenu.webCameraPage < Math.Ceiling(Decimal.Parse(contextMenu.webCameraName.Length.ToString()) / 4) - 1) contextMenu.webCameraPage++;
+                    if (contextMenu.webCameraPage < Math.Ceiling(Decimal.Parse(contextMenu.webCameraName.Length.ToString()) / 5) - 1) contextMenu.webCameraPage++;
                 }
 
-                for (int i = contextMenu.webCameraPage * 4; i < contextMenu.webCameraPage * 4 + 4; i++)
+                for (int i = contextMenu.webCameraPage * 5; i < contextMenu.webCameraPage * 5 + 5; i++)
                 {
                     if (i < contextMenu.webCameraName.Length)
                     {
-                        if (GUI.Button(new Rect(menuPos.x, menuPos.y + (i - contextMenu.webCameraPage * 4) * 25 + 195, 300, 25), new GUIContent(Plugin.cameraController.webCamDevices[i].name),
-                                Plugin.cameraController.webCamDevices[i].name == parentBehaviour.Config.webCamera.name ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
-                            parentBehaviour.Config.webCamera.name = Plugin.cameraController.webCamDevices[i].name;
+                        if (!parentBehaviour.webCamScreen && !Plugin.cameraController.inProgressCalibration())
+                        {
+                            if (GUI.Button(new Rect(menuPos.x, menuPos.y + (i - contextMenu.webCameraPage * 5) * 25 + 195, 300, 25), new GUIContent(Plugin.cameraController.webCamDevices[i].name),
+                                    Plugin.cameraController.webCamDevices[i].name == parentBehaviour.Config.webCamera.name ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                                parentBehaviour.Config.webCamera.name = Plugin.cameraController.webCamDevices[i].name;
+                        }else
+                        {
+                            GUI.Box(new Rect(menuPos.x, menuPos.y + (i - contextMenu.webCameraPage * 5) * 25 + 195, 300, 25), new GUIContent(Plugin.cameraController.webCamDevices[i].name));
+                        }
                     }
 
                 }
-                if (GUI.Button(new Rect(menuPos.x, menuPos.y + 295, 100, 30), "Connect"))
-                {
-                    parentBehaviour.CreateWebCamScreen();
-                }
                 if (!Plugin.cameraController.inProgressCalibration())
                 {
-                    if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 295, 100, 30), "Calibration"))
+                    if (!parentBehaviour.webCamScreen)
                     {
-                        Plugin.cameraController.WebCameraCalibration(parentBehaviour);
+                        if (GUI.Button(new Rect(menuPos.x, menuPos.y + 325, 150, 30), "Connect"))
+                            parentBehaviour.CreateWebCamScreen();
+                    }
+                    else
+                    {
+                        if (GUI.Button(new Rect(menuPos.x, menuPos.y + 325, 150, 30), "Disconnect"))
+                            parentBehaviour.DisableWebCamScreen();
                     }
                 }
-                else
+
+                if (!parentBehaviour.webCamScreen)
                 {
-                    if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 295, 100, 30), "Abort Cal"))
+                    if (!Plugin.cameraController.inProgressCalibration())
                     {
-                        Plugin.cameraController.DestroyCalScreen();
+                        if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 325, 150, 30), "Calibration"))
+                            Plugin.cameraController.WebCameraCalibration(parentBehaviour);
+                    }
+                    else
+                    {
+                        if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 325, 150, 30), "Abort Cal"))
+                            Plugin.cameraController.DestroyCalScreen();
                     }
                 }
-                if (GUI.Button(new Rect(menuPos.x + 200, menuPos.y + 295, 100, 30), "Disconnect"))
-                {
-                    parentBehaviour.DisableWebCamScreen();
-                }
+                if (parentBehaviour.webCamScreen)
+                    if (GUI.Button(new Rect(menuPos.x , menuPos.y + 355, 300, 30), "Chroma Key"))
+                        contextMenu.MenuMode = ContextMenu.MenuState.ChromaKey;
                 /*
-                GUI.Box(new Rect(menuPos.x, menuPos.y + 325, 300, 50), new GUIContent("Auto Connect"));
-                if (GUI.Button(new Rect(menuPos.x, menuPos.y + 345, 150, 30), new GUIContent("Enable"), parentBehaviour.Config.webCamera.autoConnect ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                GUI.Box(new Rect(menuPos.x, menuPos.y + 385, 300, 45), new GUIContent("Auto Connect"));
+                if (GUI.Button(new Rect(menuPos.x, menuPos.y + 405, 150, 25), new GUIContent("Enable"), parentBehaviour.Config.webCamera.autoConnect ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
                 {
                     parentBehaviour.Config.webCamera.autoConnect = true;
                     parentBehaviour.Config.Save();
                 }
-                if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 345, 150, 30), new GUIContent("Disable"), !parentBehaviour.Config.webCamera.autoConnect ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 405, 150, 25), new GUIContent("Disable"), !parentBehaviour.Config.webCamera.autoConnect ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
                 {
                     parentBehaviour.Config.webCamera.autoConnect = false;
                     parentBehaviour.Config.Save();
                 }
                 */
-                if (parentBehaviour.webCamScreen)
-                    if (GUI.Button(new Rect(menuPos.x + 100 , menuPos.y + 330, 100, 30), "Chroma Key"))
-                        contextMenu.MenuMode = ContextMenu.MenuState.ChromaKey;
-                
-                    /*
-                    GUI.Box(new Rect(menuPos.x, menuPos.y + 325, 300, 120), "ChromaKey");
-                    GUI.Box(new Rect(menuPos.x, menuPos.y + 345, 100, 40), "R");
-                    parentBehaviour.webCamScreen.ChromakeyR = GUI.HorizontalSlider(new Rect(menuPos.x + 5, menuPos.y + 365, 90, 20), parentBehaviour.webCamScreen.ChromakeyR, 0, 1);
-                    GUI.Box(new Rect(menuPos.x + 100, menuPos.y + 345, 100, 40), "G");
-                    parentBehaviour.webCamScreen.ChromakeyG = GUI.HorizontalSlider(new Rect(menuPos.x + 105, menuPos.y + 365, 90, 20), parentBehaviour.webCamScreen.ChromakeyG, 0, 1);
-                    GUI.Box(new Rect(menuPos.x + 200, menuPos.y + 345, 100, 40), "B");
-                    parentBehaviour.webCamScreen.ChromakeyB = GUI.HorizontalSlider(new Rect(menuPos.x + 205, menuPos.y + 365, 90, 20), parentBehaviour.webCamScreen.ChromakeyB, 0, 1);
-
-                    GUI.Box(new Rect(menuPos.x, menuPos.y + 385, 100, 40), "Hue");
-                    parentBehaviour.webCamScreen.ChromakeyHue = GUI.HorizontalSlider(new Rect(menuPos.x + 5, menuPos.y + 405, 90, 20), parentBehaviour.webCamScreen.ChromakeyHue, 0, 1);
-                    GUI.Box(new Rect(menuPos.x + 100, menuPos.y + 385, 100, 40), "Saturation");
-                    parentBehaviour.webCamScreen.ChromakeySaturation = GUI.HorizontalSlider(new Rect(menuPos.x + 105, menuPos.y + 405, 90, 20), parentBehaviour.webCamScreen.ChromakeySaturation, 0, 1);
-                    GUI.Box(new Rect(menuPos.x + 200, menuPos.y + 385, 100, 40), "Brightness");
-                    parentBehaviour.webCamScreen.ChromakeyBrightness = GUI.HorizontalSlider(new Rect(menuPos.x + 205, menuPos.y + 405, 90, 20), parentBehaviour.webCamScreen.ChromakeyBrightness, 0, 1);
-                    */
             }
 
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close External linkage Menu")))

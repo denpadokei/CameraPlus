@@ -206,6 +206,7 @@ namespace CameraPlus.Behaviours
             if (!webCamScreen) return;
             webCamScreen.DisconnectWebCam();
             Destroy(webCamScreen.gameObject);
+            webCamScreen = null;
         }
 
         public void InitExternalSender()
