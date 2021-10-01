@@ -399,6 +399,7 @@ namespace CameraPlus.Behaviours
                 OffsetPosition = Vector3.zero;
                 OffsetAngle = Vector3.zero;
 
+                if (!_mainCamera) return;
                 var camera = _mainCamera?.transform;
 
                 if (ThirdPerson)
@@ -414,6 +415,7 @@ namespace CameraPlus.Behaviours
                                 return;
                             }
 #endif
+
                     HandleMultiPlayerLobby();
                     HandleMultiPlayerGame();
                     HandleThirdPerson360();
@@ -452,7 +454,7 @@ namespace CameraPlus.Behaviours
                         transform.position += OffsetPosition;
 
                     }
-                    if (turnToHead && !FPFCPatch.isInstanceFPFC && !Config.cameraExtensions.follow360map)
+                    if (Camera.main && turnToHead && !FPFCPatch.isInstanceFPFC && !Config.cameraExtensions.follow360map)
                     {
                         turnToTarget = Camera.main.transform;
                         turnToTarget.transform.position += turnToHeadOffset;
@@ -481,7 +483,10 @@ namespace CameraPlus.Behaviours
                     transform.rotation = rot * Quaternion.Euler(0, 0, -(rot.eulerAngles.z));
                 }
             }
-            catch { }
+            catch(Exception ex)
+            {
+                Logger.log.Error($"CameraPlus {this.name}, Error in LateUpdate : {ex}");
+            }
         }
 
         private void HandleThirdPerson360()
