@@ -18,20 +18,20 @@ namespace CameraPlus.UI
                 Texture2D texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.ColorPick.png"); ;
                 UnityEngine.Cursor.SetCursor(texture, new Vector2(0, 0), CursorMode.Auto);
             }
-            GUI.Box(new Rect(menuPos.x, menuPos.y + 80, 300, 40), "R");
+            GUI.Box(new Rect(menuPos.x, menuPos.y + 80, 300, 40), $"Red : {parentBehaviour.webCamScreen.ChromakeyR.ToString("F2")}");
             parentBehaviour.webCamScreen.ChromakeyR = GUI.HorizontalSlider(new Rect(menuPos.x, menuPos.y + 100, 300, 20), parentBehaviour.webCamScreen.ChromakeyR, 0, 1);
 
-            GUI.Box(new Rect(menuPos.x, menuPos.y + 120, 300, 40), "G");
+            GUI.Box(new Rect(menuPos.x, menuPos.y + 120, 300, 40), $"Green : {parentBehaviour.webCamScreen.ChromakeyG.ToString("F2")}");
             parentBehaviour.webCamScreen.ChromakeyG = GUI.HorizontalSlider(new Rect(menuPos.x, menuPos.y + 140, 300, 20), parentBehaviour.webCamScreen.ChromakeyG, 0, 1);
 
-            GUI.Box(new Rect(menuPos.x, menuPos.y + 160, 300, 40), "B");
+            GUI.Box(new Rect(menuPos.x, menuPos.y + 160, 300, 40), $"Blue : {parentBehaviour.webCamScreen.ChromakeyB.ToString("F2")}");
             parentBehaviour.webCamScreen.ChromakeyB = GUI.HorizontalSlider(new Rect(menuPos.x, menuPos.y + 180, 300, 20), parentBehaviour.webCamScreen.ChromakeyB, 0, 1);
 
-            GUI.Box(new Rect(menuPos.x, menuPos.y + 210, 300, 40), "Hue");
+            GUI.Box(new Rect(menuPos.x, menuPos.y + 210, 300, 40), $"Hue : {parentBehaviour.webCamScreen.ChromakeyHue.ToString("F2")}");
             parentBehaviour.webCamScreen.ChromakeyHue = GUI.HorizontalSlider(new Rect(menuPos.x, menuPos.y + 230, 300, 20), parentBehaviour.webCamScreen.ChromakeyHue, 0, 1);
-            GUI.Box(new Rect(menuPos.x, menuPos.y + 250, 300, 40), "Saturation");
+            GUI.Box(new Rect(menuPos.x, menuPos.y + 250, 300, 40), $"Saturation : {parentBehaviour.webCamScreen.ChromakeySaturation.ToString("F2")}");
             parentBehaviour.webCamScreen.ChromakeySaturation = GUI.HorizontalSlider(new Rect(menuPos.x, menuPos.y + 270, 300, 20), parentBehaviour.webCamScreen.ChromakeySaturation, 0, 1);
-            GUI.Box(new Rect(menuPos.x, menuPos.y + 290, 300, 40), "Brightness");
+            GUI.Box(new Rect(menuPos.x, menuPos.y + 290, 300, 40), $"Brightness : {parentBehaviour.webCamScreen.ChromakeyBrightness.ToString("F2")}");
             parentBehaviour.webCamScreen.ChromakeyBrightness = GUI.HorizontalSlider(new Rect(menuPos.x, menuPos.y + 310, 300, 20), parentBehaviour.webCamScreen.ChromakeyBrightness, 0, 1);
 
 
