@@ -86,7 +86,6 @@ namespace CameraPlus
             _cameraMovePointer = this.gameObject.AddComponent<CameraMoverPointer>();
             CameraUtilities.AddNewCamera(Plugin.MainCamera);
             MultiplayerSessionInit = false;
-            Logger.log.Notice($"{Plugin.Name} has started");
 
             externalSender = new GameObject("ExternalSender").AddComponent<ExternalSender>();
             externalSender.transform.SetParent(transform);

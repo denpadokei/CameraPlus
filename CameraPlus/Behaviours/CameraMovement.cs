@@ -235,8 +235,6 @@ namespace CameraPlus.Behaviours
                 string jsonText = File.ReadAllText(path);
                 if (data.LoadFromJson(jsonText))
                 {
-                    Logger.log.Notice("Populated CameraData");
-
                     if (data.Movements.Count == 0)
                     {
                         Logger.log.Notice("No movement data!");

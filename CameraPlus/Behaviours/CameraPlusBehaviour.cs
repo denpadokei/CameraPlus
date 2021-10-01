@@ -96,7 +96,6 @@ namespace CameraPlus.Behaviours
         public virtual void Init(CameraConfig config)
         {
             DontDestroyOnLoad(gameObject);
-            Logger.log.Notice("Created new camera plus behaviour component!");
 
             Config = config;
             Config.cam = this;
@@ -593,7 +592,6 @@ namespace CameraPlus.Behaviours
                     return "Not Find Script";
 
                 _cameraMovement = _cam.gameObject.AddComponent<CameraMovement>();
-                Logger.log.Notice($"Script Add");
                 if (_cameraMovement.Init(this, songScriptPath))
                 {
                     ThirdPersonPos = Config.Position;
