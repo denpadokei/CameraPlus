@@ -29,7 +29,9 @@ namespace CameraPlus.Behaviours
 
         public void Awake()
         {
+#if DEBUG
             Logger.log.Notice("Created new screen camera behaviour component!");
+#endif
             DontDestroyOnLoad(gameObject);
 
             _cam = gameObject.AddComponent<Camera>();

@@ -34,6 +34,8 @@ namespace CameraPlus.Behaviours
         private Vector3 _centerPosition;
         private CameraPlusBehaviour _targetBehaviour;
         private bool _vrControllerTriggerd;
+        private HMUI.CurvedTextMeshPro _calText;
+
         internal void Init()
         {
             _vrPointer = Resources.FindObjectsOfTypeAll<VRPointer>().First();
@@ -122,18 +124,21 @@ namespace CameraPlus.Behaviours
         {
             _rectCursor.sizeDelta = new Vector2(Screen.width / 16, Screen.height / 9);
             _rectCursor.localPosition = new Vector3(0, 0, -0.1f);
+            _calText.text = "Step away from the webcam.\nAlign the controller to the crosshairs and pull the trigger.";
         }
         private void CalibratorLeft()
         {
             //-240, 135
             _rectCursor.sizeDelta = new Vector2(Screen.width / 16, Screen.height / 9);
             _rectCursor.localPosition = new Vector3(-135, 0, -0.1f);
+            _calText.text = "Align the controller to the crosshairs and pull the trigger.";
         }
         private void CalibratorRight()
         {
             //+240
             _rectCursor.sizeDelta = new Vector2(Screen.width / 16, Screen.height / 9);
             _rectCursor.localPosition = new Vector3(135, 0, -0.1f);
+            _calText.text = "Align the controller to the crosshairs and pull the trigger.";
         }
 
         internal void AddCalibrationScreen(CameraPlusBehaviour camplus, Camera camera)
@@ -191,6 +196,22 @@ namespace CameraPlus.Behaviours
             _rectCursor.anchoredPosition = new Vector2(0, 0);
             _rectCursor.sizeDelta = new Vector2(Screen.width / 8, Screen.height / 4.5f);
             _rectCursor.localPosition = new Vector3(0, 0, -0.1f);
+
+            _calText = new GameObject("CalibrationText").AddComponent<HMUI.CurvedTextMeshPro>();
+            _calText.transform.SetParent(_webCamCanvas.transform);
+            _calText.transform.localPosition = Vector3.zero;
+            _calText.transform.localEulerAngles = Vector3.zero;
+            _calText.alignment = TMPro.TextAlignmentOptions.Bottom;
+            _calText.fontSize = 24;
+            _calText.text= "Pull the trigger in front of the webcam.";
+            var cakRect = _calText.gameObject.GetComponent<RectTransform>();
+            cakRect.anchorMin = new Vector2(0.5f, 0.5f);
+            cakRect.anchorMax = new Vector2(0.5f, 0.5f);
+            cakRect.pivot = new Vector2(0.5f, 0.5f);
+            cakRect.localScale = new Vector3(1f, 1f, 1);
+            cakRect.anchoredPosition = new Vector2(0, 0);
+            cakRect.sizeDelta = new Vector2(Screen.width / 4, Screen.height / 3);
+            cakRect.localPosition = new Vector3(0, 0, -0.1f);
         }
     }
 }
