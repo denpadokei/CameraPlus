@@ -107,6 +107,7 @@ namespace CameraPlus.Behaviours
             texture.ReadPixels(new Rect(pos.x, pos.y, 1, 1), 0, 0);
             Color color = texture.GetPixel(0, 0);
             ChromakeyColor(color.r, color.g, color.b);
+            UnityEngine.Cursor.SetCursor(null, new Vector2(0, 0), CursorMode.Auto);
         }
         private void Update()
         {

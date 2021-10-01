@@ -60,6 +60,7 @@ namespace CameraPlus.Configuration
         public EndHeadOffset endHeadOffset { get; set; }
 
         public string TurnToHead { get; set; }
+        public string TurnToHeadHorizontal { get; set; }
         public string Duration { get; set; }
         public string Delay { get; set; }
         public string EaseTransition { get; set; }

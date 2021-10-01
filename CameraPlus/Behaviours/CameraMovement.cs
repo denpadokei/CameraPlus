@@ -46,6 +46,7 @@ namespace CameraPlus.Behaviours
             public float Duration;
             public float Delay;
             public bool TurnToHead = false;
+            public bool TurnToHeadHorizontal = false;
             public bool EaseTransition = true;
         }
         public class CameraData
@@ -134,6 +135,7 @@ namespace CameraPlus.Behaviours
                             newMovement.EndFOV = 0;
 
                         if (jsonmovement.TurnToHead != null) newMovement.TurnToHead = System.Convert.ToBoolean(jsonmovement.TurnToHead);
+                        if (jsonmovement.TurnToHeadHorizontal != null) newMovement.TurnToHeadHorizontal = System.Convert.ToBoolean(jsonmovement.TurnToHeadHorizontal);
                         if (jsonmovement.Delay != null) newMovement.Delay = float.Parse(jsonmovement.Delay.Contains(sepCheck) ? jsonmovement.Delay.Replace(sepCheck,sep) : jsonmovement.Delay);
                         if (jsonmovement.Duration != null) newMovement.Duration = Mathf.Clamp(float.Parse(jsonmovement.Duration.Contains(sepCheck) ? jsonmovement.Duration.Replace(sepCheck, sep) : jsonmovement.Duration), 0.01f, float.MaxValue); // Make sure duration is at least 0.01 seconds, to avoid a divide by zero error
                         
@@ -267,6 +269,7 @@ namespace CameraPlus.Behaviours
                 eventID = 0;
 
             _cameraPlus.turnToHead = data.TurnToHeadUseCameraSetting ? _cameraPlus.Config.cameraExtensions.turnToHead : data.Movements[eventID].TurnToHead;
+            _cameraPlus.turnToHeadHorizontal = data.Movements[eventID].TurnToHeadHorizontal;
             easeTransition = data.Movements[eventID].EaseTransition;
 
             StartRot = new Vector3(data.Movements[eventID].StartRot.x, data.Movements[eventID].StartRot.y, data.Movements[eventID].StartRot.z);

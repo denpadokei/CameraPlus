@@ -5,6 +5,7 @@
 - Implemented the conversion from json to Camera2 of CameraPlus that was left unattended after v6.0.0.  
 - EnhancedStreamChat window now moves to the UI layer when it is visible.  
   This means that when you hide the UI from CameraPlus, the ESC window will also disappear.
+- Added the function to limit the TurnToHead option to horizontal orientation only. (Include Movementscript)
 
 # v6.0.4 Changes
 - #18 Fixed omission of setting conversion check.  

@@ -88,6 +88,7 @@ namespace CameraPlus.Behaviours
         private Transform turnToTarget;
         internal bool turnToHead = false;
         internal Vector3 turnToHeadOffset = Vector3.zero;
+        internal bool turnToHeadHorizontal = false;
         internal WebCamScreen webCamScreen = null;
 
 #if WithVMCAvatar
@@ -284,6 +285,7 @@ namespace CameraPlus.Behaviours
             }
             turnToHead = Config.cameraExtensions.turnToHead;
             turnToHeadOffset = Config.TurnToHeadOffset;
+            turnToHeadHorizontal = Config.cameraExtensions.turnToHeadHorizontal;
             Config.SetCullingMask();
             _quad.gameObject.SetActive(ThirdPerson && Config.PreviewCamera);
             _cam.fieldOfView = Config.fov;
@@ -460,7 +462,7 @@ namespace CameraPlus.Behaviours
                         turnToTarget.transform.position += turnToHeadOffset;
                         var direction = turnToTarget.position - transform.position;
                         var lookRotation = Quaternion.LookRotation(direction);
-                        if (Config.cameraExtensions.turnToHeadHorizontal)
+                        if (turnToHeadHorizontal)
                             transform.eulerAngles = new Vector3(transform.eulerAngles.x,lookRotation.eulerAngles.y, transform.eulerAngles.z);
                         else
                             transform.rotation = lookRotation;
@@ -705,6 +707,7 @@ namespace CameraPlus.Behaviours
                     case CursorType.DiagonalLeft:
                         texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Resize_DiagLeft.png");
                         break;
+
                 }
                 UnityEngine.Cursor.SetCursor(texture, texture ? new Vector2(texture.width / 2, texture.height / 2) : new Vector2(0, 0), CursorMode.Auto);
                 currentCursor = type;

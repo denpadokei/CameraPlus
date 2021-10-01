@@ -256,6 +256,9 @@
     <EmbeddedResource Include="Resources\ScreenTopRightDock.png" />
     <EmbeddedResource Include="Resources\UnLock.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\ColorPick.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="BuildTargets.targets" />
   <PropertyGroup>

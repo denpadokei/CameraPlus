@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using UnityEngine;
 using CameraPlus.Behaviours;
+using CameraPlus.Utilities;
 
 namespace CameraPlus.UI
 {
@@ -14,6 +15,8 @@ namespace CameraPlus.UI
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 50, 300, 30), new GUIContent("Pick Chroma Key Color")))
             {
                 parentBehaviour.webCamScreen.colorPickState = true;
+                Texture2D texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.ColorPick.png"); ;
+                UnityEngine.Cursor.SetCursor(texture, new Vector2(0, 0), CursorMode.Auto);
             }
             GUI.Box(new Rect(menuPos.x, menuPos.y + 80, 300, 40), "R");
             parentBehaviour.webCamScreen.ChromakeyR = GUI.HorizontalSlider(new Rect(menuPos.x, menuPos.y + 100, 300, 20), parentBehaviour.webCamScreen.ChromakeyR, 0, 1);
