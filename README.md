@@ -76,11 +76,12 @@ If you plan on adding any new dependencies which are located in the Beat Saber d
 </Reference>
 ...
 ```
-VMCAvatar-BS Mod is required to build with full functionality.  
+### VMCAvatar-BS Mod is required to build with full functionality.  
 [VMCAvatar-BS](https://github.com/nagatsuki/VMCAvatar-BS)
   
+### Modify build-in shader
 To create customshader, you need to open the UnityProject folder from UnityEditor and create an AssetBundle.  
 This shader is Unity built-in shader modified by [Reiya1013](https://github.com/Reiya1013).
 
-I borrowed the following shaders for chroma keying.  
+###I borrowed the following shaders for Chroma Key.  
 [hecomi/uChromaKey](https://github.com/hecomi/uChromaKey)
