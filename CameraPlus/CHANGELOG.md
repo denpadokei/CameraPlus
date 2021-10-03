@@ -1,3 +1,6 @@
+# v6.1.1 Changes
+- Fixed a force close when moving the camera window.  
+
 # v6.1.0 Changes
 - Added webcam import like LIV.
 - Enabled Sender of VMC Protocol, not limited to FitToCanvas. The code of VMC Protocol has been changed accordingly.  

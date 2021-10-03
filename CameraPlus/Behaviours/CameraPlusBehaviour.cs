@@ -45,14 +45,8 @@ namespace CameraPlus.Behaviours
         protected BeatLineManager _beatLineManager;
         protected EnvironmentSpawnRotation _environmentSpawnRotation;
 
-        protected int _prevScreenWidth;
-        protected int _prevScreenHeight;
-        protected int _prevAA;
-        protected float _prevRenderScale;
         protected int _prevLayer;
         protected int _prevScreenPosX, _prevScreenPosY;
-        protected bool _prevFitToCanvas;
-        protected float _aspectRatio;
         protected float _yAngle;
 
         protected bool _wasWindowActive = false;
@@ -294,29 +288,6 @@ namespace CameraPlus.Behaviours
 
         internal virtual void CreateScreenRenderTexture()
         {
-            var replace = false;
-            if (_camRenderTexture == null)
-            {
-                _camRenderTexture = new RenderTexture(1, 1, 24);
-                replace = true;
-            }
-            else
-            {
-                if (Config.fitToCanvas != _prevFitToCanvas || Config.antiAliasing != _prevAA || Config.screenPosX != _prevScreenPosX || Config.screenPosY != _prevScreenPosY || Config.renderScale != _prevRenderScale || Config.screenHeight != _prevScreenHeight || Config.screenWidth != _prevScreenWidth || Config.layer != _prevLayer)
-                {
-                    replace = true;
-
-                    _cam.targetTexture = null;
-                    _screenCamera.SetRenderTexture(null);
-                    _screenCamera.SetCameraInfo(new Vector2(0, 0), new Vector2(0, 0), -1000);
-
-                    _camRenderTexture.Release();
-
-                }
-            }
-            if (!replace)
-                return;
-
             if (Config.fitToCanvas)
             {
                 Config.screenPosX = 0;
@@ -324,24 +295,29 @@ namespace CameraPlus.Behaviours
                 Config.screenWidth = Screen.width;
                 Config.screenHeight = Screen.height;
             }
-            _lastRenderUpdate = DateTime.Now;
-            _camRenderTexture.width = Mathf.Clamp(Mathf.RoundToInt(Config.screenWidth * Config.renderScale), 1, int.MaxValue);
-            _camRenderTexture.height = Mathf.Clamp(Mathf.RoundToInt(Config.screenHeight * Config.renderScale), 1, int.MaxValue);
+            var w = (int)Math.Round(Config.screenWidth * Config.renderScale);
+            var h = (int)Math.Round(Config.screenHeight * Config.renderScale);
 
-            _camRenderTexture.useDynamicScale = false;
-            _camRenderTexture.antiAliasing = Config.antiAliasing;
+            var changed = _camRenderTexture?.width != w || _camRenderTexture?.height != h || 
+                        _camRenderTexture?.antiAliasing != _camRenderTexture.antiAliasing;
 
-            _cam.targetTexture = _camRenderTexture;
-            _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
-            _screenCamera.SetRenderTexture(_camRenderTexture);
+            if (changed)
+            {
+                _camRenderTexture?.Release();
+                _camRenderTexture = new RenderTexture(w, h, 24) {
+                    useMipMap = false,
+                    antiAliasing = Config.antiAliasing,
+                    anisoLevel = 1,
+                    useDynamicScale = false
+                };
+                _cam.targetTexture = _camRenderTexture;
+                _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
+                _screenCamera.SetRenderTexture(_camRenderTexture);
+            }
 
-            _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
+            if (changed || Config.screenPosX != _prevScreenPosX || Config.screenPosY != _prevScreenPosY || Config.layer != _prevLayer)
+                _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
 
-            _prevFitToCanvas = Config.fitToCanvas;
-            _prevAA = Config.antiAliasing;
-            _prevRenderScale = Config.renderScale;
-            _prevScreenHeight = Config.screenHeight;
-            _prevScreenWidth = Config.screenWidth;
             _prevLayer = Config.layer;
             _prevScreenPosX = Config.screenPosX;
             _prevScreenPosY = Config.screenPosY;
@@ -651,12 +627,6 @@ namespace CameraPlus.Behaviours
                 if (c == this) continue;
                 if (!IsWithinRenderArea(mousePos, c.Config) && !c._mouseHeld) continue;
                 if (c.Config.layer > Config.layer)
-                {
-                    return false;
-                }
-
-                if (c.Config.layer == Config.layer &&
-                    c._lastRenderUpdate > _lastRenderUpdate)
                 {
                     return false;
                 }
