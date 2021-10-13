@@ -12,7 +12,8 @@ namespace CameraPlus.HarmonyPatches
         internal static void Postfix(PlayerData __instance)
         {
             playerSetting = __instance.playerSpecificSettings;
-            CameraUtilities.SetAllCameraCulling();
+            if (!MultiplayerSession.ConnectedMultiplay)
+                CameraUtilities.SetAllCameraCulling();
         }
     }
 }

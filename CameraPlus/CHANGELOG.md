@@ -1,3 +1,6 @@
+# v6.1.2 Changes
+- Fixed a force close when moving the camera window, again.
+
 # v6.1.1 Changes
 - Fixed a force close when moving the camera window.  
 

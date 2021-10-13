@@ -312,11 +312,11 @@ namespace CameraPlus.Behaviours
                 };
                 _cam.targetTexture = _camRenderTexture;
                 _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
-                _screenCamera.SetRenderTexture(_camRenderTexture);
+                _screenCamera?.SetRenderTexture(_camRenderTexture);
             }
 
             if (changed || Config.screenPosX != _prevScreenPosX || Config.screenPosY != _prevScreenPosY || Config.layer != _prevLayer)
-                _screenCamera.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
+                _screenCamera?.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
 
             _prevLayer = Config.layer;
             _prevScreenPosX = Config.screenPosX;
