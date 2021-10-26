@@ -1,5 +1,6 @@
 # v6.1.2 Changes
 - Fixed a force close when moving the camera window, again.
+- Fixed a problem where the script would not start if you played it again after restarting or going back to the menu when running the script in AudioSync.
 
 # v6.1.1 Changes
 - Fixed a force close when moving the camera window.  

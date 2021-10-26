@@ -154,6 +154,13 @@ namespace CameraPlus.Behaviours
         {
             if (to.name == "GameCore")
             {
+                Logger.log.Notice($"Script SceneChanged");
+                if (_cameraPlus.Config.movementScript.useAudioSync)
+                {
+                    movementNextStartTime = 0;
+                    eventID = 0;
+                }
+
                 var gp = Resources.FindObjectsOfTypeAll<PauseController>().FirstOrDefault();
                 if (gp && dataLoaded && !data.ActiveInPauseMenu)
                 {
