@@ -38,7 +38,9 @@ Press <kbd>F1</kbd> to toggle the main camera between first and third person.
 [CameraConfig in wiki](https://github.com/Snow1226/CameraPlus/wiki/Configuration-file-description-*.json)
 
 ## Movement Script
-[Movement Script in wiki](https://github.com/Snow1226/CameraPlus/wiki/MovementScript)
+[Movement Script in wiki](https://github.com/Snow1226/CameraPlus/wiki/MovementScript)  
+### Tools to support the creation of MovementScript  
+[ScriptMapper(https://github.com/hibit-at/Scriptmapper)](https://github.com/hibit-at/Scriptmapper)  
 
 ## Convert to Camera2 Setting
 The setting conversion with Camera2 Mod is tentatively implemented.  
