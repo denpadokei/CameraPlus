@@ -6,7 +6,7 @@ Therefore, CameraPlus is no longer registered in ModAssistant.
 This is the version where I will add the features I want without permission.  
 
 # Supported game versions
-BeatSaber 1.18.2
+BeatSaber 1.18.
 
 # Latest version Download
 The latest version can be downloaded from the following.  
