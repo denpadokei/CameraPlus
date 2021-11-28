@@ -12,6 +12,8 @@ BeatSaber 1.18.
 The latest version can be downloaded from the following.  
 [Release Page](https://github.com/Snow1226/CameraPlus/releases)
 ### To install manually:
+As a prerequisite, please install BSIPA from ModAssistant.　　
+
 	1. Make sure that Beat Saber is not running.
 	2. Extract the contents of the zip into Beat Saber's installation folder.
 		For Oculus Home: \Oculus Apps\Software\hyperbolic-magnetism-beat-saber\
