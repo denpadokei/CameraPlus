@@ -80,9 +80,9 @@ namespace CameraPlus.Behaviours
                     {
                         Movements newMovement = new Movements();
 
-                        StartPos startPos = jsonmovement.startPos;
-                        StartRot startRot = new StartRot();
-                        StartHeadOffset startHeadOffset = new StartHeadOffset();
+                        AxizWithFoVElements startPos = jsonmovement.startPos;
+                        AxisElements startRot = new AxisElements();
+                        AxisElements startHeadOffset = new AxisElements();
                         if (jsonmovement.startRot != null) startRot = jsonmovement.startRot;
                         if (jsonmovement.startHeadOffset != null) startHeadOffset = jsonmovement.startHeadOffset;
 
@@ -106,9 +106,9 @@ namespace CameraPlus.Behaviours
                         else
                             newMovement.StartFOV = 0;
 
-                        EndPos endPos = jsonmovement.endPos;
-                        EndRot endRot = new EndRot();
-                        EndHeadOffset endHeadOffset = new EndHeadOffset();
+                        AxizWithFoVElements endPos = jsonmovement.endPos;
+                        AxisElements endRot = new AxisElements();
+                        AxisElements endHeadOffset = new AxisElements();
                         if (jsonmovement.endRot != null) endRot = jsonmovement.endRot;
                         if (jsonmovement.endHeadOffset != null) endHeadOffset = jsonmovement.endHeadOffset;
 
