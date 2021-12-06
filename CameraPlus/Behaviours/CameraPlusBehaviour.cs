@@ -398,14 +398,13 @@ namespace CameraPlus.Behaviours
                     HandleMultiPlayerGame();
                     HandleThirdPerson360();
 
-                    if (Config.cameraExtensions.followNoodlePlayerTrack && SceneManager.GetActiveScene().name == "GameCore")
+                    if (Config.cameraExtensions.followNoodlePlayerTrack && Plugin.cameraController.origin)
                     {
                         if (adjustOffset == null)
                         {
                             adjustOffset = new GameObject("OriginTarget");
                             adjustParent = new GameObject("OriginParent");
                             adjustOffset.transform.SetParent(adjustParent.transform);
-                            Plugin.cameraController.origin = new GameObject("OriginParent").transform;
                         }
                         adjustParent.transform.position = Plugin.cameraController.origin.position - RoomAdjustPatch.position;
                         adjustParent.transform.rotation = Plugin.cameraController.origin.rotation * Quaternion.Inverse(RoomAdjustPatch.rotation);
