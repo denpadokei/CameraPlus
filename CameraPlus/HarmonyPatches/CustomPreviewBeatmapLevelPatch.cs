@@ -3,7 +3,7 @@ using HarmonyLib;
 
 namespace CameraPlus.HarmonyPatches
 {
-    [HarmonyPatch(typeof(CustomPreviewBeatmapLevel), nameof(CustomPreviewBeatmapLevel.GetPreviewAudioClipAsync))]
+    [HarmonyPatch(typeof(CustomPreviewBeatmapLevel), nameof(CustomPreviewBeatmapLevel.GetCoverImageAsync))]
     internal class CustomPreviewBeatmapLevelPatch
     {
         public static string customLevelPath = string.Empty;

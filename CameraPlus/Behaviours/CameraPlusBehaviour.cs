@@ -95,7 +95,7 @@ namespace CameraPlus.Behaviours
             Config = config;
             Config.cam = this;
             _isMainCamera = Path.GetFileName(Config.FilePath) == $"{Plugin.MainCamera}.json";
-            _contextMenuEnabled = Array.IndexOf(Environment.GetCommandLineArgs(), "fpfc") == -1;
+            //_contextMenuEnabled = Array.IndexOf(Environment.GetCommandLineArgs(), "fpfc") == -1;
 
             StartCoroutine(DelayedInit());
         }
