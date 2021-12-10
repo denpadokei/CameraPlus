@@ -1,3 +1,11 @@
+# v6.2.0 Changes
+- Supported game version 1.19.0.
+  CameraPlus up to v6.1.2 is not compatible with game version 1.19.0.
+  Also, CameraPlus v6.2.0 is not compatible with game version 1.18.x or earlier.
+  Please pay attention to the version you use.
+ - Support for the fpfc option has been restored to match the changes in SiraUtil.
+Å@You can still use SiraUtil's fpfcToggle to control CameraPlus.
+
 # v6.1.2 Changes
 - Fixed a force close when moving the camera window, again.
 - Fixed a problem where the script would not start if you played it again after restarting or going back to the menu when running the script in AudioSync.
