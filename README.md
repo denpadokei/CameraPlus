@@ -13,7 +13,7 @@ Please pay attention to the version you use.
 
 # Requirements
 CameraPlus is an external plugin.  
-BSIPA is required to load it on the game side.  
+You need BSIPA to load the plug-in, so install BSIPA first.  
 Please install BSIPA using ModAssistant or obtain it from the following page.  
 Please note that it may not be supported when updating the game version.  
 [BSIPA Link](https://bsmg.github.io/BeatSaber-IPA-Reloaded/)
