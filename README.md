@@ -11,6 +11,13 @@ CameraPlus up to v6.1.2 is not compatible with game version 1.19.0.
 Also, CameraPlus v6.2.0 is not compatible with game version 1.18.x or earlier.
 Please pay attention to the version you use.
 
+# Requirements
+CameraPlus is an external plugin.  
+You need BSIPA to load the plug-in, so install BSIPA first.  
+Please install BSIPA using ModAssistant or obtain it from the following page.  
+Please note that it may not be supported when updating the game version.  
+[BSIPA Link](https://bsmg.github.io/BeatSaber-IPA-Reloaded/)
+
 # Latest version Download
 The latest version can be downloaded from the following.  
 [Release Page](https://github.com/Snow1226/CameraPlus/releases)
