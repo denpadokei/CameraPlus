@@ -1,3 +1,7 @@
+# v6.2.1 Changes
+- Added support for BSIPA 4.2.1.  
+- 
+
 # v6.2.0 Changes
 - Supported game version 1.19.0.
   CameraPlus up to v6.1.2 is not compatible with game version 1.19.0.
