@@ -409,12 +409,12 @@ namespace CameraPlus.Configuration
             thirdPersonRot.y = firstPersonRot.y = config2.targetRot.y;
             thirdPersonRot.z = firstPersonRot.z = config2.targetRot.z;
             cameraExtensions.followNoodlePlayerTrack = config2.modmapExtensions.moveWithMap;
-            screenWidth = (int)config2.viewRect.width;
+            screenWidth = (int)Math.Round(config2.viewRect.width * Screen.width);
             if (screenWidth <= 0) screenWidth = Screen.width;
-            screenHeight = (int)config2.viewRect.height;
+            screenHeight = (int)Math.Round(config2.viewRect.height * Screen.height);
             if (screenHeight <= 0) screenHeight = Screen.height;
-            screenPosX = (int)config2.viewRect.x;
-            screenPosY = (int)config2.viewRect.y;
+            screenPosX = (int)Math.Round(config2.viewRect.x * Screen.width);
+            screenPosY = (int)Math.Round(config2.viewRect.y * Screen.height);
             layer = config2.layer;
             fitToCanvas = false;
             if (config2.visibleObject.Walls == WallVisiblity.Hidden)
@@ -446,10 +446,10 @@ namespace CameraPlus.Configuration
             config2.layer = layer + 1000;
             config2.renderScale = (renderScale >= 0.99f) ? Math.Max(1.2f, renderScale) : renderScale;
             config2.antiAliasing = (renderScale >= 0.99f) ? Math.Max(antiAliasing, 2) : antiAliasing;
-            config2.viewRect.x = screenPosX;
-            config2.viewRect.y = screenPosY;
-            config2.viewRect.width = fitToCanvas ? -1 : screenWidth;
-            config2.viewRect.height = fitToCanvas ? -1 : screenHeight;
+            config2.viewRect.x = fitToCanvas ? 0 : (float)Screen.width / screenPosX;
+            config2.viewRect.y = fitToCanvas ? 0 : (float)Screen.height / screenPosY;
+            config2.viewRect.width = fitToCanvas ? 1 : (float)Screen.width / screenWidth;
+            config2.viewRect.height = fitToCanvas ? 1 : (float)Screen.height / screenHeight;
             config2.Smoothfollow.position = cameraExtensions.positionSmooth;
             config2.Smoothfollow.rotation = cameraExtensions.rotationSmooth;
             config2.Smoothfollow.forceUpright = cameraExtensions.firstPersonCameraForceUpRight;
