@@ -446,10 +446,10 @@ namespace CameraPlus.Configuration
             config2.layer = layer + 1000;
             config2.renderScale = (renderScale >= 0.99f) ? Math.Max(1.2f, renderScale) : renderScale;
             config2.antiAliasing = (renderScale >= 0.99f) ? Math.Max(antiAliasing, 2) : antiAliasing;
-            config2.viewRect.x = fitToCanvas ? 0 : (float)Screen.width / screenPosX;
-            config2.viewRect.y = fitToCanvas ? 0 : (float)Screen.height / screenPosY;
-            config2.viewRect.width = fitToCanvas ? 1 : (float)Screen.width / screenWidth;
-            config2.viewRect.height = fitToCanvas ? 1 : (float)Screen.height / screenHeight;
+            config2.viewRect.x = fitToCanvas ? 0 : (float)screenPosX / Screen.width;
+            config2.viewRect.y = fitToCanvas ? 0 : (float)screenPosY / Screen.height;
+            config2.viewRect.width = fitToCanvas ? 1 : (float)screenWidth / Screen.width;
+            config2.viewRect.height = fitToCanvas ? 1 : (float)screenHeight / Screen.height;
             config2.Smoothfollow.position = cameraExtensions.positionSmooth;
             config2.Smoothfollow.rotation = cameraExtensions.rotationSmooth;
             config2.Smoothfollow.forceUpright = cameraExtensions.firstPersonCameraForceUpRight;
