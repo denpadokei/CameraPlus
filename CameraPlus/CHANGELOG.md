@@ -1,6 +1,9 @@
+# v6.2.2 Changes
+- Fixed an error in the value of the setting converter for Camera2. (Thanks to kinsi55)  
+- Addressed an issue where deadlocking would occur if the profile folder did not have a json file.  
+
 # v6.2.1 Changes
 - Added support for BSIPA 4.2.1.  
-- 
 
 # v6.2.0 Changes
 - Supported game version 1.19.0.

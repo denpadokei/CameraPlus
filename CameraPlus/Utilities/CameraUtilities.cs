@@ -214,6 +214,12 @@ namespace CameraPlus.Utilities
             DirectoryInfo dir = new DirectoryInfo(Path.Combine(profilePath, ProfileName));
             if (!dir.Exists)
                 return;
+            if (Directory.GetFiles(dir.FullName, "*.json").Length <= 0)
+            {
+                Logger.log.Error($"Not Found CameraConfig Json in \"{dir.FullName}\"");
+                return;
+            }
+
             ClearCameras();
             Plugin.cameraController.currentProfile = ProfileName;
 
