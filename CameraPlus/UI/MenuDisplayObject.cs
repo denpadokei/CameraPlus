@@ -112,14 +112,14 @@ namespace CameraPlus.UI
                 parentBehaviour.Config.layerSetting.notes = false;
                 parentBehaviour.Config.Save();
             }
-            //TransportWall
+            //TransparentWall
             GUI.Box(new Rect(menuPos.x, menuPos.y + 290, 150, 50), "Display Wall Inside");
             if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 310, 70, 30), new GUIContent("Display"), parentBehaviour.Config.layerSetting.wall ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 parentBehaviour.Config.layerSetting.wall = true;
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 75, menuPos.y + 310, 70, 30), new GUIContent("Transport"), !parentBehaviour.Config.layerSetting.wall ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 75, menuPos.y + 310, 70, 30), new GUIContent("Transparent"), !parentBehaviour.Config.layerSetting.wall ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 parentBehaviour.Config.layerSetting.wall = false;
                 parentBehaviour.Config.Save();
