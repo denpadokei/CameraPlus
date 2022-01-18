@@ -135,10 +135,7 @@ namespace CameraPlus.Behaviours
                         else
                             newMovement.EndFOV = 0;
 
-                        if (jsonmovement.visibleObject != null) {
-                            newMovement.SectionVisibleObject = jsonmovement.visibleObject;
-                            Logger.log.Notice($"Avatar {newMovement.SectionVisibleObject.avatar}, Saber {newMovement.SectionVisibleObject.saber}, Notes {newMovement.SectionVisibleObject.notes}, Debris {newMovement.SectionVisibleObject.debris},\nWall {newMovement.SectionVisibleObject.wall}, WallFrame {newMovement.SectionVisibleObject.wallFrame}");
-                        }
+                        if (jsonmovement.visibleObject != null) newMovement.SectionVisibleObject = jsonmovement.visibleObject;
                         if (jsonmovement.TurnToHead != null) newMovement.TurnToHead = System.Convert.ToBoolean(jsonmovement.TurnToHead);
                         if (jsonmovement.TurnToHeadHorizontal != null) newMovement.TurnToHeadHorizontal = System.Convert.ToBoolean(jsonmovement.TurnToHeadHorizontal);
                         if (jsonmovement.Delay != null) newMovement.Delay = float.Parse(jsonmovement.Delay.Contains(sepCheck) ? jsonmovement.Delay.Replace(sepCheck,sep) : jsonmovement.Delay);
