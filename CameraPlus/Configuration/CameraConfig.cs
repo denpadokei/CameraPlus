@@ -386,6 +386,81 @@ namespace CameraPlus.Configuration
 
             cam._cam.cullingMask = builder;
         }
+        internal virtual void SetCullingMask(VisibleObject visibleObject)
+        {
+            if (!cam) return;
+            int builder = Camera.main.cullingMask;
+
+            if (visibleObject.avatar.HasValue ? visibleObject.avatar.Value : layerSetting.avatar)
+            {
+                if (thirdPerson)
+                {
+                    builder |= 1 << Layer.OnlyInThirdPerson;
+                    builder &= ~(1 << Layer.OnlyInFirstPerson);
+                }
+                else
+                {
+                    builder |= 1 << Layer.OnlyInFirstPerson;
+                    builder &= ~(1 << Layer.OnlyInThirdPerson);
+                }
+                builder |= 1 << Layer.AlwaysVisible;
+            }
+            else
+            {
+                builder &= ~(1 << Layer.OnlyInThirdPerson);
+                builder &= ~(1 << Layer.OnlyInFirstPerson);
+                builder &= ~(1 << Layer.AlwaysVisible);
+            }
+            if (visibleObject.debris.HasValue)
+            {
+                if (visibleObject.debris.Value)
+                    builder |= (1 << Layer.NotesDebriLayer);
+                else
+                    builder &= ~(1 << Layer.NotesDebriLayer);
+            }
+            else
+            {
+                if (layerSetting.debris != DebriVisibility.Link)
+                {
+                    if (layerSetting.debris == DebriVisibility.Visible)
+                        builder |= (1 << Layer.NotesDebriLayer);
+                    else
+                        builder &= ~(1 << Layer.NotesDebriLayer);
+                }
+            }
+            if (visibleObject.ui.HasValue ? visibleObject.ui.Value : layerSetting.ui)
+                builder |= (1 << Layer.UI);
+            else
+                builder &= ~(1 << Layer.UI);
+
+            if (visibleObject.saber.HasValue ? visibleObject.saber.Value : layerSetting.saber)
+                builder |= 1 << Layer.Saber;
+            else
+                builder &= ~(1 << Layer.Saber);
+
+            if (visibleObject.wall.HasValue ? visibleObject.wall.Value : layerSetting.wall)
+                builder |= 1 << TransparentWallsPatch.WallLayerMask;
+            else
+                builder &= ~(1 << TransparentWallsPatch.WallLayerMask);
+
+            if (visibleObject.wallFrame.HasValue ? visibleObject.wallFrame.Value : layerSetting.wallFrame)
+                builder |= 1 << Layer.Obstracle;
+            else
+                builder &= ~(1 << Layer.Obstracle);
+
+            if (visibleObject.notes.HasValue ? visibleObject.notes.Value : layerSetting.notes)
+            {
+                builder &= ~(1 << Layer.CustomNoteLayer);
+                builder |= 1 << Layer.Notes;
+            }
+            else
+            {
+                builder &= ~(1 << Layer.CustomNoteLayer);
+                builder &= ~(1 << Layer.Notes);
+            }
+
+            cam._cam.cullingMask = builder;
+        }
 
         internal void ConvertFromCamera2(Camera2Config config2)
         {

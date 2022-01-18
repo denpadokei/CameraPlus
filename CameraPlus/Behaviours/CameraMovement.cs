@@ -45,6 +45,7 @@ namespace CameraPlus.Behaviours
             public float EndFOV;
             public float Duration;
             public float Delay;
+            public VisibleObject SectionVisibleObject;
             public bool TurnToHead = false;
             public bool TurnToHeadHorizontal = false;
             public bool EaseTransition = true;
@@ -134,6 +135,10 @@ namespace CameraPlus.Behaviours
                         else
                             newMovement.EndFOV = 0;
 
+                        if (jsonmovement.visibleObject != null) {
+                            newMovement.SectionVisibleObject = jsonmovement.visibleObject;
+                            Logger.log.Notice($"Avatar {newMovement.SectionVisibleObject.avatar}, Saber {newMovement.SectionVisibleObject.saber}, Notes {newMovement.SectionVisibleObject.notes}, Debris {newMovement.SectionVisibleObject.debris},\nWall {newMovement.SectionVisibleObject.wall}, WallFrame {newMovement.SectionVisibleObject.wallFrame}");
+                        }
                         if (jsonmovement.TurnToHead != null) newMovement.TurnToHead = System.Convert.ToBoolean(jsonmovement.TurnToHead);
                         if (jsonmovement.TurnToHeadHorizontal != null) newMovement.TurnToHeadHorizontal = System.Convert.ToBoolean(jsonmovement.TurnToHeadHorizontal);
                         if (jsonmovement.Delay != null) newMovement.Delay = float.Parse(jsonmovement.Delay.Contains(sepCheck) ? jsonmovement.Delay.Replace(sepCheck,sep) : jsonmovement.Delay);
@@ -284,6 +289,15 @@ namespace CameraPlus.Behaviours
 
             EndRot = new Vector3(data.Movements[eventID].EndRot.x, data.Movements[eventID].EndRot.y, data.Movements[eventID].EndRot.z);
             EndPos = new Vector3(data.Movements[eventID].EndPos.x, data.Movements[eventID].EndPos.y, data.Movements[eventID].EndPos.z);
+
+            if (data.Movements[eventID].SectionVisibleObject!=null)
+                _cameraPlus.Config.SetCullingMask(data.Movements[eventID].SectionVisibleObject);
+            else
+            {
+                int beforID = eventID > 0 ? eventID - 1 : data.Movements.Count - 1;
+                if(data.Movements[beforID].SectionVisibleObject != null && data.Movements[eventID].SectionVisibleObject == null)
+                    _cameraPlus.Config.SetCullingMask();
+            }
 
             StartHeadOffset = new Vector3(data.Movements[eventID].StartHeadOffset.x, data.Movements[eventID].StartHeadOffset.y, data.Movements[eventID].StartHeadOffset.z);
             EndHeadOffset = new Vector3(data.Movements[eventID].EndHeadOffset.x, data.Movements[eventID].EndHeadOffset.y, data.Movements[eventID].EndHeadOffset.z);

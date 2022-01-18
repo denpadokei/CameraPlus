@@ -18,14 +18,14 @@ namespace CameraPlus.Configuration
     }
     public class VisibleObject
     {
-        public bool avatar { get; set; }
-        public bool ui { get; set; }
-        public bool wall { get; set; }
-        public bool wallFrame { get; set; }
-        public bool saber { get; set; }
+        public bool? avatar { get; set; }
+        public bool? ui { get; set; }
+        public bool? wall { get; set; }
+        public bool? wallFrame { get; set; }
+        public bool? saber { get; set; }
         //public bool cutParticles { get; set; }
-        public bool notes { get; set; }
-        public bool debri { get; set; }
+        public bool? notes { get; set; }
+        public bool? debris { get; set; }
     }
 
     [JsonObject("Movements")]
