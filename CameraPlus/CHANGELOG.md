@@ -1,3 +1,7 @@
+# v6.3.0 Changes
+- Add to function, show / hide Saber, Notes, etc. for each section of MovementScript.
+- fix UI typo.
+
 # v6.2.2 Changes
 - Fixed an error in the value of the setting converter for Camera2. (Thanks to kinsi55)  
 - Addressed an issue where deadlocking would occur if the profile folder did not have a json file.  
