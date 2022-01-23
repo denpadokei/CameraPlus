@@ -36,6 +36,19 @@ To edit the settings of any camera in real time, right click on the Beat Saber g
 
 Press <kbd>F1</kbd> to toggle the main camera between first and third person.
 
+# Doesn't it work?
+- Do you have BSIPA in your system?  
+  Check read reuirements.  
+- Camera settings are corrupted, or unrelated files are mixed in with the CameraPlus settings file.  
+  ```\Beat Saber\UserData\CameraPlus```  
+
+  Do not put anything other than the Camera Plus configuration file in the above.  
+  ```\Beat Saber\UserData\CameraPlus\Scripts```  
+  MovementScript is put all above. Do not put it in the profile folder or any other folder.  
+
+  Please try moving UserData/CameraPlus to a different location before contacting us.  
+  If it starts normally, there are corrupted/unrelated files mixed in.
+  
 # Wiki
 [CameraPlus wiki](https://github.com/Snow1226/CameraPlus/wiki)
 
