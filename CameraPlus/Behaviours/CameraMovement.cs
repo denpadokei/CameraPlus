@@ -156,11 +156,17 @@ namespace CameraPlus.Behaviours
         {
             if (to.name == "GameCore")
             {
+#if DEBUG
                 Logger.log.Notice($"Script SceneChanged");
+#endif
                 if (_cameraPlus.Config.movementScript.useAudioSync)
                 {
                     movementNextStartTime = 0;
                     eventID = 0;
+                }
+                if (from.name == "MainMenu" && _cameraPlus.Config.movementScript.songSpecificScript && CustomPreviewBeatmapLevelPatch.customLevelPath != String.Empty)
+                {
+                    LoadCameraData(CustomPreviewBeatmapLevelPatch.customLevelPath);
                 }
 
                 var gp = Resources.FindObjectsOfTypeAll<PauseController>().FirstOrDefault();

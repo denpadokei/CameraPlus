@@ -1,3 +1,6 @@
+# v6.3.1 Changes  
+- Fixed an issue where SongScript was not working when there was no profile switching.
+
 # v6.3.0 Changes
 - Add to function, show / hide Saber, Notes, etc. for each section of MovementScript.
 - fix UI typo.
