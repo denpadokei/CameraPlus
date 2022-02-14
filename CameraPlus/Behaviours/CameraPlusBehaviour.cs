@@ -596,8 +596,16 @@ namespace CameraPlus.Behaviours
 
         protected IEnumerator GetMainCamera()
         {
-            while (Camera.main == null)
-                yield return null;
+            if (SceneManager.GetActiveScene().name == "GameCore")
+            {
+                while (!MainCameraPatch.isGameCameraEnable)
+                    yield return null;
+            }
+            else
+            {
+                while (Camera.main == null)
+                    yield return null;
+            }
             _mainCamera = Camera.main;
         }
 
