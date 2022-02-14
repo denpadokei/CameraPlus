@@ -191,7 +191,6 @@
     <Compile Include="Behaviours\CameraPlusBehaviour.cs" />
     <Compile Include="Behaviours\ScreenCameraBehaviour.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
-    <Compile Include="HarmonyPatches\MainCameraPatch.cs" />
     <Compile Include="HarmonyPatches\PlayerSettingPatch.cs" />
     <Compile Include="UI\BehaviourScriptEdit.cs" />
     <Compile Include="UI\MenuChromakey.cs" />

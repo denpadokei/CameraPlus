@@ -1,3 +1,6 @@
+# v6.4.0 Changes
+- Supported game version 1.19.1.
+
 # v6.3.1 Changes  
 - Fixed an issue where SongScript was not working when there was no profile switching.
 
