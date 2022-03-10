@@ -15,7 +15,7 @@ namespace CameraPlus.HarmonyPatches
 		[HarmonyTargetMethods]
 		static IEnumerable<MethodBase> TargetMethods()
 		{
-			yield return AccessTools.Method(typeof(SmoothCameraController), nameof(SmoothCameraController.ActivateSmoothCameraIfNeeded));
+			yield return AccessTools.Method(typeof(SmoothCameraController), "ActivateSmoothCameraIfNeeded");
 			yield return AccessTools.Method(typeof(SmoothCamera), "OnEnable");
 		}
 	}

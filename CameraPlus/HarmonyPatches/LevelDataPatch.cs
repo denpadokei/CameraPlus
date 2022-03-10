@@ -14,7 +14,7 @@ namespace CameraPlus.HarmonyPatches
 		public static bool isModdedMap = false;
 		public static bool isWallMap = false;
 
-		static SpawnRotationProcessor spawnRotationProcessor = new SpawnRotationProcessor();
+		//static SpawnRotationProcessor spawnRotationProcessor = new SpawnRotationProcessor();
 
 		static void Prefix(IDifficultyBeatmap difficultyBeatmap)
 		{
@@ -22,10 +22,11 @@ namespace CameraPlus.HarmonyPatches
 			Logger.log.Notice("Got level data!");
 #endif
 			LevelDataPatch.difficultyBeatmap = difficultyBeatmap;
-
+			/*
 			is360Level = difficultyBeatmap.beatmapData.beatmapEventsData.Any(
 				x => x.type.IsRotationEvent() && spawnRotationProcessor.RotationForEventValue(x.value) != 0f
 			);
+			*/
 		}
 
 		internal static void Reset()

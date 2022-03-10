@@ -3,7 +3,7 @@ using CameraPlus.Utilities;
 
 namespace CameraPlus.HarmonyPatches
 {
-    [HarmonyPatch(typeof(AudioTimeSyncController), nameof(AudioTimeSyncController.Awake))]
+    [HarmonyPatch(typeof(AudioTimeSyncController), "Awake")]
     internal class AudioTimeSyncControllerPatch
     {
         public static AudioTimeSyncController Instance = null;

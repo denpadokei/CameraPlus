@@ -1,3 +1,6 @@
+# v6.5.0 Changes
+- Supported game version 1.20.0.
+
 # v6.4.0 Changes
 - Supported game version 1.19.1.
 

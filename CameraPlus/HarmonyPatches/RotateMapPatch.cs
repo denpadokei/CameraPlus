@@ -2,7 +2,7 @@
 
 namespace CameraPlus.HarmonyPatches
 {
-    [HarmonyPatch(typeof(BeatLineManager), nameof(BeatLineManager.Start))]
+    [HarmonyPatch(typeof(BeatLineManager), "Start")]
     internal class BeatLineManagerPatch
     {
         public static BeatLineManager Instance { get; private set; }

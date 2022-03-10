@@ -21,7 +21,7 @@ namespace CameraPlus.HarmonyPatches
 			yield return AccessTools.Method(typeof(FirstPersonFlyingController), "OnEnable");
 			yield return AccessTools.Method(typeof(FirstPersonFlyingController), "OnDisable");
 		}
-		[HarmonyPatch(typeof(FirstPersonFlyingController), nameof(FirstPersonFlyingController.OnEnable))]
+		[HarmonyPatch(typeof(FirstPersonFlyingController), "OnEnable")]
 		private static class FirstPersonFlyingControllerEnable
         {
 			private static void Postfix()
@@ -30,7 +30,7 @@ namespace CameraPlus.HarmonyPatches
 				Plugin.cameraController.OnFPFCToggleEvent?.Invoke();
 			}
 		}
-		[HarmonyPatch(typeof(FirstPersonFlyingController), nameof(FirstPersonFlyingController.OnDisable))]
+		[HarmonyPatch(typeof(FirstPersonFlyingController),"OnDisable")]
 		private static class FirstPersonFlyingControllerDisable
         {
 			private static void Postfix()

@@ -31,7 +31,7 @@ namespace CameraPlus.HarmonyPatches
         }
     }
 
-    [HarmonyPatch(typeof(MultiplayerLobbyController), nameof(MultiplayerLobbyController.ActivateMultiplayerLobby))]
+    [HarmonyPatch(typeof(MultiplayerLobbyController), "ActivateMultiplayerLobby")]
     internal class MultiplayerLobbyControllerPatch
     {
         public static MultiplayerLobbyController Instance { get; private set; }
@@ -43,7 +43,7 @@ namespace CameraPlus.HarmonyPatches
 #endif
         }
     }
-    [HarmonyPatch(typeof(MultiplayerPlayersManager), nameof(MultiplayerPlayersManager.BindPlayerFactories))]
+    [HarmonyPatch(typeof(MultiplayerPlayersManager), "BindPlayerFactories")]
     internal class MultiplayerPlayersManagerPatch
     {
         public static MultiplayerPlayersManager Instance { get; private set; }
@@ -55,7 +55,7 @@ namespace CameraPlus.HarmonyPatches
 #endif
         }
     }
-    [HarmonyPatch(typeof(MultiplayerScoreProvider), nameof(MultiplayerScoreProvider.Update))]
+    [HarmonyPatch(typeof(MultiplayerScoreProvider),"Update")]
     internal class MultiplayerScoreProviderPatch
     {
         public static MultiplayerScoreProvider Instance = null;
