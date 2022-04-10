@@ -5,6 +5,7 @@ Shader "BeatSaber/BlitCopyWithDepth" {
     {
         _MainTex ("Texture", any) = "" {}
         _Color("Multiplicative color", Color) = (1.0, 1.0, 1.0, 1.0)
+        [MaterialToggle] _IsVRCameraOnly ("Is VR Camera Only", Float) = 1
         [HideInInspector] _CullMode ("_CullMode", Float) = 2.0
     }
     SubShader {
@@ -26,6 +27,7 @@ Shader "BeatSaber/BlitCopyWithDepth" {
 
             uniform float4 _MainTex_ST;
             uniform float4 _Color;
+            float _IsVRCameraOnly;
 
             struct appdata_t {
                 float4 vertex : POSITION;
@@ -37,10 +39,19 @@ Shader "BeatSaber/BlitCopyWithDepth" {
                 float2 texcoord : TEXCOORD0;
             };
 
+            bool IsVRCamera() {
+#if defined(UNITY_SINGLE_PASS_STEREO)
+                return true;
+#endif
+                return false;
+            }
+
             v2f vert(appdata_t v)
             {
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
+                if(_IsVRCameraOnly == 1)
+                    o.vertex.xyz *= IsVRCamera();
                 o.texcoord = TRANSFORM_TEX(v.texcoord.xy, _MainTex);
                 return o;
             }

@@ -23,7 +23,12 @@ namespace CameraPlus.Configuration
         [NonNullable]
         public virtual bool ProfileLoadCopyMethod { get; set; } = false;
         [NonNullable]
-        public virtual int CameraQuadLayer { get; set; } = 0;
+        public virtual string CameraQuadPosition { get; set; } = string.Empty;
+        [NonNullable]
+        public virtual float CameraCubeSize { get; set; } = 1.0f;
+        [NonNullable]
+        public virtual bool CameraQuadStretch { get; set; } = true;
+
         [NonNullable]
         public virtual bool ScreenFillBlack { get; set; } = false;
         /// <summary>

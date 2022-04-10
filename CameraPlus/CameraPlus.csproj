@@ -193,7 +193,6 @@
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="HarmonyPatches\MainCameraPatch.cs" />
     <Compile Include="HarmonyPatches\PlayerSettingPatch.cs" />
-    <Compile Include="UI\BehaviourScriptEdit.cs" />
     <Compile Include="UI\MenuChromakey.cs" />
     <Compile Include="UI\MenuSettingConverter.cs" />
     <Compile Include="UI\MenuDisplayObject.cs" />
@@ -204,7 +203,6 @@
     <Compile Include="UI\MenuProfile.cs" />
     <Compile Include="Utilities\CameraUtilities.cs" />
     <Compile Include="Configuration\PreviousConfig.cs" />
-    <Compile Include="Configuration\RootConfig.cs" />
     <Compile Include="HarmonyPatches\AudioTimeSyncControllerPatch.cs" />
     <Compile Include="HarmonyPatches\CustomPreviewBeatmapLevelPatch.cs" />
     <Compile Include="HarmonyPatches\DisableSmoothCamera.cs" />

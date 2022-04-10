@@ -111,10 +111,19 @@ namespace CameraPlus.Configuration
         public multiplayerElemetns multiplayer { get => _multiplayer; set { _multiplayer = value; } }
         public vmcProtocolElements vmcProtocol { get => _vmcProtocol; set { _vmcProtocol = value; } }
         public webCameraElements webCamera { get => _webCameraElements; set { _webCameraElements = value; } }
-        public bool PreviewCamera { get => _visibleObject.previewCamera; 
-            set { 
-                _visibleObject.previewCamera = value;
+        public bool PreviewCamera { get => _cameraExtensions.previewCamera; 
+            set {
+                _cameraExtensions.previewCamera = value;
                 cam?._quad.gameObject.SetActive(thirdPerson && PreviewCamera);
+            }
+        }
+        public bool PreviewCameraVROnly
+        {
+            get => _cameraExtensions.previewCameraVROnly;
+            set
+            {
+                _cameraExtensions.previewCameraVROnly = value;
+                cam._quad.IsDisplayMaterialVROnly = value;
             }
         }
         public bool Avatar { get => _visibleObject.avatar; set { _visibleObject.avatar = value;SetCullingMask(); } }
@@ -395,9 +404,9 @@ namespace CameraPlus.Configuration
             else
                 thirdPerson = true;
             if (config2.worldCamVisibility != WorldCamVisibility.Hidden)
-                layerSetting.previewCamera = true;
+                PreviewCamera = true;
             else
-                layerSetting.previewCamera = false;
+                PreviewCamera = false;
             cameraExtensions.follow360map = config2.follow360.enabled;
             thirdPersonPos.x = firstPersonPos.x = config2.targetPos.x;
             thirdPersonPos.y = firstPersonPos.y = config2.targetPos.y;
@@ -474,8 +483,6 @@ namespace CameraPlus.Configuration
     }
     public class visibleObjectsElements
     {
-        [JsonProperty("PreviewCamera")]
-        public bool previewCamera = true;
         [JsonProperty("Avatar")]
         public bool avatar = true;
         [JsonProperty("UI")]
@@ -495,6 +502,10 @@ namespace CameraPlus.Configuration
     }
     public class cameraExtensionsElements
     {
+        [JsonProperty("PreviewCamera")]
+        public bool previewCamera = true;
+        [JsonProperty("PreviewCameraVROnly")]
+        public bool previewCameraVROnly = true;
         [JsonProperty("PositionSmooth")]
         public float positionSmooth = 10.0f;
         [JsonProperty("RotationSmooth")]

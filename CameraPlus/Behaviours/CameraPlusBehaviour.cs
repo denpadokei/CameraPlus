@@ -66,7 +66,6 @@ namespace CameraPlus.Behaviours
         protected bool _isBottom = false, _isLeft = false;
         protected static GameObject MenuObj = null;
         protected static UI.ContextMenu _contextMenu = null;
-        private BehaviourScriptEdit _scriptEditMenu = null;
         public static CursorType currentCursor = CursorType.None;
         public static bool wasWithinBorder = false;
         public static bool anyInstanceBusy = false;
@@ -284,6 +283,7 @@ namespace CameraPlus.Behaviours
             _quad.gameObject.SetActive(ThirdPerson && Config.PreviewCamera);
             _cam.fieldOfView = Config.fov;
             CreateScreenRenderTexture();
+            _quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition);
         }
 
         internal virtual void CreateScreenRenderTexture()
@@ -899,11 +899,6 @@ namespace CameraPlus.Behaviours
                             }
                         }
                     }
-            if (scriptEditMode)
-            {
-                if (_scriptEditMenu == null) _scriptEditMenu = new BehaviourScriptEdit();
-                _scriptEditMenu.DisplayUI(this);
-            }
         }
         void DisplayContextMenu()
         {

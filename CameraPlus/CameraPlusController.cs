@@ -57,7 +57,6 @@ namespace CameraPlus
             string backupPath = backupPath = Path.Combine(UnityGame.UserDataPath, Plugin.Name, "OldProfiles");
             if (File.Exists(path))
             {
-                RootConfig rootConfig = new RootConfig(path);
                 if (!Directory.Exists(backupPath))
                     Directory.CreateDirectory(backupPath);
                 File.Copy(path, Path.Combine(backupPath, $"{Plugin.Name}.ini"), true);

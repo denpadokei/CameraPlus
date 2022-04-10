@@ -1,3 +1,8 @@
+# v6.6.0 Chanegs
+- Support game version 1.21.0.
+- A function has been added that allows the Camera Cube / Quad displayed in the game to be displayed only from the VR viewpoint.  
+- The size of the cube in the preview object, the mounting position of the Quad, and the stretching of the Quad can now be changed. The settings are the same for all cameras.  
+
 # v6.5.0 Changes
 - Supported game version 1.20.0.
 

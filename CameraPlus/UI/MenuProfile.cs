@@ -78,14 +78,6 @@ namespace CameraPlus.UI
                     PluginConfig.Instance.MultiplayerProfile = CameraUtilities.currentlySelected;
                 }
             }
-            /*
-            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 390, 290, 30), new GUIContent(Plugin.Instance._rootConfig.ProfileLoadCopyMethod ? "To Folder Reference Method" : "To File Copy Method")))
-            {
-                Plugin.Instance._rootConfig.ProfileLoadCopyMethod = !Plugin.Instance._rootConfig.ProfileLoadCopyMethod;
-                Plugin.Instance._rootConfig.Save();
-                Plugin.Instance._profileChanger.ProfileChange(null);
-            }
-            */
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close Profile Menu")))
                 contextMenu.MenuMode = ContextMenu.MenuState.MenuTop;
 

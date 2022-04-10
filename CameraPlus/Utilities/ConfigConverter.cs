@@ -87,7 +87,7 @@ namespace CameraPlus.Utilities
             config.FirstPersonRotationOffset = new Vector3(cfg.firstPersonRotOffsetX, cfg.firstPersonRotOffsetY, cfg.firstPersonRotOffsetZ);
             config.TurnToHeadOffset = new Vector3(cfg.turnToHeadOffsetX, cfg.turnToHeadOffsetY, cfg.turnToHeadOffsetZ);
 
-            config.layerSetting.previewCamera = cfg.showThirdPersonCamera;
+            config.PreviewCamera = cfg.showThirdPersonCamera;
             config.layerSetting.avatar = cfg.avatar;
             config.layerSetting.ui = !cfg.HideUI;
             config.layerSetting.wall = !cfg.transparentWalls;
