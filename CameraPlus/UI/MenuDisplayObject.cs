@@ -196,7 +196,7 @@ namespace CameraPlus.UI
                 parentBehaviour.Config.layerSetting.wall = true;
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 75, menuPos.y + 390, 70, 30), new GUIContent("Transparent"), !parentBehaviour.Config.layerSetting.wall ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 75, menuPos.y + 390, 70, 30), new GUIContent("Trans"), !parentBehaviour.Config.layerSetting.wall ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 parentBehaviour.Config.layerSetting.wall = false;
                 parentBehaviour.Config.Save();
