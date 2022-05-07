@@ -1,3 +1,6 @@
+# v6.6.1 Changes
+- Fixed an issue where Room Adjust and Noodle Extension Player Track weren't in the correct position when used together.  
+
 # v6.6.0 Chanegs
 - Support game version 1.21.0.
 - A function has been added that allows the Camera Cube / Quad displayed in the game to be displayed only from the VR viewpoint.  

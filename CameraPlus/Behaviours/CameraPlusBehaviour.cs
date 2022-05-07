@@ -85,7 +85,7 @@ namespace CameraPlus.Behaviours
         internal WebCamScreen webCamScreen = null;
 
 #if WithVMCAvatar
-        private VMCProtocol.VMCAvatarMarionette marionette = null;
+        private VMCAvatarMarionette marionette = null;
 #endif
         public virtual void Init(CameraConfig config)
         {
@@ -406,10 +406,10 @@ namespace CameraPlus.Behaviours
                             adjustParent = new GameObject("OriginParent");
                             adjustOffset.transform.SetParent(adjustParent.transform);
                         }
-                        adjustParent.transform.position = Plugin.cameraController.origin.position - RoomAdjustPatch.position;
+                        adjustParent.transform.position = Plugin.cameraController.origin.position;
                         adjustParent.transform.rotation = Plugin.cameraController.origin.rotation * Quaternion.Inverse(RoomAdjustPatch.rotation);
 
-                        adjustOffset.transform.localPosition = ThirdPersonPos;
+                        adjustOffset.transform.localPosition = ThirdPersonPos - RoomAdjustPatch.position;
                         adjustOffset.transform.localEulerAngles = ThirdPersonRot;
 
                         transform.position = adjustOffset.transform.position;
