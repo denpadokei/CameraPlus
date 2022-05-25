@@ -19,18 +19,5 @@ namespace CameraPlus.HarmonyPatches
 				gameMainCamera = ____camera;
 			}
 		}
-		/* Removed because OnDisable disappeared in game version 1.19.1
-		[HarmonyPostfix]
-		[HarmonyPatch("OnDisable", 0)]
-		private static void OnDisablePostfix(Camera ____camera)
-		{
-			if (____camera.name == "MainCamera")
-			{
-				isGameCameraEnable = false;
-				gameMainCamera = null;
-			}
-			//Logger.log.Error($"Disabled {____camera.name}");
-		}
-		*/
 	}
 }

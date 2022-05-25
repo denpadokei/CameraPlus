@@ -1,4 +1,7 @@
 ﻿using UnityEngine;
+#if WithVMCAvatar
+using VMCP = global::VMCProtocol;
+#endif
 
 namespace CameraPlus.VMCProtocol
 {
@@ -16,16 +19,16 @@ namespace CameraPlus.VMCProtocol
                 var vmcProtocol = GameObject.Find("VMCProtocol");
                 if (vmcProtocol != null)
                 {
-                    var marionette = vmcProtocol.GetComponent<Marionette>();
-                    marionette.OnCameraTransformAndFov.AddListener(OnCameraPosition);
+                    var marionette = vmcProtocol.GetComponent<VMCP.IMarionette>();
+                    marionette.CameraTransformAndFov += OnCameraPosition;
                 }
             }
         }
 
-        private void OnCameraPosition(Vector3 _position, Quaternion _rotate, float _fov)
+        private void OnCameraPosition(Pose _pose, float _fov)
         {
-            position = _position;
-            rotate = _rotate;
+            position = _pose.position;
+            rotate = _pose.rotation;
             fov = _fov;
             receivedData = true;
         }

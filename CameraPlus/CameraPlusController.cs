@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
@@ -27,7 +28,7 @@ namespace CameraPlus
         internal bool existsVMCAvatar = false;
         internal bool isRestartingSong = false;
         internal Transform origin;
-        private UnityEngine.Object[] Assets;
+
         internal Dictionary<string, Shader> Shaders = new Dictionary<string, Shader>();
         private RenderTexture _renderTexture;
         private ScreenCameraBehaviour _screenCameraBehaviour;
@@ -89,23 +90,16 @@ namespace CameraPlus
             externalSender = new GameObject("ExternalSender").AddComponent<ExternalSender>();
             externalSender.transform.SetParent(transform);
 
-            if (CustomUtils.IsModInstalled("VMCAvatar"))
+            if (CustomUtils.IsModInstalled("VMCAvatar","0.99.0"))
                 existsVMCAvatar = true;
             _webCamTexture = new WebCamTexture();
             webCamDevices = WebCamTexture.devices;
         }
+
         private void ShaderLoad()
         {
-            AssetBundle assetBundle = AssetBundle.LoadFromStream(
-                Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraPlus.Resources.Shader.customshader"));
-            Assets = assetBundle.LoadAllAssets();
-            UnityEngine.Object[] assets = Assets;
-            for (int i = 0; i < assets.Length; i++)
-            {
-                Shader shader = assets[i] as Shader;
-                if (shader != null)
-                    Shaders[shader.name] = shader;
-            }
+            AssetBundle assetBundle = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraPlus.Resources.Shader.customshader"));
+            Shaders = assetBundle.LoadAllAssets<Shader>().ToDictionary(x => x.name);
         }
 
         private void OnDestroy()

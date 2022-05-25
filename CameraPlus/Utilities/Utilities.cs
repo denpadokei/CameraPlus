@@ -48,13 +48,26 @@ namespace CameraPlus.Utilities
             return (numberToCheck >= bottom && numberToCheck <= top);
         }
 
-        public static bool IsModInstalled(string modName)
+        public static bool IsModInstalled(string modName, string ver="")
         {
             try
             {
                 PluginMetadata meta = PluginManager.GetPlugin(modName);
                 if (meta != null)
                 {
+                    if (ver != string.Empty)
+                    {
+                        if (meta.HVersion >= new Hive.Versioning.Version(ver))
+                        {
+                            Logger.log.Debug($"Found {modName} {meta.HVersion.ToString()}.");
+                            return true;
+                        }
+                        else
+                        {
+                            Logger.log.Debug($"{modName}  {meta.HVersion.ToString()} was lower version.");
+                            return false;
+                        }
+                    }
                     Logger.log.Debug($"Found {modName}.");
                     return true;
                 }
