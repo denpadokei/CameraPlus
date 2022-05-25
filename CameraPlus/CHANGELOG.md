@@ -1,6 +1,7 @@
-# v6.6.2 Changes
-- Change the referenced VMC Vatar to 1.0.0 or higher
-- Simplify Shader loading code.
+# v6.7.0 Changes
+- Added the process to stop Camera Plus at the time of official Beatmap Editor.  
+- Change the referenced VMC Vatar to 1.0.0 or higher.  
+- Simplify Shader loading code.  
 
 # v6.6.1 Changes
 - Fixed an issue where Room Adjust and Noodle Extension Player Track weren't in the correct position when used together.  

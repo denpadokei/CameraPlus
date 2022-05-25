@@ -122,8 +122,9 @@ namespace CameraPlus
 
         private IEnumerator DelayedActiveSceneChanged(Scene from, Scene to)
         {
-            initialized = true;
             bool isRestart = isRestartingSong;
+            bool isLevelEditor = false;
+            initialized = true;
             isRestartingSong = false;
 
             yield return waitMainCamera();
@@ -147,38 +148,45 @@ namespace CameraPlus
                         CameraUtilities.ProfileChange(PluginConfig.Instance.GameProfile);
                     else if ((to.name == "MainMenu" || to.name == "MenuCore" || to.name == "HealthWarning") && PluginConfig.Instance.MenuProfile != "")
                         CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
+                    else if (to.name == "BeatmapEditor3D" || to.name == "BeatmapLevelEditorWorldUi")
+                    {
+                        CameraUtilities.ClearCameras();
+                        isLevelEditor = true;
+                    }
                 }
             }
-
-            if (ActiveSceneChanged != null)
+            if (!isLevelEditor)
             {
-                yield return waitForcam();
-                // Invoke each activeSceneChanged event
-                foreach (var func in ActiveSceneChanged?.GetInvocationList())
+                if (ActiveSceneChanged != null)
                 {
-                    try
+                    yield return waitForcam();
+                    // Invoke each activeSceneChanged event
+                    foreach (var func in ActiveSceneChanged?.GetInvocationList())
                     {
-                        func?.DynamicInvoke(from, to);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.log.Error($"Exception while invoking ActiveSceneChanged:" +
-                            $" {ex.Message}\n{ex.StackTrace}");
+                        try
+                        {
+                            func?.DynamicInvoke(from, to);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.log.Error($"Exception while invoking ActiveSceneChanged:" +
+                                $" {ex.Message}\n{ex.StackTrace}");
+                        }
                     }
                 }
-            }
-            else if (PluginConfig.Instance.ProfileSceneChange && to.name == "HealthWarning" && PluginConfig.Instance.MenuProfile != "")
-                CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
+                else if (PluginConfig.Instance.ProfileSceneChange && to.name == "HealthWarning" && PluginConfig.Instance.MenuProfile != "")
+                    CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
 
-            yield return waitForcam();
+                yield return waitForcam();
 
-            if (to.name == "GameCore")
-                origin = GameObject.Find("LocalPlayerGameCore/Origin")?.transform;
-            if (to.name == "MainMenu")
-            {
-                var chat = GameObject.Find("ChatDisplay");
-                if (chat)
-                    chat.layer = Layer.UI;
+                if (to.name == "GameCore")
+                    origin = GameObject.Find("LocalPlayerGameCore/Origin")?.transform;
+                if (to.name == "MainMenu")
+                {
+                    var chat = GameObject.Find("ChatDisplay");
+                    if (chat)
+                        chat.layer = Layer.UI;
+                }
             }
         }
 
