@@ -1,4 +1,4 @@
-# v6.7.1 Changes
+# v6.8.0 Changes
 - The in-game camera preview is now in front of the white cube.  
 - It is now possible to resize the in-game camera preview.  
 - The in-game camera preview display can now be mirror-displayed.  
