@@ -276,6 +276,11 @@ namespace CameraPlus.Behaviours
                 ThirdPersonPos = Config.Position;
                 ThirdPersonRot = Config.Rotation;
             }
+            if(Config.cameraExtensions.dontDrawDesktop)
+                _screenCamera.enabled = false;
+            else
+                _screenCamera.enabled = true;
+
             turnToHead = Config.cameraExtensions.turnToHead;
             turnToHeadOffset = Config.TurnToHeadOffset;
             turnToHeadHorizontal = Config.cameraExtensions.turnToHeadHorizontal;

@@ -506,6 +506,10 @@ namespace CameraPlus.Configuration
         public bool previewCamera = true;
         [JsonProperty("PreviewCameraVROnly")]
         public bool previewCameraVROnly = true;
+        [JsonProperty("PreviewCameraQuadScale")]
+        public float previewCameraQuadScale = 1.0f;
+        [JsonProperty("PreviewCameraMirrorMode")]
+        public bool previewCameraMirrorMode = false;
         [JsonProperty("PositionSmooth")]
         public float positionSmooth = 10.0f;
         [JsonProperty("RotationSmooth")]
@@ -524,6 +528,8 @@ namespace CameraPlus.Configuration
         public bool turnToHead = false;
         [JsonProperty("TurnToHeadHorizontal")]
         public bool turnToHeadHorizontal = false;
+        [JsonProperty("DontDrawDesktop")]
+        public bool dontDrawDesktop = false;
     }
     public class windowRectElement
     {
