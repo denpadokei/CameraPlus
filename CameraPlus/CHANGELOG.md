@@ -1,7 +1,11 @@
+# v6.8.1 Changes
+- Fixed an issue where 90/360 degree profile changes were failing.  
+
 # v6.8.0 Changes
 - The in-game camera preview is now in front of the white cube.  
 - It is now possible to resize the in-game camera preview.  
 - The in-game camera preview display can now be mirror-displayed.  
+- Added an option to make the CameraPlus screen preview only and not on the desktop  
 
 # v6.7.0 Changes
 - Added the process to stop Camera Plus at the time of official Beatmap Editor.  
