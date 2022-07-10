@@ -38,6 +38,8 @@ namespace CameraPlus.Configuration
         private CameraType _cameraType = CameraType.ThirdPerson;
         [JsonProperty("FieldOfView")]
         private float _fieldOfView = 60;
+        [JsonProperty("Orthographic")]
+        private bool _orthographic = false;
         [JsonProperty("VisibleObject")]
         private visibleObjectsElements _visibleObject = new visibleObjectsElements();
         [JsonProperty("Layer")]
@@ -88,6 +90,7 @@ namespace CameraPlus.Configuration
             }
         }
         public float fov { get => _fieldOfView; set { _fieldOfView = value; } }
+        public bool orthographic { get => _orthographic; set { _orthographic = value; } }
         public int layer { get => _layer; set { _layer = value; } }
         public int antiAliasing { get => _antiAliasing; set { _antiAliasing = value; } }
         public float renderScale { get => _renderScale; set { _renderScale = value; } }
@@ -139,6 +142,7 @@ namespace CameraPlus.Configuration
         public event Action<CameraConfig> ConfigChangedEvent;
         private readonly FileSystemWatcher _configWatcher;
         internal bool configLoaded = false;
+
         public Vector2 ScreenPosition{
             get{
                 return new Vector2(_windowRect.x, _windowRect.y);
