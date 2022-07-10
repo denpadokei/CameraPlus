@@ -43,6 +43,7 @@ namespace CameraPlus.UI
             {
                 parentBehaviour.Config.fov--;
                 parentBehaviour._cam.fieldOfView = parentBehaviour.Config.fov;
+                parentBehaviour._cam.orthographicSize = parentBehaviour.Config.fov;
                 parentBehaviour.CreateScreenRenderTexture();
                 parentBehaviour.Config.Save();
             }
@@ -50,6 +51,7 @@ namespace CameraPlus.UI
             {
                 parentBehaviour.Config.fov++;
                 parentBehaviour._cam.fieldOfView = parentBehaviour.Config.fov;
+                parentBehaviour._cam.orthographicSize = parentBehaviour.Config.fov;
                 parentBehaviour.CreateScreenRenderTexture();
                 parentBehaviour.Config.Save();
             }

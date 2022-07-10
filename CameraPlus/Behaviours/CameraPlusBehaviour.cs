@@ -286,6 +286,8 @@ namespace CameraPlus.Behaviours
             turnToHeadHorizontal = Config.cameraExtensions.turnToHeadHorizontal;
             Config.SetCullingMask();
             _quad.gameObject.SetActive(ThirdPerson && Config.PreviewCamera);
+            _cam.orthographic = Config.orthographic;
+            _cam.orthographicSize = Config.fov;
             _cam.fieldOfView = Config.fov;
             CreateScreenRenderTexture();
             _quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition);
