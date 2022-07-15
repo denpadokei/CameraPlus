@@ -40,6 +40,8 @@ namespace CameraPlus.Configuration
         private float _fieldOfView = 60;
         [JsonProperty("Orthographic")]
         private bool _orthographic = false;
+        [JsonProperty("FarClipPlane")]
+        private float _farClipPlane = float.MaxValue;
         [JsonProperty("VisibleObject")]
         private visibleObjectsElements _visibleObject = new visibleObjectsElements();
         [JsonProperty("Layer")]
@@ -91,6 +93,7 @@ namespace CameraPlus.Configuration
         }
         public float fov { get => _fieldOfView; set { _fieldOfView = value; } }
         public bool orthographic { get => _orthographic; set { _orthographic = value; } }
+        public float farClipPlane { get => _farClipPlane; set { _farClipPlane = value; } }
         public int layer { get => _layer; set { _layer = value; } }
         public int antiAliasing { get => _antiAliasing; set { _antiAliasing = value; } }
         public float renderScale { get => _renderScale; set { _renderScale = value; } }
