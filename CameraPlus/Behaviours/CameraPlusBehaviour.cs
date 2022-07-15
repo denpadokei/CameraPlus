@@ -287,6 +287,7 @@ namespace CameraPlus.Behaviours
             Config.SetCullingMask();
             _quad.gameObject.SetActive(ThirdPerson && Config.PreviewCamera);
             _cam.orthographic = Config.orthographic;
+            _cam.farClipPlane = Config.farClipPlane;
             _cam.orthographicSize = Config.fov;
             _cam.fieldOfView = Config.fov;
             _cam.orthographic = Config.cameraExtensions.orthographicMode;
