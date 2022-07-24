@@ -510,6 +510,10 @@ namespace CameraPlus.Configuration
         public float previewCameraQuadScale = 1.0f;
         [JsonProperty("PreviewCameraMirrorMode")]
         public bool previewCameraMirrorMode = false;
+        [JsonProperty("OrthographicMode")]
+        public bool orthographicMode = false;
+        [JsonProperty("OrthographicSize")]
+        public float orthographicSize = 1.0f;
         [JsonProperty("PositionSmooth")]
         public float positionSmooth = 10.0f;
         [JsonProperty("RotationSmooth")]

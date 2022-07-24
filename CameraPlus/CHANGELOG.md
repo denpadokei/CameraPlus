@@ -1,3 +1,6 @@
+# v6.9.0 Chnages
+- Added profile for songs with ScngSpecificScript.  
+
 # v6.8.1 Changes
 - Fixed an issue where 90/360 degree profile changes were failing.  
 

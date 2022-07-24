@@ -287,6 +287,8 @@ namespace CameraPlus.Behaviours
             Config.SetCullingMask();
             _quad.gameObject.SetActive(ThirdPerson && Config.PreviewCamera);
             _cam.fieldOfView = Config.fov;
+            _cam.orthographic = Config.cameraExtensions.orthographicMode;
+            _cam.orthographicSize = Config.cameraExtensions.orthographicSize;
             CreateScreenRenderTexture();
             _quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition);
         }

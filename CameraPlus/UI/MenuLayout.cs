@@ -23,35 +23,64 @@ namespace CameraPlus.UI
                 parentBehaviour.CloseContextMenu();
             }
 
+            //orthographic Mode
+            GUI.Box(new Rect(menuPos.x, menuPos.y + 50, 120, 45), "Orthographic");
+            if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 70, 55, 25), new GUIContent("Enable"), parentBehaviour.Config.cameraExtensions.orthographicMode ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            {
+                parentBehaviour.Config.cameraExtensions.orthographicMode = true;
+                parentBehaviour.Config.Save();
+            }
+            if (GUI.Button(new Rect(menuPos.x + 60, menuPos.y + 70, 55, 25), new GUIContent("Disbale"), !parentBehaviour.Config.cameraExtensions.orthographicMode ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            {
+                parentBehaviour.Config.cameraExtensions.orthographicMode = false;
+                parentBehaviour.Config.Save();
+            }
+
             //Layer
-            GUI.Box(new Rect(menuPos.x, menuPos.y + 50, 90, 45), "Layer: " + parentBehaviour.Config.layer);
-            if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 70, 40, 25), new GUIContent("-")))
+            GUI.Box(new Rect(menuPos.x, menuPos.y + 95, 90, 45), "Layer: " + parentBehaviour.Config.layer);
+            if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 115, 40, 25), new GUIContent("-")))
             {
                 parentBehaviour.Config.layer--;
                 parentBehaviour.CreateScreenRenderTexture();
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 45, menuPos.y + 70, 40, 25), new GUIContent("+")))
+            if (GUI.Button(new Rect(menuPos.x + 45, menuPos.y + 115, 40, 25), new GUIContent("+")))
             {
                 parentBehaviour.Config.layer++;
                 parentBehaviour.CreateScreenRenderTexture();
                 parentBehaviour.Config.Save();
             }
-            //FOV
-            GUI.Box(new Rect(menuPos.x + 90, menuPos.y + 50, 90, 45), "FOV: " + parentBehaviour.Config.fov.ToString("F2"));
-            if (GUI.Button(new Rect(menuPos.x + 95, menuPos.y + 70, 40, 25), new GUIContent("-")))
+            if (parentBehaviour.Config.cameraExtensions.orthographicMode)
             {
-                parentBehaviour.Config.fov--;
-                parentBehaviour._cam.fieldOfView = parentBehaviour.Config.fov;
-                parentBehaviour.CreateScreenRenderTexture();
-                parentBehaviour.Config.Save();
+                //orthographic Scale
+                GUI.Box(new Rect(menuPos.x + 90, menuPos.y + 95, 90, 45), "Scale: " + parentBehaviour.Config.cameraExtensions.orthographicSize.ToString("F1"));
+                if (GUI.Button(new Rect(menuPos.x + 95, menuPos.y + 115, 40, 25), new GUIContent("-")))
+                {
+                    parentBehaviour.Config.cameraExtensions.orthographicSize-=0.1f;
+                    parentBehaviour.Config.Save();
+                }
+                if (GUI.Button(new Rect(menuPos.x + 135, menuPos.y + 115, 40, 25), new GUIContent("+")))
+                {
+                    parentBehaviour.Config.cameraExtensions.orthographicSize += 0.1f;
+                    parentBehaviour.Config.Save();
+                }
             }
-            if (GUI.Button(new Rect(menuPos.x + 135, menuPos.y + 70, 40, 25), new GUIContent("+")))
+            else
             {
-                parentBehaviour.Config.fov++;
-                parentBehaviour._cam.fieldOfView = parentBehaviour.Config.fov;
-                parentBehaviour.CreateScreenRenderTexture();
-                parentBehaviour.Config.Save();
+                //FOV
+                GUI.Box(new Rect(menuPos.x + 90, menuPos.y + 95, 90, 45), "FOV: " + parentBehaviour.Config.fov.ToString("F2"));
+                if (GUI.Button(new Rect(menuPos.x + 95, menuPos.y + 115, 40, 25), new GUIContent("-")))
+                {
+                    parentBehaviour.Config.fov--;
+                    parentBehaviour._cam.fieldOfView = parentBehaviour.Config.fov;
+                    parentBehaviour.Config.Save();
+                }
+                if (GUI.Button(new Rect(menuPos.x + 135, menuPos.y + 115, 40, 25), new GUIContent("+")))
+                {
+                    parentBehaviour.Config.fov++;
+                    parentBehaviour._cam.fieldOfView = parentBehaviour.Config.fov;
+                    parentBehaviour.Config.Save();
+                }
             }
             //Fit Canvas
             GUI.Box(new Rect(menuPos.x + 180, menuPos.y + 50, 120, 45), "Fit to Canvas");
@@ -69,19 +98,20 @@ namespace CameraPlus.UI
             }
 
             //Render Scale
-            GUI.Box(new Rect(menuPos.x, menuPos.y + 95, 120, 45), "Render Scale: " + parentBehaviour.Config.renderScale.ToString("F1"));
-            if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 115, 55, 25), new GUIContent("-")))
+            GUI.Box(new Rect(menuPos.x, menuPos.y + 140, 120, 45), "Render Scale: " + parentBehaviour.Config.renderScale.ToString("F1"));
+            if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 160, 55, 25), new GUIContent("-")))
             {
                 parentBehaviour.Config.renderScale -= 0.1f;
                 parentBehaviour.CreateScreenRenderTexture();
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 60, menuPos.y + 115, 55, 25), new GUIContent("+")))
+            if (GUI.Button(new Rect(menuPos.x + 60, menuPos.y + 160, 55, 25), new GUIContent("+")))
             {
                 parentBehaviour.Config.renderScale += 0.1f;
                 parentBehaviour.CreateScreenRenderTexture();
                 parentBehaviour.Config.Save();
             }
+
             //Mouse Drag
             GUI.Box(new Rect(menuPos.x + 180, menuPos.y + 95, 120, 45), "Mouse Drag");
             if (GUI.Button(new Rect(menuPos.x + 185, menuPos.y + 115, 55, 25), new GUIContent("Enable"), parentBehaviour.mouseMoveCamera ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))

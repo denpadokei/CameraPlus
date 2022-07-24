@@ -142,7 +142,9 @@ namespace CameraPlus
             {
                 if (!MultiplayerSession.ConnectedMultiplay || PluginConfig.Instance.MultiplayerProfile == "")
                 {
-                    if (to.name == "GameCore" && PluginConfig.Instance.RotateProfile != "" && LevelDataPatch.is360Level)
+                    if (to.name == "GameCore" && PluginConfig.Instance.SongSpecificScriptProfile != "" && CustomPreviewBeatmapLevelPatch.customLevelPath != "")
+                        CameraUtilities.ProfileChange(PluginConfig.Instance.SongSpecificScriptProfile);
+                    else if (to.name == "GameCore" && PluginConfig.Instance.RotateProfile != "" && LevelDataPatch.is360Level)
                         CameraUtilities.ProfileChange(PluginConfig.Instance.RotateProfile);
                     else if (to.name == "GameCore" && PluginConfig.Instance.GameProfile != "")
                         CameraUtilities.ProfileChange(PluginConfig.Instance.GameProfile);
