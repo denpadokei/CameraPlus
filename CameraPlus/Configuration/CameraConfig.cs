@@ -139,7 +139,6 @@ namespace CameraPlus.Configuration
         public event Action<CameraConfig> ConfigChangedEvent;
         private readonly FileSystemWatcher _configWatcher;
         internal bool configLoaded = false;
-
         public Vector2 ScreenPosition{
             get{
                 return new Vector2(_windowRect.x, _windowRect.y);

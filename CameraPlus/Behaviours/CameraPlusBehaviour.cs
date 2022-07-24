@@ -141,6 +141,7 @@ namespace CameraPlus.Behaviours
             gameObj.transform.localPosition = Vector3.zero;
             gameObj.transform.localRotation = Quaternion.identity;
             gameObj.transform.localScale = Vector3.one;
+
             _quad = new GameObject("PreviewQuad").AddComponent<CameraPreviewQuad>();
             _quad.transform.SetParent(_cam.transform);
             _quad.transform.localPosition = Vector3.zero;
