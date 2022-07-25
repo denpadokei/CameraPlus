@@ -514,6 +514,8 @@ namespace CameraPlus.Configuration
         public bool orthographicMode = false;
         [JsonProperty("OrthographicSize")]
         public float orthographicSize = 1.0f;
+        [JsonProperty("FarClipPlane")]
+        public float farClipPlane = float.MaxValue;
         [JsonProperty("PositionSmooth")]
         public float positionSmooth = 10.0f;
         [JsonProperty("RotationSmooth")]

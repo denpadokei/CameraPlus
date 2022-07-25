@@ -289,6 +289,7 @@ namespace CameraPlus.Behaviours
             _cam.fieldOfView = Config.fov;
             _cam.orthographic = Config.cameraExtensions.orthographicMode;
             _cam.orthographicSize = Config.cameraExtensions.orthographicSize;
+            _cam.farClipPlane = Config.cameraExtensions.farClipPlane;
             CreateScreenRenderTexture();
             _quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition);
         }
