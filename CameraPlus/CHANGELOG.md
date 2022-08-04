@@ -1,5 +1,10 @@
+# v6.10.0 Changes
+- Add Camera Effect (Wipe Effect / Depth of Field / Outline Effect).  
+- Fixed an issue where changing to 1st person would revert to 3rd person if MovementScript was set.  
+
 # v6.9.0 Chnages
 - Added profile for songs with ScngSpecificScript.  
+- Addition of orthographic mode  
 
 # v6.8.1 Changes
 - Fixed an issue where 90/360 degree profile changes were failing.  

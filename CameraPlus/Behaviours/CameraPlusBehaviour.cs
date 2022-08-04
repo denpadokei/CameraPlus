@@ -39,7 +39,7 @@ namespace CameraPlus.Behaviours
         internal Camera _cam;
         internal CameraPreviewQuad _quad;
         protected RenderTexture _camRenderTexture;
-        protected ScreenCameraBehaviour _screenCamera;
+        internal ScreenCameraBehaviour _screenCamera;
         protected Camera _mainCamera = null;
         protected CameraMovement _cameraMovement = null;
         protected BeatLineManager _beatLineManager;
@@ -83,6 +83,7 @@ namespace CameraPlus.Behaviours
         internal Vector3 turnToHeadOffset = Vector3.zero;
         internal bool turnToHeadHorizontal = false;
         internal WebCamScreen webCamScreen = null;
+        internal CameraEffectStruct effectElements = new CameraEffectStruct();
 
 #if WithVMCAvatar
         private VMCAvatarMarionette marionette = null;
@@ -289,6 +290,8 @@ namespace CameraPlus.Behaviours
             _cam.fieldOfView = Config.fov;
             _cam.orthographic = Config.cameraExtensions.orthographicMode;
             _cam.orthographicSize = Config.cameraExtensions.orthographicSize;
+
+            effectElements = Config.cameraEffect;
             CreateScreenRenderTexture();
             _quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition);
         }
@@ -319,7 +322,7 @@ namespace CameraPlus.Behaviours
                 };
                 _cam.targetTexture = _camRenderTexture;
                 _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
-                _screenCamera?.SetRenderTexture(_camRenderTexture);
+                _screenCamera?.SetRenderTexture(_camRenderTexture,this);
             }
 
             if (changed || Config.screenPosX != _prevScreenPosX || Config.screenPosY != _prevScreenPosY || Config.layer != _prevLayer)
@@ -437,6 +440,10 @@ namespace CameraPlus.Behaviours
                         transform.position = angle * transform.position;
                         transform.position += OffsetPosition;
 
+                    }
+                    if (Camera.main && effectElements.dofAutoDistance)
+                    {
+                        effectElements.dofFocusDistance = (Camera.main.transform.position - transform.position).magnitude;
                     }
                     if (Camera.main && turnToHead && !FPFCPatch.isInstanceFPFC && !Config.cameraExtensions.follow360map)
                     {
@@ -562,6 +569,7 @@ namespace CameraPlus.Behaviours
         {
             string songScriptPath = String.Empty;
             if (Config.vmcProtocol.mode == VMCProtocolMode.Receiver) return "ExternalReceiver Enabled";
+            if (!ThirdPerson) return "Camera Mode is First Person";
 
             if (Config.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
             {

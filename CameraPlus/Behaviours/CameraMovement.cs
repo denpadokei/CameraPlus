@@ -16,7 +16,7 @@ namespace CameraPlus.Behaviours
     {
         protected CameraPlusBehaviour _cameraPlus;
         protected bool dataLoaded = false;
-        protected CameraData data = new CameraData();
+        protected CameraData data;
         protected Vector3 StartPos = Vector3.zero;
         protected Vector3 EndPos = Vector3.zero;
         protected Vector3 StartRot = Vector3.zero;
@@ -32,6 +32,7 @@ namespace CameraPlus.Behaviours
         protected DateTime movementStartDateTime, movementEndDateTime, movementDelayEndDateTime;
         protected bool _paused = false;
         protected DateTime _pauseTime;
+        protected CameraEffectStruct[] CameraEffect = {new CameraEffectStruct(), new CameraEffectStruct()};
 
         public class Movements
         {
@@ -49,13 +50,18 @@ namespace CameraPlus.Behaviours
             public bool TurnToHead = false;
             public bool TurnToHeadHorizontal = false;
             public bool EaseTransition = true;
+            public CameraEffectStruct[] CameraEffect;
         }
         public class CameraData
         {
             public bool ActiveInPauseMenu = true;
             public bool TurnToHeadUseCameraSetting = false;
             public List<Movements> Movements = new List<Movements>();
-            
+            private CameraPlusBehaviour _cameraPlus;
+            public CameraData(CameraPlusBehaviour cameraPlus)
+            {
+                _cameraPlus = cameraPlus;
+            }
             public bool LoadFromJson(string jsonString)
             {
                 Movements.Clear();
@@ -135,6 +141,8 @@ namespace CameraPlus.Behaviours
                         else
                             newMovement.EndFOV = 0;
 
+                        newMovement.CameraEffect = ConvertEffectObject(jsonmovement.cameraEffect);
+                        
                         if (jsonmovement.visibleObject != null) newMovement.SectionVisibleObject = jsonmovement.visibleObject;
                         if (jsonmovement.TurnToHead != null) newMovement.TurnToHead = System.Convert.ToBoolean(jsonmovement.TurnToHead);
                         if (jsonmovement.TurnToHeadHorizontal != null) newMovement.TurnToHeadHorizontal = System.Convert.ToBoolean(jsonmovement.TurnToHeadHorizontal);
@@ -149,6 +157,59 @@ namespace CameraPlus.Behaviours
                     return true;
                 }
                 return false;
+            }
+            private CameraEffectStruct[] ConvertEffectObject(EffectObject InputEffect)
+            {
+                CameraEffectStruct[] cameraEffects = { _cameraPlus.Config.InitializeCameraEffect(), _cameraPlus.Config.InitializeCameraEffect() };
+
+                if (InputEffect != null)
+                {
+                    if (InputEffect.enableDoF != null) cameraEffects[0].enableDOF = cameraEffects[1].enableDOF = System.Convert.ToBoolean(InputEffect.enableDoF);
+                    if (InputEffect.dofAutoDistance != null) cameraEffects[0].dofAutoDistance = cameraEffects[1].dofAutoDistance = System.Convert.ToBoolean(InputEffect.dofAutoDistance);
+                    if(InputEffect.StartDoF != null)
+                    {
+                        if (InputEffect.StartDoF.dofFocusDistance != null) cameraEffects[0].dofFocusDistance = System.Convert.ToSingle(InputEffect.StartDoF.dofFocusDistance);
+                        if (InputEffect.StartDoF.dofFocusRange != null) cameraEffects[0].dofFocusRange = System.Convert.ToSingle(InputEffect.StartDoF.dofFocusRange);
+                        if (InputEffect.StartDoF.dofBlurRadius != null) cameraEffects[0].dofBlurRadius = System.Convert.ToSingle(InputEffect.StartDoF.dofBlurRadius);
+                    }
+                    if (InputEffect.EndDoF != null)
+                    {
+                        if (InputEffect.EndDoF.dofFocusDistance != null) cameraEffects[1].dofFocusDistance = System.Convert.ToSingle(InputEffect.EndDoF.dofFocusDistance);
+                        if (InputEffect.EndDoF.dofFocusRange != null) cameraEffects[1].dofFocusRange = System.Convert.ToSingle(InputEffect.EndDoF.dofFocusRange);
+                        if (InputEffect.EndDoF.dofBlurRadius != null) cameraEffects[1].dofBlurRadius = System.Convert.ToSingle(InputEffect.EndDoF.dofBlurRadius);
+                    }
+
+                    if (InputEffect.wipeType != null) cameraEffects[0].wipeType = cameraEffects[1].wipeType = InputEffect.wipeType;
+                    if (InputEffect.StartWipe != null)
+                    {
+                        if (InputEffect.StartWipe.wipeProgress != null) cameraEffects[0].wipeProgress = System.Convert.ToSingle(InputEffect.StartWipe.wipeProgress);
+                        if (InputEffect.StartWipe.wipeCircleCenter != null) cameraEffects[0].wipeCircleCenter = new Vector4(System.Convert.ToSingle(InputEffect.StartWipe.wipeCircleCenter.x), System.Convert.ToSingle(InputEffect.StartWipe.wipeCircleCenter.y), 0, 0);
+                    }
+                    if (InputEffect.EndWipe != null)
+                    {
+                        if (InputEffect.EndWipe.wipeProgress != null) cameraEffects[1].wipeProgress = System.Convert.ToSingle(InputEffect.EndWipe.wipeProgress);
+                        if (InputEffect.EndWipe.wipeCircleCenter != null) cameraEffects[1].wipeCircleCenter = new Vector4(System.Convert.ToSingle(InputEffect.EndWipe.wipeCircleCenter.x), System.Convert.ToSingle(InputEffect.EndWipe.wipeCircleCenter.y), 0, 0);
+                    }
+
+                    if (InputEffect.enableOutlineEffect != null) cameraEffects[0].enableOutline = cameraEffects[1].enableOutline = System.Convert.ToBoolean(InputEffect.enableOutlineEffect);
+                    if (InputEffect.StartOutlineEffect != null)
+                    {
+                        if (InputEffect.StartOutlineEffect.outlineEffectOnly != null) cameraEffects[0].outlineOnly = System.Convert.ToSingle(InputEffect.StartOutlineEffect.outlineEffectOnly);
+                        if (InputEffect.StartOutlineEffect.outlineColor != null) cameraEffects[0].outlineColor 
+                                = new Color(System.Convert.ToSingle(InputEffect.StartOutlineEffect.outlineColor.r), System.Convert.ToSingle(InputEffect.StartOutlineEffect.outlineColor.g), System.Convert.ToSingle(InputEffect.StartOutlineEffect.outlineColor.b), 0);
+                        if (InputEffect.StartOutlineEffect.outlineBackgroundColor != null) cameraEffects[0].outlineBGColor 
+                                = new Color(System.Convert.ToSingle(InputEffect.StartOutlineEffect.outlineBackgroundColor.r), System.Convert.ToSingle(InputEffect.StartOutlineEffect.outlineBackgroundColor.g), System.Convert.ToSingle(InputEffect.StartOutlineEffect.outlineBackgroundColor.b), 0);
+                    }
+                    if (InputEffect.EndOutlineEffect != null)
+                    {
+                        if (InputEffect.EndOutlineEffect.outlineEffectOnly != null) cameraEffects[1].outlineOnly = System.Convert.ToSingle(InputEffect.EndOutlineEffect.outlineEffectOnly);
+                        if (InputEffect.EndOutlineEffect.outlineColor != null) cameraEffects[1].outlineColor
+                                = new Color(System.Convert.ToSingle(InputEffect.EndOutlineEffect.outlineColor.r), System.Convert.ToSingle(InputEffect.EndOutlineEffect.outlineColor.g), System.Convert.ToSingle(InputEffect.EndOutlineEffect.outlineColor.b), 0);
+                        if (InputEffect.EndOutlineEffect.outlineBackgroundColor != null) cameraEffects[1].outlineBGColor
+                                = new Color(System.Convert.ToSingle(InputEffect.EndOutlineEffect.outlineBackgroundColor.r), System.Convert.ToSingle(InputEffect.EndOutlineEffect.outlineBackgroundColor.g), System.Convert.ToSingle(InputEffect.EndOutlineEffect.outlineBackgroundColor.b), 0);
+                    }
+                }
+                return cameraEffects;
             }
         }
 
@@ -203,17 +264,43 @@ namespace CameraPlus.Behaviours
                 long currentTicks = (DateTime.Now - movementStartDateTime).Ticks;
                 movePerc = Mathf.Clamp((float)currentTicks / (float)differenceTicks, 0, 1);
             }
+
+            // Effect Section
+            _cameraPlus.effectElements.enableDOF = CameraEffect[0].enableDOF;
+            _cameraPlus.effectElements.dofAutoDistance = CameraEffect[0].dofAutoDistance;
+            _cameraPlus.effectElements.dofFocusDistance = Mathf.Lerp(CameraEffect[0].dofFocusDistance, CameraEffect[1].dofFocusDistance, Ease(movePerc));
+            _cameraPlus.effectElements.dofFocusRange = Mathf.Lerp(CameraEffect[0].dofFocusRange, CameraEffect[1].dofFocusRange, Ease(movePerc));
+            _cameraPlus.effectElements.dofBlurRadius = Mathf.Lerp(CameraEffect[0].dofBlurRadius, CameraEffect[1].dofBlurRadius, Ease(movePerc));
+
+            _cameraPlus.effectElements.wipeType = CameraEffect[0].wipeType;
+            _cameraPlus.effectElements.wipeProgress = Mathf.Lerp(CameraEffect[0].wipeProgress, CameraEffect[1].wipeProgress, Ease(movePerc));
+            _cameraPlus.effectElements.wipeCircleCenter = LerpVector4(CameraEffect[0].wipeCircleCenter, CameraEffect[1].wipeCircleCenter, Ease(movePerc));
+
+            _cameraPlus.effectElements.enableOutline = CameraEffect[0].enableOutline;
+            _cameraPlus.effectElements.outlineOnly = Mathf.LerpAngle(CameraEffect[0].outlineOnly, CameraEffect[1].outlineOnly, Ease(movePerc));
+            _cameraPlus.effectElements.outlineColor = LerpColor(CameraEffect[0].outlineColor, CameraEffect[1].outlineColor, Ease(movePerc));
+            _cameraPlus.effectElements.outlineBGColor = LerpColor(CameraEffect[0].outlineBGColor, CameraEffect[1].outlineBGColor, Ease(movePerc));
+            //
+
             _cameraPlus.ThirdPersonPos = LerpVector3(StartPos, EndPos, Ease(movePerc));
             _cameraPlus.ThirdPersonRot = LerpVector3(StartRot, EndRot, Ease(movePerc));
             _cameraPlus.turnToHeadOffset = LerpVector3(StartHeadOffset, EndHeadOffset, Ease(movePerc));
             _cameraPlus.FOV=Mathf.Lerp(StartFOV,EndFOV,Ease(movePerc));
+
         }
 
         protected Vector3 LerpVector3(Vector3 from, Vector3 to, float percent)
         {
             return new Vector3(Mathf.LerpAngle(from.x, to.x, percent), Mathf.LerpAngle(from.y, to.y, percent), Mathf.LerpAngle(from.z, to.z, percent));
         }
-
+        protected Vector4 LerpVector4(Vector4 from, Vector4 to, float percent)
+        {
+            return new Vector4(Mathf.LerpAngle(from.x, to.x, percent), Mathf.LerpAngle(from.y, to.y, percent), Mathf.LerpAngle(from.z, to.z, percent), Mathf.LerpAngle(from.w, to.w, percent));
+        }
+        protected Color LerpColor(Color from, Color to, float percent)
+        {
+            return new Color(Mathf.Lerp(from.r, to.r, percent), Mathf.Lerp(from.g, to.g, percent), Mathf.Lerp(from.b, to.b, percent), Mathf.Lerp(from.a, to.a, percent));
+        }
         public virtual bool Init(CameraPlusBehaviour cameraPlus, string scriptPath)
         {
             _cameraPlus = cameraPlus;
@@ -250,6 +337,7 @@ namespace CameraPlus.Behaviours
             if (File.Exists(path))
             {
                 string jsonText = File.ReadAllText(path);
+                data = new CameraData(_cameraPlus);
                 if (data.LoadFromJson(jsonText))
                 {
                     if (data.Movements.Count == 0)
@@ -292,6 +380,9 @@ namespace CameraPlus.Behaviours
 
             EndRot = new Vector3(data.Movements[eventID].EndRot.x, data.Movements[eventID].EndRot.y, data.Movements[eventID].EndRot.z);
             EndPos = new Vector3(data.Movements[eventID].EndPos.x, data.Movements[eventID].EndPos.y, data.Movements[eventID].EndPos.z);
+
+            CameraEffect[0] = data.Movements[eventID].CameraEffect[0];
+            CameraEffect[1] = data.Movements[eventID].CameraEffect[1];
 
             if (data.Movements[eventID].SectionVisibleObject!=null)
                 _cameraPlus.Config.SetCullingMask(data.Movements[eventID].SectionVisibleObject);

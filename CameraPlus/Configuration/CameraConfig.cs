@@ -70,6 +70,24 @@ namespace CameraPlus.Configuration
         private vmcProtocolElements _vmcProtocol = new vmcProtocolElements();
         [JsonProperty("WebCamera")]
         private webCameraElements _webCameraElements = new webCameraElements();
+        [JsonProperty("CameraEffect")]
+        private CameraEffectStruct _cameraEffect = new CameraEffectStruct
+        {
+            enableDOF = false,
+            dofFocusDistance = 0,
+            dofFocusRange = 1,
+            dofBlurRadius = 5,
+            dofAutoDistance = false,
+
+            wipeType = "Circle",
+            wipeCircleCenter = new Vector4(0,0,0,0),
+            wipeProgress = 0,
+
+            enableOutline = false,
+            outlineOnly = 0,
+            outlineColor = Color.black,
+            outlineBGColor = Color.white
+        };
 
         public bool thirdPerson { 
             get { 
@@ -111,6 +129,23 @@ namespace CameraPlus.Configuration
         public multiplayerElemetns multiplayer { get => _multiplayer; set { _multiplayer = value; } }
         public vmcProtocolElements vmcProtocol { get => _vmcProtocol; set { _vmcProtocol = value; } }
         public webCameraElements webCamera { get => _webCameraElements; set { _webCameraElements = value; } }
+        public CameraEffectStruct cameraEffect { get => _cameraEffect; set { _cameraEffect = value; } }
+
+        public bool DoFEnable { get => _cameraEffect.enableDOF; set { _cameraEffect.enableDOF = value; } }
+        public float DoFFocusDistance { get => _cameraEffect.dofFocusDistance; set { _cameraEffect.dofFocusDistance = value; } }
+        public float DoFFocusRange { get => _cameraEffect.dofFocusRange; set { _cameraEffect.dofFocusRange = value; } }
+        public float DoFBlurRadius { get => _cameraEffect.dofBlurRadius; set { _cameraEffect.dofBlurRadius = value; } }
+        public bool DoFAutoDistance { get => _cameraEffect.dofAutoDistance; set { _cameraEffect.dofAutoDistance = value; } }
+
+        public float WipeProgress { get => _cameraEffect.wipeProgress; set { _cameraEffect.wipeProgress = value; } }
+        public string WipeType { get => _cameraEffect.wipeType; set { _cameraEffect.wipeType = value; } }
+        public Vector4 WipeCircleCenter { get => _cameraEffect.wipeCircleCenter; set { _cameraEffect.wipeCircleCenter = value; } }
+
+        public bool OutlineEnable { get => _cameraEffect.enableOutline; set { _cameraEffect.enableOutline = value; } }
+        public float OutlineOnly { get => _cameraEffect.outlineOnly; set { _cameraEffect.outlineOnly = value; } }
+        public Color OutlineColor { get => _cameraEffect.outlineColor; set { _cameraEffect.outlineColor = value; } }
+        public Color OutlineBackgroundColor { get => _cameraEffect.outlineBGColor; set { _cameraEffect.outlineBGColor = value; } }
+
         public bool PreviewCamera { get => _cameraExtensions.previewCamera; 
             set {
                 _cameraExtensions.previewCamera = value;
@@ -470,6 +505,29 @@ namespace CameraPlus.Configuration
             config2.targetRot.z = thirdPerson ? thirdPersonRot.z : FirstPersonRotationOffset.z;
             return config2;
         }
+
+        public CameraEffectStruct InitializeCameraEffect()
+        {
+            CameraEffectStruct cameraEffectStruct = new CameraEffectStruct
+            {
+                enableDOF = cameraEffect.enableDOF,
+                dofFocusDistance = cameraEffect.dofFocusDistance,
+                dofFocusRange = cameraEffect.dofFocusRange,
+                dofBlurRadius = cameraEffect.dofBlurRadius,
+                dofAutoDistance = cameraEffect.dofAutoDistance,
+
+                wipeType = cameraEffect.wipeType,
+                wipeCircleCenter = cameraEffect.wipeCircleCenter,
+                wipeProgress = cameraEffect.wipeProgress,
+
+                enableOutline = cameraEffect.enableOutline,
+                outlineOnly = cameraEffect.outlineOnly,
+                outlineColor = cameraEffect.outlineColor,
+                outlineBGColor = cameraEffect.outlineBGColor
+            };
+            return cameraEffectStruct;
+        }
+
     }
 
     public class cameraLockElements
@@ -487,6 +545,8 @@ namespace CameraPlus.Configuration
         public bool avatar = true;
         [JsonProperty("UI")]
         public bool ui = true;
+        [JsonProperty("ForceUI")]
+        public bool forceUi = true;
         [JsonProperty("Wall")]
         public bool wall = true;
         [JsonProperty("WallFrame")]
@@ -602,6 +662,84 @@ namespace CameraPlus.Configuration
                 color[0] = value.r;
                 color[1] = value.g;
                 color[2] = value.b;
+            }
+        }
+    }
+
+    [JsonObject(MemberSerialization.OptIn)]
+    public struct CameraEffectStruct
+    {
+        //Depth of Field
+        [JsonProperty("EnableDOF")]
+        public bool enableDOF;
+        [JsonProperty("DOFFocusDistance")]
+        public float dofFocusDistance;
+        [JsonProperty("DOFFocusRange")]
+        public float dofFocusRange;
+        [JsonProperty("DOFBlurRadius")]
+        public float dofBlurRadius;
+        [JsonProperty("DOFAutoDistance")]
+        public bool dofAutoDistance;
+
+        //Wipe
+        [JsonProperty("WipeProgress")]
+        public float wipeProgress;
+        [JsonProperty("WipeType")]
+        public string wipeType;
+        [JsonProperty("WipeCircleCenter")]
+        private float[] _wipeCircleCenter;
+        //←↑-0.5,-0.5 / →↓+0.5, +0.5
+        public Vector4 wipeCircleCenter
+        {
+            get
+            {
+                if (_wipeCircleCenter == null) _wipeCircleCenter = new float[] { 0f, 0f };
+                return new Color(_wipeCircleCenter[0], _wipeCircleCenter[1], 0, 0);
+            }
+            set
+            {
+                if (_wipeCircleCenter == null) _wipeCircleCenter = new float[] { 0f, 0f };
+                _wipeCircleCenter[0] = value.x;
+                _wipeCircleCenter[1] = value.y;
+            }
+        }
+        //OutlineEffect
+        [JsonProperty("EnableOutline")]
+        public bool enableOutline;
+        [JsonProperty("OutlineOnly")]
+        public float outlineOnly;
+        [JsonProperty("OutlineColor")]
+        private float[] _outlineColor;
+        public Color outlineColor
+        {
+            get
+            {
+                if (_outlineColor == null) _outlineColor = new float[] { 0f, 0f, 0f };
+                return new Color(_outlineColor[0], _outlineColor[1], _outlineColor[2], 0);
+            }
+            set
+            {
+                if (_outlineColor == null) _outlineColor = new float[] { 0f, 0f, 0f };
+                _outlineColor[0] = value.r;
+                _outlineColor[1] = value.g;
+                _outlineColor[2] = value.b;
+            }
+        }
+        [JsonProperty("OutlineBGColor")]
+        private float[] _outlineBGColor;
+        public Color outlineBGColor
+        {
+            get
+            {
+                if (_outlineBGColor == null) _outlineBGColor = new float[] { 0f, 0f, 0f };
+                return new Color(_outlineBGColor[0], _outlineBGColor[1], _outlineBGColor[2], 0);
+            }
+            set
+            {
+                if (_outlineBGColor == null) _outlineBGColor = new float[] { 0f, 0f, 0f };
+                _outlineBGColor[0] = value.r;
+                _outlineBGColor[1] = value.g;
+                _outlineBGColor[2] = value.b;
             }
         }
     }

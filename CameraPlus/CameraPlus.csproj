@@ -69,6 +69,7 @@
     <Reference Include="GameplayCore, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>$(BeatSaberDir)\Beat Saber_Data\Managed\GameplayCore.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Hive.Versioning, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -203,6 +204,7 @@
     <Compile Include="HarmonyPatches\MainCameraPatch.cs" />
     <Compile Include="HarmonyPatches\PlayerSettingPatch.cs" />
     <Compile Include="UI\MenuChromakey.cs" />
+    <Compile Include="UI\MenuEffect.cs" />
     <Compile Include="UI\MenuSettingConverter.cs" />
     <Compile Include="UI\MenuDisplayObject.cs" />
     <Compile Include="UI\MenuExternalLink.cs" />

@@ -13,6 +13,7 @@ namespace CameraPlus.UI
             DisplayObject,
             Layout,
             Multiplayer,
+            Effect,
             Profile,
             MovementScript,
             SettingConverter,
@@ -46,6 +47,7 @@ namespace CameraPlus.UI
         private MenuDisplayObject _menuDisplayObject = new MenuDisplayObject();
         private MenuLayout _menuLayout = new MenuLayout();
         private MenuMultiplayer _menuMultiplayer = new MenuMultiplayer();
+        private MenuEffect _menuEffect = new MenuEffect();
         private MenuProfile _menuProfile = new MenuProfile();
         private MenuMovementScript _menuMovementScript = new MenuMovementScript();
         private MenuSettingConverter _menuSettingConverter = new MenuSettingConverter();
@@ -215,6 +217,8 @@ namespace CameraPlus.UI
                         MenuMode = MenuState.Layout;
                     if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 295, 145, 40), new GUIContent("Multiplayer")))
                         MenuMode = MenuState.Multiplayer;
+                    if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 295, 145, 40), new GUIContent("Effect")))
+                        MenuMode = MenuState.Effect;
                     if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 340, 145, 40), new GUIContent("Profile Saver")))
                         MenuMode = MenuState.Profile;
                     if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 340, 145, 40), new GUIContent("MovementScript")))
@@ -253,6 +257,8 @@ namespace CameraPlus.UI
                     _menuLayout.DiplayMenu(parentBehaviour, this, menuPos);
                 else if (MenuMode == MenuState.Multiplayer)
                     _menuMultiplayer.DiplayMenu(parentBehaviour, this, menuPos);
+                else if (MenuMode == MenuState.Effect)
+                    _menuEffect.DiplayMenu(parentBehaviour, this, menuPos);
                 else if (MenuMode == MenuState.Profile)
                     _menuProfile.DiplayMenu(parentBehaviour, this, menuPos);
                 else if (MenuMode == MenuState.MovementScript)

@@ -16,6 +16,17 @@ namespace CameraPlus.Configuration
         public string y { get; set; }
         public string z { get; set; }
     }
+    public class ColorElements
+    {
+        public string r { get; set; }
+        public string g { get; set; }
+        public string b { get; set; }
+    }
+    public class wipeCenterElements
+    {
+        public string x { get; set; }
+        public string y { get; set; }
+    }
     public class VisibleObject
     {
         public bool? avatar { get; set; }
@@ -28,6 +39,39 @@ namespace CameraPlus.Configuration
         public bool? debris { get; set; }
     }
 
+    public class DoFParamsElements
+    {
+        public string dofFocusDistance { get; set; }
+        public string dofFocusRange { get; set; }
+        public string dofBlurRadius { get; set; }
+    }
+    public class WipeParamsElements
+    {
+        public string wipeProgress { get; set; }
+        public wipeCenterElements wipeCircleCenter { get; set; }
+    }
+    public class OutlineParamsElements
+    {
+        public string outlineEffectOnly { get; set; }
+        public ColorElements outlineColor { get; set; }
+        public ColorElements outlineBackgroundColor { get; set; }
+    }
+    public class EffectObject
+    {
+        public string enableDoF { get; set; }
+        public string dofAutoDistance { get; set; }
+        public DoFParamsElements StartDoF { get; set; }
+        public DoFParamsElements EndDoF { get; set; }
+
+        public string wipeType { get; set; }
+        public WipeParamsElements StartWipe { get; set; }
+        public WipeParamsElements EndWipe { get; set; }
+
+        public string enableOutlineEffect { get; set; }
+        public OutlineParamsElements StartOutlineEffect { get; set; }
+        public OutlineParamsElements EndOutlineEffect { get; set; }
+    }
+
     [JsonObject("Movements")]
     public class JSONMovement
     {
@@ -37,6 +81,7 @@ namespace CameraPlus.Configuration
         public AxisElements startRot { get; set; }
         [JsonProperty("StartHeadOffset")]
         public AxisElements startHeadOffset { get; set; }
+
         [JsonProperty("EndPos")]
         public AxizWithFoVElements endPos { get; set; }
         [JsonProperty("EndRot")]
@@ -46,6 +91,8 @@ namespace CameraPlus.Configuration
         [JsonProperty("VisibleObject")]
         public VisibleObject visibleObject { get; set; }
 
+        [JsonProperty("CameraEffect")]
+        public EffectObject cameraEffect { get; set; }
         public string TurnToHead { get; set; }
         public string TurnToHeadHorizontal { get; set; }
         public string Duration { get; set; }
