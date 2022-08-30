@@ -97,7 +97,7 @@ namespace CameraPlus.Configuration
                 if (value)
                     _cameraType = CameraType.ThirdPerson;
                 else
-                    _cameraType = CameraType.FirstPesron;
+                    _cameraType = CameraType.FirstPerson;
                 if (cam != null)
                 {
                     cam._quad.gameObject.SetActive(thirdPerson && PreviewCamera);
