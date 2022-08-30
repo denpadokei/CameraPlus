@@ -13,7 +13,7 @@ namespace CameraPlus.Configuration
 {
     internal enum CameraType
     {
-        FirstPesron,
+        FirstPerson,
         ThirdPerson
     }
     public enum DebriVisibility

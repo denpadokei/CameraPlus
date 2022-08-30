@@ -1,3 +1,7 @@
+# v6.10.1 Changes
+- I was Typo the first person camera type in the settings.
+
+
 # v6.10.0 Changes
 - Add Camera Effect (Wipe Effect / Depth of Field / Outline Effect).  
 - Fixed an issue where changing to 1st person would revert to 3rd person if MovementScript was set.  
