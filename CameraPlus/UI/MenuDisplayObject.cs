@@ -28,7 +28,7 @@ namespace CameraPlus.UI
                 parentBehaviour.Config.cameraExtensions.followNoodlePlayerTrack = true;
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 225, menuPos.y + 45, 70, 25), new GUIContent("Disbale"), !parentBehaviour.Config.cameraExtensions.followNoodlePlayerTrack ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 225, menuPos.y + 45, 70, 25), new GUIContent("Disable"), !parentBehaviour.Config.cameraExtensions.followNoodlePlayerTrack ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 parentBehaviour.Config.cameraExtensions.followNoodlePlayerTrack = false;
                 parentBehaviour.Config.Save();
