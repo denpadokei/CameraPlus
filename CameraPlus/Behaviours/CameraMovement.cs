@@ -34,6 +34,7 @@ namespace CameraPlus.Behaviours
         protected DateTime _pauseTime;
         protected CameraEffectStruct[] CameraEffect = {new CameraEffectStruct(), new CameraEffectStruct()};
 
+        private VisibleObject _visibleLayer = null;
         public class Movements
         {
             public Vector3 StartPos;
@@ -384,8 +385,13 @@ namespace CameraPlus.Behaviours
             CameraEffect[0] = data.Movements[eventID].CameraEffect[0];
             CameraEffect[1] = data.Movements[eventID].CameraEffect[1];
 
-            if (data.Movements[eventID].SectionVisibleObject!=null)
-                _cameraPlus.Config.SetCullingMask(data.Movements[eventID].SectionVisibleObject);
+            if (data.Movements[eventID].SectionVisibleObject != null)
+            {
+                CopyVisibleLayer(data.Movements[eventID].SectionVisibleObject);
+                if (_cameraPlus.Config.movementScript.ignoreScriptUIDisplay)
+                    _visibleLayer.ui = _cameraPlus.Config.layerSetting.ui;
+                _cameraPlus.Config.SetCullingMask(_visibleLayer);
+            }
             else
             {
                 int beforID = eventID > 0 ? eventID - 1 : data.Movements.Count - 1;
@@ -423,6 +429,17 @@ namespace CameraPlus.Behaviours
             eventID++;
         }
 
+        private void CopyVisibleLayer(VisibleObject scriptVisibleObject)
+        {
+            if (_visibleLayer == null) _visibleLayer = new VisibleObject();
+            _visibleLayer.avatar = scriptVisibleObject.avatar;
+            _visibleLayer.notes = scriptVisibleObject.notes;
+            _visibleLayer.ui = scriptVisibleObject.ui;
+            _visibleLayer.saber = scriptVisibleObject.saber;
+            _visibleLayer.debris = scriptVisibleObject.debris;
+            _visibleLayer.wall = scriptVisibleObject.wall;
+            _visibleLayer.wallFrame = scriptVisibleObject.wallFrame;
+        }
         protected float Ease(float p)
         {
             if (!easeTransition)

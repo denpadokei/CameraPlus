@@ -68,6 +68,18 @@ namespace CameraPlus.UI
                     parentBehaviour.ClearMovementScript();
                 }
             }
+            GUI.Box(new Rect(menuPos.x, menuPos.y + 370, 300, 50), new GUIContent("Ignore script UI settings"));
+            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 390, 150, 30), new GUIContent("Enable"), parentBehaviour.Config.movementScript.ignoreScriptUIDisplay ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            {
+                parentBehaviour.Config.movementScript.ignoreScriptUIDisplay = true;
+                parentBehaviour.Config.Save();
+            }
+            if (GUI.Button(new Rect(menuPos.x+150, menuPos.y + 390, 150, 30), new GUIContent("Disable"), !parentBehaviour.Config.movementScript.ignoreScriptUIDisplay ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            {
+                parentBehaviour.Config.movementScript.ignoreScriptUIDisplay = false;
+                parentBehaviour.Config.Save();
+            }
+
             /*
             if (GUI.Button(new Rect(menuPos.x , menuPos.y + 390, 300, 30), new GUIContent("Movement Script Record Mode")))
             {

@@ -618,6 +618,8 @@ namespace CameraPlus.Configuration
         public bool useAudioSync = true;
         [JsonProperty("SongSpecificScript")]
         public bool songSpecificScript = false;
+        [JsonProperty("IgnoreScriptUIDisplay")]
+        public bool ignoreScriptUIDisplay = false;
     }
     public class multiplayerElemetns
     {

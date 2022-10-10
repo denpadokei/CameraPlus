@@ -1,6 +1,6 @@
 # v6.10.1 Changes
-- I was Typo the first person camera type in the settings.
-
+- Fix many typo.
+- Added function to ignore script UI display settings.  
 
 # v6.10.0 Changes
 - Add Camera Effect (Wipe Effect / Depth of Field / Outline Effect).  
