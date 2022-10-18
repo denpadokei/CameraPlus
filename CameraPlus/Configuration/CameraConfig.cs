@@ -320,7 +320,7 @@ namespace CameraPlus.Configuration
         internal virtual void SetCullingMask(VisibleObject visibleObject = null)
         {
             if (!cam) return;
-            int builder = Camera.main.cullingMask;
+            int builder = Camera.main == null ? 0 : Camera.main.cullingMask;
             if (visibleObject == null) visibleObject = new VisibleObject();
             if (visibleObject.avatar.HasValue ? visibleObject.avatar.Value : layerSetting.avatar)
             {
@@ -389,8 +389,9 @@ namespace CameraPlus.Configuration
                 builder &= ~(1 << Layer.CustomNoteLayer);
                 builder &= ~(1 << Layer.Notes);
             }
-
-            cam._cam.cullingMask = builder;
+            if (cam._cam) {
+                cam._cam.cullingMask = builder;
+            }
         }
 
         internal void ConvertFromCamera2(Camera2Config config2)
