@@ -19,6 +19,7 @@ namespace CameraPlus.Behaviours
         public void SetRenderTexture(RenderTexture renderTexture,CameraPlusBehaviour parent=null)
         {
             _renderTexture = renderTexture;
+            Logger.log.Debug($"[Rendertexture in SetRenderTexture] size w:{renderTexture.width}, h:{renderTexture.height}");
             if(parent != null)
             {
                 _parent = parent;
@@ -30,6 +31,7 @@ namespace CameraPlus.Behaviours
 
         public void SetCameraInfo(Vector2 position, Vector2 size, int layer)
         {
+            Logger.log.Debug($"[RenderTexture in SetCameraInfo] position x:{position.x}, y:{position.y} / size w:{size.x}, h:{size.y}");
             _cam.pixelRect = new Rect(position, size);
             _cam.depth = layer;
         }

@@ -298,39 +298,48 @@ namespace CameraPlus.Behaviours
 
         internal virtual void CreateScreenRenderTexture()
         {
-            if (Config.fitToCanvas)
+            try
             {
-                Config.screenPosX = 0;
-                Config.screenPosY = 0;
-                Config.screenWidth = Screen.width;
-                Config.screenHeight = Screen.height;
+                if (Config.fitToCanvas)
+                {
+                    Config.screenPosX = 0;
+                    Config.screenPosY = 0;
+                    Config.screenWidth = Screen.width;
+                    Config.screenHeight = Screen.height;
+                }
+                var w = (int)Math.Round(Config.screenWidth * Config.renderScale);
+                var h = (int)Math.Round(Config.screenHeight * Config.renderScale);
+
+                var changed = _camRenderTexture?.width != w || _camRenderTexture?.height != h ||
+                            _camRenderTexture?.antiAliasing != _camRenderTexture.antiAliasing;
+
+                if (changed)
+                {
+                    _camRenderTexture?.Release();
+                    _camRenderTexture = new RenderTexture(w, h, 24)
+                    {
+                        useMipMap = false,
+                        antiAliasing = Config.antiAliasing,
+                        anisoLevel = 1,
+                        useDynamicScale = false
+                    };
+                    _cam.targetTexture = _camRenderTexture;
+                    _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
+                    _screenCamera?.SetRenderTexture(_camRenderTexture, this);
+                }
+
+                if (changed || Config.screenPosX != _prevScreenPosX || Config.screenPosY != _prevScreenPosY || Config.layer != _prevLayer)
+                    _screenCamera?.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
+
+                _prevLayer = Config.layer;
+                _prevScreenPosX = Config.screenPosX;
+                _prevScreenPosY = Config.screenPosY;
+
             }
-            var w = (int)Math.Round(Config.screenWidth * Config.renderScale);
-            var h = (int)Math.Round(Config.screenHeight * Config.renderScale);
-
-            var changed = _camRenderTexture?.width != w || _camRenderTexture?.height != h || 
-                        _camRenderTexture?.antiAliasing != _camRenderTexture.antiAliasing;
-
-            if (changed)
+            catch (Exception ex)
             {
-                _camRenderTexture?.Release();
-                _camRenderTexture = new RenderTexture(w, h, 24) {
-                    useMipMap = false,
-                    antiAliasing = Config.antiAliasing,
-                    anisoLevel = 1,
-                    useDynamicScale = false
-                };
-                _cam.targetTexture = _camRenderTexture;
-                _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
-                _screenCamera?.SetRenderTexture(_camRenderTexture,this);
+                Logger.log.Error($"Fail CreateScreenRenderTexture {ex}");
             }
-
-            if (changed || Config.screenPosX != _prevScreenPosX || Config.screenPosY != _prevScreenPosY || Config.layer != _prevLayer)
-                _screenCamera?.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
-
-            _prevLayer = Config.layer;
-            _prevScreenPosX = Config.screenPosX;
-            _prevScreenPosY = Config.screenPosY;
         }
         public virtual void SceneManager_activeSceneChanged(Scene from, Scene to)
         {
@@ -590,7 +599,6 @@ namespace CameraPlus.Behaviours
                     ThirdPersonRot = Config.Rotation;
                     Config.thirdPerson = true;
                     ThirdPerson = true;
-                    CreateScreenRenderTexture();
                 }
                 else
                     return "Fail CameraMovement Initialize";
@@ -606,7 +614,6 @@ namespace CameraPlus.Behaviours
             ThirdPersonPos = Config.Position;
             ThirdPersonRot = Config.Rotation;
             _cam.fieldOfView = Config.fov;
-            CreateScreenRenderTexture();
         }
 
         protected IEnumerator GetMainCamera()

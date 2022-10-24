@@ -329,7 +329,11 @@ namespace CameraPlus.Configuration
             try
             {
                 if (File.Exists(FilePath))
-                    JsonConvert.PopulateObject(File.ReadAllText(FilePath), this);
+                {
+                    var jsondata = File.ReadAllText(FilePath);
+                    jsondata = jsondata.Replace("FirstPesron", "FirstPerson");//Old version Typo correction process
+                    JsonConvert.PopulateObject(jsondata, this);
+                }
             }
             catch(Exception ex)
             {

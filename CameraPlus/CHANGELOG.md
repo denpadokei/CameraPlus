@@ -1,3 +1,7 @@
+# v6.10.2 Changes
+- Fixed an issue where pre-6.10.0 versions of the first person camera would no longer load.  
+- Remove some useless code.  
+
 # v6.10.1 Changes
 - Fix many typo.
 - Added function to ignore script UI display settings.  

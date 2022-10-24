@@ -187,7 +187,6 @@ namespace CameraPlus.UI
                         parentBehaviour.ThirdPersonPos = parentBehaviour.Config.Position;
                         parentBehaviour.ThirdPersonRot = parentBehaviour.Config.Rotation;
 
-                        parentBehaviour.CreateScreenRenderTexture();
                         parentBehaviour.Config.Save();
                     }
                     if (GUI.Button(new Rect(menuPos.x + 105, menuPos.y + 210, 95, 30), new GUIContent("Third Person"), (parentBehaviour.Config.thirdPerson && !parentBehaviour.Config.cameraExtensions.follow360map) ? CustomEnableStyle : CustomDisableStyle))
@@ -197,7 +196,6 @@ namespace CameraPlus.UI
                         parentBehaviour.ThirdPersonPos = parentBehaviour.Config.Position;
                         parentBehaviour.ThirdPersonRot = parentBehaviour.Config.Rotation;
 
-                        parentBehaviour.CreateScreenRenderTexture();
                         parentBehaviour.Config.Save();
                     }
                     if (GUI.Button(new Rect(menuPos.x + 205, menuPos.y + 210, 95, 30), new GUIContent("360 degree"), (parentBehaviour.Config.thirdPerson && parentBehaviour.Config.cameraExtensions.follow360map) ? CustomEnableStyle : CustomDisableStyle))
@@ -207,7 +205,6 @@ namespace CameraPlus.UI
                         parentBehaviour.ThirdPersonPos = parentBehaviour.Config.Position;
                         parentBehaviour.ThirdPersonRot = parentBehaviour.Config.Rotation;
 
-                        parentBehaviour.CreateScreenRenderTexture();
                         parentBehaviour.Config.Save();
                     }
 
@@ -233,21 +230,7 @@ namespace CameraPlus.UI
                     }
                     if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 385, 145, 40), new GUIContent("External linkage")))
                         MenuMode = MenuState.ExternalLink;
-                    /*
-                    if (GUI.Button(new Rect(menuPos.x, menuPos.y + 345, 300, 30), new GUIContent(parentBehaviour.Config.Orthographics ? "Perspective" : "Orthographics")))
-                    {
-                        parentBehaviour.Config.Orthographics = !parentBehaviour.Config.Orthographics;
-                        parentBehaviour.Config.Save();
-                        parentBehaviour.CloseContextMenu();
-                        parentBehaviour.CreateScreenRenderTexture();
-                    }
-                    */
-                    /*
-                    if (GUI.Button(new Rect(menuPos.x, menuPos.y + 385, 300, 30), new GUIContent("Spawn 38 Cameras")))
-                    {
-                        parentBehaviour.StartCoroutine(CameraUtilities.Spawn38Cameras());
-                        parentBehaviour.CloseContextMenu();
-                    }*/
+
                     if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close Menu")))
                         parentBehaviour.CloseContextMenu();
                 }
