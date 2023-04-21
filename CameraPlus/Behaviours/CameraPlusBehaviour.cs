@@ -290,6 +290,9 @@ namespace CameraPlus.Behaviours
             _cam.fieldOfView = Config.fov;
             _cam.orthographic = Config.cameraExtensions.orthographicMode;
             _cam.orthographicSize = Config.cameraExtensions.orthographicSize;
+            _cam.nearClipPlane = Config.cameraExtensions.nearClip;
+            _cam.farClipPlane = Config.cameraExtensions.farClip;
+
 
             effectElements = Config.cameraEffect;
             CreateScreenRenderTexture();

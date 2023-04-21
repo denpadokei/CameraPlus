@@ -1,3 +1,6 @@
+# v6.11.0 Chanegs
+- Add near/far clip setting. (yet json only)
+
 # v6.10.2 Changes
 - Fixed an issue where pre-6.10.0 versions of the first person camera would no longer load.  
 - Remove some useless code.  
