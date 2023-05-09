@@ -126,7 +126,7 @@ namespace CameraPlus.Behaviours
 
             foreach (var child in _cam.transform.Cast<Transform>())
                 Destroy(child.gameObject);
-            var destroyList = new string[] { "AudioListener", "LIV", "MainCamera", "MeshCollider" };
+            var destroyList = new string[] { "AudioListener", "LIV", "MainCamera", "MeshCollider", "TrackedPoseDriver" };
             foreach (var component in _cam.GetComponents<Behaviour>())
                 if (destroyList.Contains(component.GetType().Name)) Destroy(component);
 

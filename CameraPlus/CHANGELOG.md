@@ -1,3 +1,6 @@
+# v7.0.0 Changes
+- Support game version 1.29.4
+
 # v6.11.0 Chanegs
 - Add near/far clip setting. (yet json only)
 

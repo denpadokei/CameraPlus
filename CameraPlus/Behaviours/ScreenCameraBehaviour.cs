@@ -60,6 +60,7 @@ namespace CameraPlus.Behaviours
 
             if (_parent)
             {
+                /*
                 if (_parent.effectElements.enableDOF)
                 {
                     if (_dofMaterial == null) _dofMaterial = new Material(Plugin.cameraController.Shaders["Effect/DepthOfFieldGauss"]);
@@ -76,6 +77,7 @@ namespace CameraPlus.Behaviours
                     Graphics.Blit(temp1, _renderTexture, _dofMaterial, 1);
                     RenderTexture.ReleaseTemporary(temp1);
                 }
+                */
                 /*
                 //If the Gauss filter is too heavy, try this one.
                 if (_parent.effectElements.enableDOF)
