@@ -60,10 +60,9 @@ namespace CameraPlus.Behaviours
 
             if (_parent)
             {
-                /*
                 if (_parent.effectElements.enableDOF)
                 {
-                    if (_dofMaterial == null) _dofMaterial = new Material(Plugin.cameraController.Shaders["Effect/DepthOfFieldGauss"]);
+                    if (_dofMaterial == null) _dofMaterial = new Material(Plugin.cameraController.EffectShaders["Effect/DepthOfFieldGauss"]);
                     if (_parentCam.depthTextureMode != (DepthTextureMode.Depth))
                         _parentCam.depthTextureMode = DepthTextureMode.Depth;
 
@@ -77,7 +76,6 @@ namespace CameraPlus.Behaviours
                     Graphics.Blit(temp1, _renderTexture, _dofMaterial, 1);
                     RenderTexture.ReleaseTemporary(temp1);
                 }
-                */
                 /*
                 //If the Gauss filter is too heavy, try this one.
                 if (_parent.effectElements.enableDOF)
@@ -116,7 +114,7 @@ namespace CameraPlus.Behaviours
                     if (_parentCam.depthTextureMode != DepthTextureMode.DepthNormals)
                         _parentCam.depthTextureMode = DepthTextureMode.DepthNormals;
 
-                    if (_outlineMaterial == null) _outlineMaterial = new Material(Plugin.cameraController.Shaders["Effect/Outline"]);
+                    if (_outlineMaterial == null) _outlineMaterial = new Material(Plugin.cameraController.EffectShaders["Effect/Outline"]);
                     _outlineMaterial.SetFloat("_EdgeOnly", _parent.effectElements.outlineOnly);
                     _outlineMaterial.SetColor("_EdgeColor", _parent.effectElements.outlineColor);
                     _outlineMaterial.SetColor("_BackgroundColor", _parent.effectElements.outlineBGColor);
@@ -126,7 +124,7 @@ namespace CameraPlus.Behaviours
 
                 if (_parent.effectElements.wipeProgress > 0)
                 {
-                    if (_wipeMaterial == null) _wipeMaterial = new Material(Plugin.cameraController.Shaders["Effect/Wipe"]);
+                    if (_wipeMaterial == null) _wipeMaterial = new Material(Plugin.cameraController.EffectShaders["Effect/Wipe"]);
                     _wipeMaterial.SetFloat("_Progress", _parent.effectElements.wipeProgress);
                     _wipeMaterial.SetVector("_Center", _parent.effectElements.wipeCircleCenter);
                     Graphics.Blit(_renderTexture, dest, _wipeMaterial,
