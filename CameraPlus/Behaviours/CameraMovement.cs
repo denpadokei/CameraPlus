@@ -75,7 +75,7 @@ namespace CameraPlus.Behaviours
                 }
                 catch (Exception ex)
                 {
-                    Plugin.Log.Error($"JSON file syntax error. {ex.Message}");
+                    Logger.log.Error($"JSON file syntax error. {ex.Message}");
                 }
                 if (movementScriptJson != null && movementScriptJson.Jsonmovement !=null)
                 {
@@ -219,7 +219,7 @@ namespace CameraPlus.Behaviours
             if (to.name == "GameCore")
             {
 #if DEBUG
-                Plugin.Log.Notice($"Script SceneChanged");
+                Logger.log.Notice($"Script SceneChanged");
 #endif
                 if (_cameraPlus.Config.movementScript.useAudioSync)
                 {
@@ -306,13 +306,13 @@ namespace CameraPlus.Behaviours
         {
             _cameraPlus = cameraPlus;
 
-            Plugin.CameraController.ActiveSceneChanged += OnActiveSceneChanged;
+            Plugin.cameraController.ActiveSceneChanged += OnActiveSceneChanged;
             return LoadCameraData(scriptPath);
         }
 
         public virtual void Shutdown()
         {
-            Plugin.CameraController.ActiveSceneChanged -= OnActiveSceneChanged;
+            Plugin.cameraController.ActiveSceneChanged -= OnActiveSceneChanged;
             Destroy(this);
         }
 
@@ -343,14 +343,14 @@ namespace CameraPlus.Behaviours
                 {
                     if (data.Movements.Count == 0)
                     {
-                        Plugin.Log.Notice("No movement data!");
+                        Logger.log.Notice("No movement data!");
                         return false;
                     }
                     eventID = 0;
                     UpdatePosAndRot();
                     dataLoaded = true;
 
-                    Plugin.Log.Notice($"Found {data.Movements.Count} entries in: {path}");
+                    Logger.log.Notice($"Found {data.Movements.Count} entries in: {path}");
                     return true;
                 }
             }

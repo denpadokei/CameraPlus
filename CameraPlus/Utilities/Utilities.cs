@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CameraPlus.Utilities
 {
-    public class CustomUtils
+    internal class CustomUtils
     {
         public static Texture2D LoadTextureRaw(byte[] file)
         {
@@ -59,24 +59,24 @@ namespace CameraPlus.Utilities
                     {
                         if (meta.HVersion >= new Hive.Versioning.Version(ver))
                         {
-                            Plugin.Log.Debug($"Found {modName} {meta.HVersion.ToString()}.");
+                            Logger.log.Debug($"Found {modName} {meta.HVersion.ToString()}.");
                             return true;
                         }
                         else
                         {
-                            Plugin.Log.Debug($"{modName}  {meta.HVersion.ToString()} was lower version.");
+                            Logger.log.Debug($"{modName}  {meta.HVersion.ToString()} was lower version.");
                             return false;
                         }
                     }
-                    Plugin.Log.Debug($"Found {modName}.");
+                    Logger.log.Debug($"Found {modName}.");
                     return true;
                 }
-                Plugin.Log.Debug($"{modName} was not found.");
+                Logger.log.Debug($"{modName} was not found.");
                 return false;
             }
             catch
             {
-                Plugin.Log.Debug($"{modName} serach error.");
+                Logger.log.Debug($"{modName} serach error.");
                 return false;
             }
         }

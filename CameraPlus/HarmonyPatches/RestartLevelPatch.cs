@@ -8,7 +8,7 @@ namespace CameraPlus.HarmonyPatches
     {
         static void Prefix()
         {
-            Plugin.CameraController.isRestartingSong = true;
+            Plugin.cameraController.isRestartingSong = true;
         }
     }
 }

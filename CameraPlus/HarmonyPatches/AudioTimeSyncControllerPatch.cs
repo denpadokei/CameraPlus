@@ -7,21 +7,21 @@ namespace CameraPlus.HarmonyPatches
     internal class AudioTimeSyncControllerPatch
     {
         public static AudioTimeSyncController Instance = null;
-        static void Postfix(AudioTimeSyncController __Instance)
+        static void Postfix(AudioTimeSyncController __instance)
         {
 #if DEBUG
-            Plugin.Log.Notice("AudioTimeSyncController Awake");
+            Logger.log.Notice("AudioTimeSyncController Awake");
 #endif
-            Instance = __Instance;
+            Instance = __instance;
         }
     }
     [HarmonyPatch(typeof(AudioTimeSyncController), nameof(AudioTimeSyncController.StartSong))]
     static class HookAudioTimeSyncController
     {
-        static void Postfix(AudioTimeSyncController __Instance)
+        static void Postfix(AudioTimeSyncController __instance)
         {
 #if DEBUG
-            Plugin.Log.Notice("AudioTimeSyncController StartSong");
+            Logger.log.Notice("AudioTimeSyncController StartSong");
 #endif
             CameraUtilities.SetAllCameraCulling();
         }

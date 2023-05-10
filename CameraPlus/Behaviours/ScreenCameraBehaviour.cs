@@ -19,7 +19,7 @@ namespace CameraPlus.Behaviours
         public void SetRenderTexture(RenderTexture renderTexture,CameraPlusBehaviour parent=null)
         {
             _renderTexture = renderTexture;
-            Plugin.Log.Debug($"[Rendertexture in SetRenderTexture] size w:{renderTexture.width}, h:{renderTexture.height}");
+            Logger.log.Debug($"[Rendertexture in SetRenderTexture] size w:{renderTexture.width}, h:{renderTexture.height}");
             if(parent != null)
             {
                 _parent = parent;
@@ -31,7 +31,7 @@ namespace CameraPlus.Behaviours
 
         public void SetCameraInfo(Vector2 position, Vector2 size, int layer)
         {
-            Plugin.Log.Debug($"[RenderTexture in SetCameraInfo] position x:{position.x}, y:{position.y} / size w:{size.x}, h:{size.y}");
+            Logger.log.Debug($"[RenderTexture in SetCameraInfo] position x:{position.x}, y:{position.y} / size w:{size.x}, h:{size.y}");
             _cam.pixelRect = new Rect(position, size);
             _cam.depth = layer;
         }
@@ -44,7 +44,7 @@ namespace CameraPlus.Behaviours
         public void Awake()
         {
 #if DEBUG
-            Plugin.Log.Notice("Created new screen camera behaviour component!");
+            Logger.log.Notice("Created new screen camera behaviour component!");
 #endif
             DontDestroyOnLoad(gameObject);
 
@@ -63,7 +63,7 @@ namespace CameraPlus.Behaviours
                 /*
                 if (_parent.effectElements.enableDOF)
                 {
-                    if (_dofMaterial == null) _dofMaterial = new Material(Plugin.CameraController.Shaders["Effect/DepthOfFieldGauss"]);
+                    if (_dofMaterial == null) _dofMaterial = new Material(Plugin.cameraController.Shaders["Effect/DepthOfFieldGauss"]);
                     if (_parentCam.depthTextureMode != (DepthTextureMode.Depth))
                         _parentCam.depthTextureMode = DepthTextureMode.Depth;
 
@@ -82,7 +82,7 @@ namespace CameraPlus.Behaviours
                 //If the Gauss filter is too heavy, try this one.
                 if (_parent.effectElements.enableDOF)
                 {
-                    if (_dofMaterial == null) _dofMaterial = new Material(Plugin.CameraController.Shaders["Effect/DepthOfFieldDownSample"]);
+                    if (_dofMaterial == null) _dofMaterial = new Material(Plugin.cameraController.Shaders["Effect/DepthOfFieldDownSample"]);
                     if (_parentCam.depthTextureMode != (DepthTextureMode.Depth))
                         _parentCam.depthTextureMode = DepthTextureMode.Depth;
                     var _nearBlurScale = 1;
@@ -116,7 +116,7 @@ namespace CameraPlus.Behaviours
                     if (_parentCam.depthTextureMode != DepthTextureMode.DepthNormals)
                         _parentCam.depthTextureMode = DepthTextureMode.DepthNormals;
 
-                    if (_outlineMaterial == null) _outlineMaterial = new Material(Plugin.CameraController.Shaders["Effect/Outline"]);
+                    if (_outlineMaterial == null) _outlineMaterial = new Material(Plugin.cameraController.Shaders["Effect/Outline"]);
                     _outlineMaterial.SetFloat("_EdgeOnly", _parent.effectElements.outlineOnly);
                     _outlineMaterial.SetColor("_EdgeColor", _parent.effectElements.outlineColor);
                     _outlineMaterial.SetColor("_BackgroundColor", _parent.effectElements.outlineBGColor);
@@ -126,7 +126,7 @@ namespace CameraPlus.Behaviours
 
                 if (_parent.effectElements.wipeProgress > 0)
                 {
-                    if (_wipeMaterial == null) _wipeMaterial = new Material(Plugin.CameraController.Shaders["Effect/Wipe"]);
+                    if (_wipeMaterial == null) _wipeMaterial = new Material(Plugin.cameraController.Shaders["Effect/Wipe"]);
                     _wipeMaterial.SetFloat("_Progress", _parent.effectElements.wipeProgress);
                     _wipeMaterial.SetVector("_Center", _parent.effectElements.wipeCircleCenter);
                     Graphics.Blit(_renderTexture, dest, _wipeMaterial,

@@ -7,12 +7,12 @@ namespace CameraPlus.HarmonyPatches
     [HarmonyPatch]
     internal class FPFCPatch
     {
-		public static FirstPersonFlyingController Instance { get; private set; } = null;
-		//public static bool isInstanceFPFC => Instance != null;
+		public static FirstPersonFlyingController instance { get; private set; } = null;
+		//public static bool isInstanceFPFC => instance != null;
 		public static bool isInstanceFPFC =false;
-		static void Postfix(FirstPersonFlyingController __Instance)
+		static void Postfix(FirstPersonFlyingController __instance)
 		{
-			Instance = __Instance;
+			instance = __instance;
 		}
 		[HarmonyTargetMethods]
 		static IEnumerable<MethodBase> TargetMethods()
@@ -27,7 +27,7 @@ namespace CameraPlus.HarmonyPatches
 			private static void Postfix()
 			{
 				isInstanceFPFC = true;
-				Plugin.CameraController.OnFPFCToggleEvent?.Invoke();
+				Plugin.cameraController.OnFPFCToggleEvent?.Invoke();
 			}
 		}
 		[HarmonyPatch(typeof(FirstPersonFlyingController),"OnDisable")]
@@ -36,7 +36,7 @@ namespace CameraPlus.HarmonyPatches
 			private static void Postfix()
 			{
 				isInstanceFPFC = false;
-				Plugin.CameraController.OnFPFCToggleEvent?.Invoke();
+				Plugin.cameraController.OnFPFCToggleEvent?.Invoke();
 			}
 		}
 	}

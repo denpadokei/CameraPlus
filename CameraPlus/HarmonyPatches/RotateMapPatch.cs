@@ -6,24 +6,24 @@ namespace CameraPlus.HarmonyPatches
     internal class BeatLineManagerPatch
     {
         public static BeatLineManager Instance { get; private set; }
-        static void Postfix(BeatLineManager __Instance)
+        static void Postfix(BeatLineManager __instance)
         {
 #if DEBUG
-            Plugin.Log.Notice("BeatLineManager Start");
+            Logger.log.Notice("BeatLineManager Start");
 #endif
-            Instance = __Instance;
+            Instance = __instance;
         }
     }
     [HarmonyPatch(typeof(EnvironmentSpawnRotation), "OnEnable")]
     internal class EnvironmentSpawnRotationPatch
     {
         public static EnvironmentSpawnRotation Instance { get; private set; }
-        static void Postfix(EnvironmentSpawnRotation __Instance)
+        static void Postfix(EnvironmentSpawnRotation __instance)
         {
 #if DEBUG
-            Plugin.Log.Notice("EnvironmentSpawnRotation Start");
+            Logger.log.Notice("EnvironmentSpawnRotation Start");
 #endif
-            Instance = __Instance;
+            Instance = __instance;
         }
     }
 }

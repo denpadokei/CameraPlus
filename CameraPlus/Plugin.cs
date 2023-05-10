@@ -12,20 +12,19 @@ namespace CameraPlus
     [Plugin(RuntimeOptions.SingleStartInit)]
     public class Plugin
     {
-        public static Plugin Instance { get; private set; }
-        public static IPALogger Log { get; private set; }
-        public static string Name => "CameraPlus";
+        internal static Plugin instance { get; private set; }
+        internal static string Name => "CameraPlus";
         public static string MainCamera => "cameraplus";
 
         private Harmony _harmony;
-        public static CameraPlusController CameraController;
+        internal static CameraPlusController cameraController;
         [Init]
 
         public void Init(Config conf, IPALogger logger)
         {
-            Instance = this;
+            instance = this;
             PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
-            Log= logger;
+            Logger.log = logger;
         }
 
         [OnStart]
@@ -34,14 +33,14 @@ namespace CameraPlus
             _harmony = new Harmony("com.brian91292.beatsaber.cameraplus");
             _harmony.PatchAll(Assembly.GetExecutingAssembly());
 
-            CameraController = new GameObject("CameraPlusController").AddComponent<CameraPlusController>();
+            cameraController= new GameObject("CameraPlusController").AddComponent<CameraPlusController>();
         }
 
         [OnExit]
         public void OnApplicationQuit()
         {
-            if(CameraController)
-                GameObject.Destroy(CameraController);
+            if(cameraController)
+                GameObject.Destroy(cameraController);
             _harmony.UnpatchSelf();
         }
     }

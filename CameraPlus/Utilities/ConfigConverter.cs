@@ -37,7 +37,7 @@ namespace CameraPlus.Utilities
                                 Path.Combine(profilePath, dirInfo.Name,
                                 $"{fi.Name.Substring(0, fi.Name.Length - fi.Extension.Length)}.json"));
                     }
-                    Plugin.Log.Notice($"Profile Convert : {dirInfo.Name}");
+                    Logger.log.Notice($"Profile Convert : {dirInfo.Name}");
                     if (!Directory.Exists(Path.Combine(backupPath, dirInfo.Name)))
                     {
                         CameraUtilities.DirectoryCopy(dirInfo.FullName, Path.Combine(backupPath, dirInfo.Name), true);
@@ -63,7 +63,7 @@ namespace CameraPlus.Utilities
                         $"{fi.Name.Substring(0, fi.Name.Length - fi.Extension.Length)}.json"));
                 File.Copy(fi.FullName, Path.Combine(backupPath, fi.Name),true);
                 File.Delete(fi.FullName);
-                Plugin.Log.Notice($"Profile Convert : {fi.Name}");
+                Logger.log.Notice($"Profile Convert : {fi.Name}");
             }
         }
         internal static CameraConfig PreviousConfigToCameraConfig(PreviousConfig cfg,string CameraConfigPath)

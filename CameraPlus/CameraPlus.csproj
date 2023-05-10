@@ -201,6 +201,7 @@
     <Compile Include="HarmonyPatches\RoomAdjustPatch.cs" />
     <Compile Include="HarmonyPatches\RotateMapPatch.cs" />
     <Compile Include="HarmonyPatches\TransparentWallsPatch.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="Configuration\PluginConfig.cs" />
     <Compile Include="CameraPlusController.cs" />
@@ -217,7 +218,7 @@
     <Compile Include="UI\MenuSettingConverter.cs" />
     <Compile Include="Utilities\CameraUtilities.cs" />
     <Compile Include="Utilities\ConfigConverter.cs" />
-    <Compile Include="Utilities\Layers.cs" />
+    <Compile Include="Utilities\Layer.cs" />
     <Compile Include="Utilities\MultiplayerSession.cs" />
     <Compile Include="Utilities\Utilities.cs" />
     <Compile Include="VMCProtocol\ExternalSender.cs" />

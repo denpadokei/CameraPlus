@@ -10,8 +10,8 @@ namespace CameraPlus.Behaviours
 		private GameObject _cameraCube;
 		private GameObject _cameraQuad;
 
-		internal Material _previewMaterial = new Material(Plugin.CameraController.Shaders["BeatSaber/BlitCopyWithDepth"]);
-		internal Material _cubeMaterial = new Material(Plugin.CameraController.Shaders["BeatSaber/BlitCopyWithDepth"]);
+		internal Material _previewMaterial = new Material(Plugin.cameraController.Shaders["BeatSaber/BlitCopyWithDepth"]);
+		internal Material _cubeMaterial = new Material(Plugin.cameraController.Shaders["BeatSaber/BlitCopyWithDepth"]);
 
 		public bool IsDisplayMaterialVROnly
 		{
@@ -43,7 +43,7 @@ namespace CameraPlus.Behaviours
 			DontDestroyOnLoad(_cameraCube);
 			_cameraCube.GetComponent<MeshRenderer>().material = _cubeMaterial;
 			SetCameraCubeSize(PluginConfig.Instance.CameraCubeSize);
-			Plugin.Log.Notice($"Camera Aspect {cam._cam.aspect}");
+			Logger.log.Notice($"Camera Aspect {cam._cam.aspect}");
 			_cameraCube.name = "CameraCube";
 			_cameraCube.transform.SetParent(transform);
 			_cameraCube.transform.localPosition = Vector3.zero;

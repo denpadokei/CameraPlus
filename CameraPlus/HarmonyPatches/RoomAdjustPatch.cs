@@ -11,10 +11,10 @@ namespace CameraPlus.HarmonyPatches
 		internal static Vector3 position = new Vector3();
 		internal static Quaternion rotation = new Quaternion();
 
-		static void Postfix(MonoBehaviour __Instance)
+		static void Postfix(MonoBehaviour __instance)
 		{
-			position = __Instance.transform.position;
-			rotation = __Instance.transform.rotation;
+			position = __instance.transform.position;
+			rotation = __instance.transform.rotation;
 		}
 
 		[HarmonyTargetMethods]

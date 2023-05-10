@@ -8,11 +8,11 @@ namespace CameraPlus.HarmonyPatches
     internal class MultiplayerSessionManagerPatch
     {
         public static MultiplayerSessionManager Instance { get; private set; }
-        static void Postfix(MultiplayerSessionManager __Instance)
+        static void Postfix(MultiplayerSessionManager __instance)
         {
-            Instance = __Instance;
+            Instance = __instance;
             MultiplayerSession.Init(Instance);
-            Plugin.Log.Info($"Success Find SessionManager");
+            Logger.log.Info($"Success Find SessionManager");
         }
     }
 
@@ -21,12 +21,12 @@ namespace CameraPlus.HarmonyPatches
     {
         public static MultiplayerLobbyAvatarPlaceManager Instance { get; private set; }
         public static List<MultiplayerLobbyAvatarPlace> LobbyAvatarPlaces = null;
-        static void Postfix(MultiplayerLobbyAvatarPlaceManager __Instance, List<MultiplayerLobbyAvatarPlace> ____allPlaces)
+        static void Postfix(MultiplayerLobbyAvatarPlaceManager __instance, List<MultiplayerLobbyAvatarPlace> ____allPlaces)
         {
-            Instance = __Instance;
+            Instance = __instance;
             LobbyAvatarPlaces = ____allPlaces;
 #if DEBUG
-            Plugin.Log.Notice("Got MultiplayerLobbyAvatarPlaceManager");
+            Logger.log.Notice("Got MultiplayerLobbyAvatarPlaceManager");
 #endif
         }
     }
@@ -35,11 +35,11 @@ namespace CameraPlus.HarmonyPatches
     internal class MultiplayerLobbyControllerPatch
     {
         public static MultiplayerLobbyController Instance { get; private set; }
-        static void Postfix(MultiplayerLobbyController __Instance)
+        static void Postfix(MultiplayerLobbyController __instance)
         {
-            Instance = __Instance;
+            Instance = __instance;
 #if DEBUG
-            Plugin.Log.Notice("Got MultiplayerLobbyController");
+            Logger.log.Notice("Got MultiplayerLobbyController");
 #endif
         }
     }
@@ -47,11 +47,11 @@ namespace CameraPlus.HarmonyPatches
     internal class MultiplayerPlayersManagerPatch
     {
         public static MultiplayerPlayersManager Instance { get; private set; }
-        static void Postfix(MultiplayerPlayersManager __Instance)
+        static void Postfix(MultiplayerPlayersManager __instance)
         {
-            Instance = __Instance;
+            Instance = __instance;
 #if DEBUG
-            Plugin.Log.Notice("Got MultiplayerPlayersManager");
+            Logger.log.Notice("Got MultiplayerPlayersManager");
 #endif
         }
     }
@@ -59,14 +59,14 @@ namespace CameraPlus.HarmonyPatches
     internal class MultiplayerScoreProviderPatch
     {
         public static MultiplayerScoreProvider Instance = null;
-        static void Postfix(MultiplayerScoreProvider __Instance)
+        static void Postfix(MultiplayerScoreProvider __instance)
         {
             if (Instance == null)
             {
 #if DEBUG
-                Plugin.Log.Notice("Got MultiplayerScoreProvider");
+                Logger.log.Notice("Got MultiplayerScoreProvider");
 #endif
-                Instance = __Instance;
+                Instance = __instance;
             }
         }
     }

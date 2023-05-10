@@ -16,7 +16,7 @@ namespace CameraPlus.HarmonyPatches
 		static void Prefix(IDifficultyBeatmap difficultyBeatmap, GameplayModifiers gameplayModifiers)
 		{
 #if DEBUG
-			Plugin.Log.Notice("Got level data!");
+			Logger.log.Notice("Got level data!");
 #endif
 			LevelDataPatch.difficultyBeatmap = difficultyBeatmap;
 

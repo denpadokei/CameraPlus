@@ -162,14 +162,14 @@ namespace CameraPlus.Behaviours
 
             AddMovementScript();
 
-            Plugin.CameraController.ActiveSceneChanged += SceneManager_activeSceneChanged;
+            Plugin.cameraController.ActiveSceneChanged += SceneManager_activeSceneChanged;
             SceneManager_activeSceneChanged(new Scene(), new Scene());
-            Plugin.Log.Notice($"Camera \"{Path.GetFileName(Config.FilePath)}\" successfully initialized! {Convert.ToString(_cam.cullingMask, 16)}");
+            Logger.log.Notice($"Camera \"{Path.GetFileName(Config.FilePath)}\" successfully initialized! {Convert.ToString(_cam.cullingMask, 16)}");
 
             if (Config.vmcProtocol.mode == VMCProtocolMode.Sender)
                 InitExternalSender();
 
-            Plugin.CameraController.OnFPFCToggleEvent.AddListener(OnFPFCToglleEvent);
+            Plugin.cameraController.OnFPFCToggleEvent.AddListener(OnFPFCToglleEvent);
 
             if (Config.webCamera.autoConnect)
                 CreateWebCamScreen();
@@ -206,12 +206,12 @@ namespace CameraPlus.Behaviours
         public void InitExternalSender()
         {
             if (Config.vmcProtocol.mode == VMCProtocolMode.Sender)
-                Plugin.CameraController._externalSender.AddSendTask(this, Config.vmcProtocol.address, Config.vmcProtocol.port);
+                Plugin.cameraController.externalSender.AddSendTask(this, Config.vmcProtocol.address, Config.vmcProtocol.port);
         }
         public void InitExternalReceiver()
         {
 #if WithVMCAvatar
-            if (Config.vmcProtocol.mode == VMCProtocolMode.Receiver && Plugin.CameraController.existsVMCAvatar)
+            if (Config.vmcProtocol.mode == VMCProtocolMode.Receiver && Plugin.cameraController.existsVMCAvatar)
             {
                 marionette = this.gameObject.AddComponent<VMCProtocol.VMCAvatarMarionette>();
                 ClearMovementScript();
@@ -224,7 +224,7 @@ namespace CameraPlus.Behaviours
             if (marionette)
                 Destroy(marionette);
 #endif
-            Plugin.CameraController._externalSender.RemoveTask(this);
+            Plugin.cameraController.externalSender.RemoveTask(this);
 
             if (Config.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
                 AddMovementScript();
@@ -234,7 +234,7 @@ namespace CameraPlus.Behaviours
         protected virtual void OnDestroy()
         {
             Config.ConfigChangedEvent -= PluginOnConfigChangedEvent;
-            Plugin.CameraController.ActiveSceneChanged -= SceneManager_activeSceneChanged;
+            Plugin.cameraController.ActiveSceneChanged -= SceneManager_activeSceneChanged;
 
             _cameraMovement?.Shutdown();
             // Close our context menu if its open, and destroy all associated controls, otherwise the game will lock up
@@ -249,7 +249,7 @@ namespace CameraPlus.Behaviours
             if (adjustParent)
                 Destroy(adjustParent);
 
-            Plugin.CameraController._externalSender.RemoveTask(this);
+            Plugin.cameraController.externalSender.RemoveTask(this);
 
             if (webCamScreen)
                 DisableWebCamScreen();
@@ -341,7 +341,7 @@ namespace CameraPlus.Behaviours
             }
             catch (Exception ex)
             {
-                Plugin.Log.Error($"Fail CreateScreenRenderTexture {ex}");
+                Logger.log.Error($"Fail CreateScreenRenderTexture {ex}");
             }
         }
         public virtual void SceneManager_activeSceneChanged(Scene from, Scene to)
@@ -353,7 +353,7 @@ namespace CameraPlus.Behaviours
 
         private void OnFPFCToglleEvent()
         {
-            if (FPFCPatch.Instance != null)
+            if (FPFCPatch.instance != null)
             {
                 if (FPFCPatch.isInstanceFPFC)
                 {
@@ -405,7 +405,7 @@ namespace CameraPlus.Behaviours
                 if (ThirdPerson)
                 {
 #if WithVMCAvatar
-                    if (Plugin.CameraController.existsVMCAvatar)
+                    if (Plugin.cameraController.existsVMCAvatar)
                         if (Config.vmcProtocol.mode == VMCProtocolMode.Receiver && marionette)
                             if (marionette.receivedData)
                             {
@@ -420,7 +420,7 @@ namespace CameraPlus.Behaviours
                     HandleMultiPlayerGame();
                     HandleThirdPerson360();
 
-                    if (Config.cameraExtensions.followNoodlePlayerTrack && Plugin.CameraController.origin)
+                    if (Config.cameraExtensions.followNoodlePlayerTrack && Plugin.cameraController.origin)
                     {
                         if (adjustOffset == null)
                         {
@@ -428,8 +428,8 @@ namespace CameraPlus.Behaviours
                             adjustParent = new GameObject("OriginParent");
                             adjustOffset.transform.SetParent(adjustParent.transform);
                         }
-                        adjustParent.transform.position = Plugin.CameraController.origin.position;
-                        adjustParent.transform.rotation = Plugin.CameraController.origin.rotation * Quaternion.Inverse(RoomAdjustPatch.rotation);
+                        adjustParent.transform.position = Plugin.cameraController.origin.position;
+                        adjustParent.transform.rotation = Plugin.cameraController.origin.rotation * Quaternion.Inverse(RoomAdjustPatch.rotation);
 
                         adjustOffset.transform.localPosition = ThirdPersonPos - RoomAdjustPatch.position;
                         adjustOffset.transform.localEulerAngles = ThirdPersonRot;
@@ -488,7 +488,7 @@ namespace CameraPlus.Behaviours
             }
             catch(Exception ex)
             {
-                Plugin.Log.Error($"CameraPlus {this.name}, Error in LateUpdate : {ex}");
+                Logger.log.Error($"CameraPlus {this.name}, Error in LateUpdate : {ex}");
             }
         }
 
@@ -546,7 +546,7 @@ namespace CameraPlus.Behaviours
             }
             catch (Exception ex)
             {
-                Plugin.Log.Error($"HandleMultiPlayerLobby Error {ex.Message}");
+                Logger.log.Error($"HandleMultiPlayerLobby Error {ex.Message}");
             }
         }
         private void HandleMultiPlayerGame()
@@ -573,7 +573,7 @@ namespace CameraPlus.Behaviours
             }
             catch (Exception ex)
             {
-                Plugin.Log.Error($"{this.name} HandleMultiPlayerGame Error {ex.Message}");
+                Logger.log.Error($"{this.name} HandleMultiPlayerGame Error {ex.Message}");
             }
         }
 
@@ -646,7 +646,7 @@ namespace CameraPlus.Behaviours
         public bool IsTopmostRenderAreaAtPos(Vector2 mousePos)
         {
             if (!IsWithinRenderArea(mousePos, Config)) return false;
-            foreach (CameraPlusBehaviour c in Plugin.CameraController.Cameras.Values.ToArray())
+            foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.ToArray())
             {
                 if (c == this) continue;
                 if (!IsWithinRenderArea(mousePos, c.Config) && !c._mouseHeld) continue;
@@ -666,7 +666,7 @@ namespace CameraPlus.Behaviours
 
         public static CameraPlusBehaviour GetTopmostInstanceAtCursorPos()
         {
-            foreach (CameraPlusBehaviour c in Plugin.CameraController.Cameras.Values.ToArray())
+            foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.ToArray())
             {
                 if (c._isTopmostAtCursorPos)
                     return c;

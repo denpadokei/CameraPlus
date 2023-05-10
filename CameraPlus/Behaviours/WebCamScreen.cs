@@ -13,7 +13,7 @@ namespace CameraPlus.Behaviours
         internal int selectedCamera = 0;
         internal Canvas webCamCanvas = null;
         private RectTransform rect;
-        private Material rawMaterial = new Material(Plugin.CameraController.Shaders["ChromaKey/Unlit/Cutout"]);
+        private Material rawMaterial = new Material(Plugin.cameraController.Shaders["ChromaKey/Unlit/Cutout"]);
 
         internal bool colorPickState = false;
 
@@ -124,7 +124,7 @@ namespace CameraPlus.Behaviours
         }
         internal void ChangeCamera(string webCamName)
         {
-            int cameras = Plugin.CameraController.webCamDevices.Length;
+            int cameras = Plugin.cameraController.webCamDevices.Length;
             if (cameras < 1) return;
 
             selectedCamera++;
