@@ -30,7 +30,6 @@ namespace CameraPlus
         internal Transform origin;
 
         internal Dictionary<string, Shader> Shaders = new Dictionary<string, Shader>();
-        internal Dictionary<string, Shader> EffectShaders = new Dictionary<string, Shader>();
         private RenderTexture _renderTexture;
         private ScreenCameraBehaviour _screenCameraBehaviour;
         private CameraMoverPointer _cameraMovePointer;
@@ -101,8 +100,6 @@ namespace CameraPlus
         {
             AssetBundle assetBundle = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraPlus.Resources.Shader.customshader"));
             Shaders = assetBundle.LoadAllAssets<Shader>().ToDictionary(x => x.name);
-            AssetBundle effectAsset = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraPlus.Resources.Shader.effectshader"));
-            EffectShaders = effectAsset.LoadAllAssets<Shader>().ToDictionary(x => x.name);
         }
 
         private void OnDestroy()

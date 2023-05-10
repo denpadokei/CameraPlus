@@ -235,7 +235,6 @@
     <None Include="CameraPlus.csproj.user" Condition="Exists('CameraPlus.csproj.user')" />
     <EmbeddedResource Include="Resources\ExampleMovementScript.json" />
     <EmbeddedResource Include="Resources\Shader\customshader" />
-    <EmbeddedResource Include="Resources\Shader\effectshader" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BeatSaberModdingTools.Tasks">
