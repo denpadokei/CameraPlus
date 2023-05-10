@@ -13,7 +13,7 @@ using CameraPlus.HarmonyPatches;
 
 namespace CameraPlus.Utilities
 {
-    public class CameraUtilities
+    public static class CameraUtilities
     {
         #region ** DefineStatic **
         internal static string profilePath = Path.Combine(UnityGame.UserDataPath, Plugin.Name, "Profiles");
@@ -401,5 +401,23 @@ namespace CameraPlus.Utilities
                 Directory.CreateDirectory(sourceDirName);
         }
         #endregion
+
+
+        public static string GetFullPath(this GameObject obj)
+        {
+            return GetFullPath(obj.transform);
+        }
+
+        public static string GetFullPath(this Transform t)
+        {
+            string path = t.name;
+            var parent = t.parent;
+            while (parent)
+            {
+                path = $"{parent.name}/{path}";
+                parent = parent.parent;
+            }
+            return path;
+        }
     }
 }

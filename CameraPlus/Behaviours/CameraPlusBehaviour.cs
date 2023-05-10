@@ -353,18 +353,15 @@ namespace CameraPlus.Behaviours
 
         private void OnFPFCToglleEvent()
         {
-            if (FPFCPatch.instance != null)
+            if (FPFCPatch.isFPFC)
             {
-                if (FPFCPatch.isInstanceFPFC)
-                {
-                    turnToHead = false;
-                    _screenCamera.SetLayer(Config.layer);
-                }
-                else
-                {
-                    turnToHead = Config.cameraExtensions.turnToHead;
-                    _screenCamera.SetLayer(Config.layer + 1000);
-                }
+                turnToHead = false;
+                _screenCamera.SetLayer(Config.layer);
+            }
+            else
+            {
+                turnToHead = Config.cameraExtensions.turnToHead;
+                _screenCamera.SetLayer(Config.layer + 1000);
             }
         }
 
@@ -457,7 +454,7 @@ namespace CameraPlus.Behaviours
                     {
                         effectElements.dofFocusDistance = (Camera.main.transform.position - transform.position).magnitude;
                     }
-                    if (Camera.main && turnToHead && !FPFCPatch.isInstanceFPFC && !Config.cameraExtensions.follow360map)
+                    if (Camera.main && turnToHead && !FPFCPatch.isFPFC && !Config.cameraExtensions.follow360map)
                     {
                         turnToTarget = Camera.main.transform;
                         turnToTarget.transform.position += turnToHeadOffset;

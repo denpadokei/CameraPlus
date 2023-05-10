@@ -110,6 +110,21 @@ namespace CameraPlus
             instance = null; // This MonoBehaviour is being destroyed, so set the static instance property to null.
         }
 
+        private void Update()
+        {
+            if(FPFCPatch.instance != null) 
+            {
+                if (FPFCPatch.FPFCEventSystemTransform.hasChanged)
+                {
+                    if (CameraUtilities.GetFullPath(FPFCPatch.FPFCEventSystemTransform) == "Wrapper/MenuCore/UI/EventSystem")
+                        FPFCPatch.isFPFC = false;
+                    else
+                        FPFCPatch.isFPFC = true;
+                    OnFPFCToggleEvent?.Invoke();
+                    FPFCPatch.FPFCEventSystemTransform.hasChanged = false;
+                }
+            }
+        }
         public void OnActiveSceneChanged(Scene from, Scene to)
         {
             if (isRestartingSong && to.name != "GameCore") return;

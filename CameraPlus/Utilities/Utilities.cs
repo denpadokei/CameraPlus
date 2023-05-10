@@ -80,5 +80,6 @@ namespace CameraPlus.Utilities
                 return false;
             }
         }
+
     }
 }
