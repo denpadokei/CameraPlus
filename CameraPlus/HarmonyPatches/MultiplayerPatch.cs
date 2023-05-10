@@ -12,7 +12,7 @@ namespace CameraPlus.HarmonyPatches
         {
             Instance = __instance;
             MultiplayerSession.Init(Instance);
-            Logger.log.Info($"Success Find SessionManager");
+            Plugin.Log.Info($"Success Find SessionManager");
         }
     }
 
@@ -26,7 +26,7 @@ namespace CameraPlus.HarmonyPatches
             Instance = __instance;
             LobbyAvatarPlaces = ____allPlaces;
 #if DEBUG
-            Logger.log.Notice("Got MultiplayerLobbyAvatarPlaceManager");
+            Plugin.Log.Notice("Got MultiplayerLobbyAvatarPlaceManager");
 #endif
         }
     }
@@ -39,7 +39,7 @@ namespace CameraPlus.HarmonyPatches
         {
             Instance = __instance;
 #if DEBUG
-            Logger.log.Notice("Got MultiplayerLobbyController");
+            Plugin.Log.Notice("Got MultiplayerLobbyController");
 #endif
         }
     }
@@ -51,7 +51,7 @@ namespace CameraPlus.HarmonyPatches
         {
             Instance = __instance;
 #if DEBUG
-            Logger.log.Notice("Got MultiplayerPlayersManager");
+            Plugin.Log.Notice("Got MultiplayerPlayersManager");
 #endif
         }
     }
@@ -64,7 +64,7 @@ namespace CameraPlus.HarmonyPatches
             if (Instance == null)
             {
 #if DEBUG
-                Logger.log.Notice("Got MultiplayerScoreProvider");
+                Plugin.Log.Notice("Got MultiplayerScoreProvider");
 #endif
                 Instance = __instance;
             }

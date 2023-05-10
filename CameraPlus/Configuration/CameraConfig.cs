@@ -320,7 +320,7 @@ namespace CameraPlus.Configuration
                 File.WriteAllText(FilePath, json);
             }
             catch (Exception ex){
-                Logger.log.Error($"Failed to save {cam.name}\n{ex}");
+                Plugin.Log.Error($"Failed to save {cam.name}\n{ex}");
             }
             _saving = false;
         }
@@ -337,7 +337,7 @@ namespace CameraPlus.Configuration
             }
             catch(Exception ex)
             {
-                Logger.log.Error($"Config json read error.\n{ex.Message}");
+                Plugin.Log.Error($"Config json read error.\n{ex.Message}");
                 return false;
             }
             return true;

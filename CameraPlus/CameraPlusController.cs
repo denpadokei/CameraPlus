@@ -47,7 +47,7 @@ namespace CameraPlus
         {
             if (instance != null)
             {
-                Logger.log?.Warn($"Instance of {this.GetType().Name} already exists, destroying.");
+                Plugin.Log?.Warn($"Instance of {this.GetType().Name} already exists, destroying.");
                 GameObject.DestroyImmediate(this);
                 return;
             }
@@ -106,7 +106,7 @@ namespace CameraPlus
         {
             MultiplayerSession.Close();
             SceneManager.activeSceneChanged -= this.OnActiveSceneChanged;
-            Logger.log?.Debug($"{name}: OnDestroy()");
+            Plugin.Log?.Debug($"{name}: OnDestroy()");
             instance = null; // This MonoBehaviour is being destroyed, so set the static instance property to null.
         }
 
@@ -116,7 +116,7 @@ namespace CameraPlus
             if (initialized || (!initialized && (to.name == "HealthWarning" || to.name == "MainMenu")))
                 SharedCoroutineStarter.instance.StartCoroutine(DelayedActiveSceneChanged(from, to));
 #if DEBUG
-            Logger.log.Info($"Scene Change {from.name} to {to.name}");
+            Plugin.Log.Info($"Scene Change {from.name} to {to.name}");
 #endif
         }
 
@@ -171,7 +171,7 @@ namespace CameraPlus
                         }
                         catch (Exception ex)
                         {
-                            Logger.log.Error($"Exception while invoking ActiveSceneChanged:" +
+                            Plugin.Log.Error($"Exception while invoking ActiveSceneChanged:" +
                                 $" {ex.Message}\n{ex.StackTrace}");
                         }
                     }

@@ -59,24 +59,24 @@ namespace CameraPlus.Utilities
                     {
                         if (meta.HVersion >= new Hive.Versioning.Version(ver))
                         {
-                            Logger.log.Debug($"Found {modName} {meta.HVersion.ToString()}.");
+                            Plugin.Log.Debug($"Found {modName} {meta.HVersion.ToString()}.");
                             return true;
                         }
                         else
                         {
-                            Logger.log.Debug($"{modName}  {meta.HVersion.ToString()} was lower version.");
+                            Plugin.Log.Debug($"{modName}  {meta.HVersion.ToString()} was lower version.");
                             return false;
                         }
                     }
-                    Logger.log.Debug($"Found {modName}.");
+                    Plugin.Log.Debug($"Found {modName}.");
                     return true;
                 }
-                Logger.log.Debug($"{modName} was not found.");
+                Plugin.Log.Debug($"{modName} was not found.");
                 return false;
             }
             catch
             {
-                Logger.log.Debug($"{modName} serach error.");
+                Plugin.Log.Debug($"{modName} serach error.");
                 return false;
             }
         }

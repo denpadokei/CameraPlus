@@ -164,7 +164,7 @@ namespace CameraPlus.Behaviours
 
             Plugin.cameraController.ActiveSceneChanged += SceneManager_activeSceneChanged;
             SceneManager_activeSceneChanged(new Scene(), new Scene());
-            Logger.log.Notice($"Camera \"{Path.GetFileName(Config.FilePath)}\" successfully initialized! {Convert.ToString(_cam.cullingMask, 16)}");
+            Plugin.Log.Notice($"Camera \"{Path.GetFileName(Config.FilePath)}\" successfully initialized! {Convert.ToString(_cam.cullingMask, 16)}");
 
             if (Config.vmcProtocol.mode == VMCProtocolMode.Sender)
                 InitExternalSender();
@@ -341,7 +341,7 @@ namespace CameraPlus.Behaviours
             }
             catch (Exception ex)
             {
-                Logger.log.Error($"Fail CreateScreenRenderTexture {ex}");
+                Plugin.Log.Error($"Fail CreateScreenRenderTexture {ex}");
             }
         }
         public virtual void SceneManager_activeSceneChanged(Scene from, Scene to)
@@ -488,7 +488,7 @@ namespace CameraPlus.Behaviours
             }
             catch(Exception ex)
             {
-                Logger.log.Error($"CameraPlus {this.name}, Error in LateUpdate : {ex}");
+                Plugin.Log.Error($"CameraPlus {this.name}, Error in LateUpdate : {ex}");
             }
         }
 
@@ -546,7 +546,7 @@ namespace CameraPlus.Behaviours
             }
             catch (Exception ex)
             {
-                Logger.log.Error($"HandleMultiPlayerLobby Error {ex.Message}");
+                Plugin.Log.Error($"HandleMultiPlayerLobby Error {ex.Message}");
             }
         }
         private void HandleMultiPlayerGame()
@@ -573,7 +573,7 @@ namespace CameraPlus.Behaviours
             }
             catch (Exception ex)
             {
-                Logger.log.Error($"{this.name} HandleMultiPlayerGame Error {ex.Message}");
+                Plugin.Log.Error($"{this.name} HandleMultiPlayerGame Error {ex.Message}");
             }
         }
 

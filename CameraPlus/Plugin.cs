@@ -13,6 +13,8 @@ namespace CameraPlus
     public class Plugin
     {
         internal static Plugin instance { get; private set; }
+        public static IPALogger Log { get; private set; }
+
         internal static string Name => "CameraPlus";
         public static string MainCamera => "cameraplus";
 
@@ -24,7 +26,7 @@ namespace CameraPlus
         {
             instance = this;
             PluginConfig.Instance = conf.Generated<Configuration.PluginConfig>();
-            Logger.log = logger;
+            Log = logger;
         }
 
         [OnStart]

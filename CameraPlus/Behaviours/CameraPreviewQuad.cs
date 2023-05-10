@@ -43,7 +43,7 @@ namespace CameraPlus.Behaviours
 			DontDestroyOnLoad(_cameraCube);
 			_cameraCube.GetComponent<MeshRenderer>().material = _cubeMaterial;
 			SetCameraCubeSize(PluginConfig.Instance.CameraCubeSize);
-			Logger.log.Notice($"Camera Aspect {cam._cam.aspect}");
+			Plugin.Log.Notice($"Camera Aspect {cam._cam.aspect}");
 			_cameraCube.name = "CameraCube";
 			_cameraCube.transform.SetParent(transform);
 			_cameraCube.transform.localPosition = Vector3.zero;

@@ -43,7 +43,7 @@ namespace CameraPlus.Behaviours
             _vrControllerTriggerd = false;
             _state = CalState.WebCamPosition;
             if (_vrPointer == null)
-                Logger.log.Error($"VRController Null");
+                Plugin.Log.Error($"VRController Null");
         }
 
         private void Update()

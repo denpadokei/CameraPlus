@@ -146,7 +146,7 @@ namespace CameraPlus.UI
                         lock (Plugin.cameraController.Cameras)
                         {
                             string cameraName = CameraUtilities.GetNextCameraName();
-                            Logger.log.Notice($"Adding new config with name {cameraName}.json");
+                            Plugin.Log.Notice($"Adding new config with name {cameraName}.json");
                             CameraUtilities.AddNewCamera(cameraName);
                             CameraUtilities.ReloadCameras();
                             parentBehaviour.CloseContextMenu();
@@ -157,7 +157,7 @@ namespace CameraPlus.UI
                         lock (Plugin.cameraController.Cameras)
                         {
                             string cameraName = CameraUtilities.GetNextCameraName();
-                            Logger.log.Notice($"Adding {cameraName}");
+                            Plugin.Log.Notice($"Adding {cameraName}");
                             CameraUtilities.AddNewCamera(cameraName, parentBehaviour.Config);
                             CameraUtilities.ReloadCameras();
                             parentBehaviour.CloseContextMenu();
@@ -172,7 +172,7 @@ namespace CameraPlus.UI
                                 parentBehaviour._isCameraDestroyed = true;
                                 parentBehaviour.CreateScreenRenderTexture();
                                 parentBehaviour.CloseContextMenu();
-                                Logger.log.Notice("Camera removed!");
+                                Plugin.Log.Notice("Camera removed!");
                             }
                         }
                     }

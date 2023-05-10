@@ -10,7 +10,7 @@ namespace CameraPlus.HarmonyPatches
         static void Postfix(AudioTimeSyncController __instance)
         {
 #if DEBUG
-            Logger.log.Notice("AudioTimeSyncController Awake");
+            Plugin.Log.Notice("AudioTimeSyncController Awake");
 #endif
             Instance = __instance;
         }
@@ -21,7 +21,7 @@ namespace CameraPlus.HarmonyPatches
         static void Postfix(AudioTimeSyncController __instance)
         {
 #if DEBUG
-            Logger.log.Notice("AudioTimeSyncController StartSong");
+            Plugin.Log.Notice("AudioTimeSyncController StartSong");
 #endif
             CameraUtilities.SetAllCameraCulling();
         }

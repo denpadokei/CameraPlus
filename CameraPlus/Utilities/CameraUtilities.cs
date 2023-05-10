@@ -53,7 +53,7 @@ namespace CameraPlus.Utilities
                             Directory.CreateDirectory(Path.GetDirectoryName(path));
 
                         File.Move(oldPath, path);
-                        Logger.log.Notice($"Copied old {Plugin.MainCamera}.json into new {Plugin.Name} folder in UserData");
+                        Plugin.Log.Notice($"Copied old {Plugin.MainCamera}.json into new {Plugin.Name} folder in UserData");
                     }
                 }
 
@@ -84,11 +84,11 @@ namespace CameraPlus.Utilities
                 config.FirstPersonPositionOffset = config.DefaultFirstPersonPositionOffset;
                 config.FirstPersonRotationOffset = config.DefaultFirstPersonRotationOffset;
                 config.Save();
-                Logger.log.Notice($"Success creating new camera \"{cameraName}\"");
+                Plugin.Log.Notice($"Success creating new camera \"{cameraName}\"");
             }
             else
             {
-                Logger.log.Notice($"Camera \"{cameraName}\" already exists!");
+                Plugin.Log.Notice($"Camera \"{cameraName}\" already exists!");
             }
         }
 
@@ -128,7 +128,7 @@ namespace CameraPlus.Utilities
                 }
                 else
                 {
-                    Logger.log.Warn("One does not simply remove the main camera!");
+                    Plugin.Log.Warn("One does not simply remove the main camera!");
                 }
             }
             catch (Exception ex)
@@ -138,7 +138,7 @@ namespace CameraPlus.Utilities
                     ? $"Could not remove camera with configuration: '{Path.GetFileName(instance.Config.FilePath)}'."
                     : $"Could not remove camera.");
 
-                Logger.log.Error($"{msg} CameraUtilities.RemoveCamera() threw an exception:" +
+                Plugin.Log.Error($"{msg} CameraUtilities.RemoveCamera() threw an exception:" +
                     $" {ex.Message}\n{ex.StackTrace}");
             }
             return false;
@@ -155,7 +155,7 @@ namespace CameraPlus.Utilities
             }
             catch (Exception ex)
             {
-                Logger.log.Error($"Exception cameras culling! Exception:" +
+                Plugin.Log.Error($"Exception cameras culling! Exception:" +
                     $" {ex.Message}\n{ex.StackTrace}");
             }
         }
@@ -177,7 +177,7 @@ namespace CameraPlus.Utilities
                     string fileName = Path.GetFileName(filePath);
                     if (fileName.EndsWith(".json") && !Plugin.cameraController.Cameras.ContainsKey(fileName))
                     {
-                        Logger.log.Notice($"Found config {filePath}!");
+                        Plugin.Log.Notice($"Found config {filePath}!");
 
                         CameraConfig Config = new CameraConfig(filePath);
                         if (Config.configLoaded)
@@ -191,7 +191,7 @@ namespace CameraPlus.Utilities
             }
             catch (Exception ex)
             {
-                Logger.log.Error($"Exception while reloading cameras! Exception:" +
+                Plugin.Log.Error($"Exception while reloading cameras! Exception:" +
                     $" {ex.Message}\n{ex.StackTrace}");
             }
         }
@@ -216,7 +216,7 @@ namespace CameraPlus.Utilities
                 return;
             if (Directory.GetFiles(dir.FullName, "*.json").Length <= 0)
             {
-                Logger.log.Error($"Not Found CameraConfig Json in \"{dir.FullName}\"");
+                Plugin.Log.Error($"Not Found CameraConfig Json in \"{dir.FullName}\"");
                 return;
             }
 
