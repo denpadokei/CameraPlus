@@ -43,6 +43,7 @@ namespace CameraPlus.Utilities
 
             if (!File.Exists(path))
             {
+                /*
                 // Try to copy their old config file into the new camera location
                 if (cameraName == Plugin.MainCamera)
                 {
@@ -56,7 +57,7 @@ namespace CameraPlus.Utilities
                         Plugin.Log.Notice($"Copied old {Plugin.MainCamera}.json into new {Plugin.Name} folder in UserData");
                     }
                 }
-
+                */
                 CameraConfig config = null;
                 if (CopyConfig != null)
                     File.Copy(CopyConfig.FilePath, path, true);
