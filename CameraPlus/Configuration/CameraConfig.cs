@@ -365,48 +365,48 @@ namespace CameraPlus.Configuration
             {
                 if (thirdPerson)
                 {
-                    builder |= 1 << Layer.OnlyInThirdPerson;
-                    builder &= ~(1 << Layer.OnlyInFirstPerson);
+                    builder |= 1 << Layers.OnlyInThirdPerson;
+                    builder &= ~(1 << Layers.OnlyInFirstPerson);
                 }
                 else
                 {
-                    builder |= 1 << Layer.OnlyInFirstPerson;
-                    builder &= ~(1 << Layer.OnlyInThirdPerson);
+                    builder |= 1 << Layers.OnlyInFirstPerson;
+                    builder &= ~(1 << Layers.OnlyInThirdPerson);
                 }
-                builder |= 1 << Layer.AlwaysVisible;
+                builder |= 1 << Layers.AlwaysVisible;
             }
             else
             {
-                builder &= ~(1 << Layer.OnlyInThirdPerson);
-                builder &= ~(1 << Layer.OnlyInFirstPerson);
-                builder &= ~(1 << Layer.AlwaysVisible);
+                builder &= ~(1 << Layers.OnlyInThirdPerson);
+                builder &= ~(1 << Layers.OnlyInFirstPerson);
+                builder &= ~(1 << Layers.AlwaysVisible);
             }
             if (visibleObject.debris.HasValue)
             {
                 if (visibleObject.debris.Value)
-                    builder |= (1 << Layer.NotesDebriLayer);
+                    builder |= (1 << Layers.NotesDebriLayer);
                 else
-                    builder &= ~(1 << Layer.NotesDebriLayer);
+                    builder &= ~(1 << Layers.NotesDebriLayer);
             }
             else
             {
                 if (layerSetting.debris != DebriVisibility.Link)
                 {
                     if (layerSetting.debris == DebriVisibility.Visible)
-                        builder |= (1 << Layer.NotesDebriLayer);
+                        builder |= (1 << Layers.NotesDebriLayer);
                     else
-                        builder &= ~(1 << Layer.NotesDebriLayer);
+                        builder &= ~(1 << Layers.NotesDebriLayer);
                 }
             }
             if (visibleObject.ui.HasValue ? visibleObject.ui.Value : layerSetting.ui)
-                builder |= (1 << Layer.UI);
+                builder |= (1 << Layers.UI);
             else
-                builder &= ~(1 << Layer.UI);
+                builder &= ~(1 << Layers.UI);
 
             if (visibleObject.saber.HasValue ? visibleObject.saber.Value : layerSetting.saber)
-                builder |= 1 << Layer.Saber;
+                builder |= 1 << Layers.Saber;
             else
-                builder &= ~(1 << Layer.Saber);
+                builder &= ~(1 << Layers.Saber);
 
             if (visibleObject.wall.HasValue ? visibleObject.wall.Value : layerSetting.wall)
                 builder |= 1 << TransparentWallsPatch.WallLayerMask;
@@ -414,19 +414,19 @@ namespace CameraPlus.Configuration
                 builder &= ~(1 << TransparentWallsPatch.WallLayerMask);
 
             if (visibleObject.wallFrame.HasValue ? visibleObject.wallFrame.Value : layerSetting.wallFrame)
-                builder |= 1 << Layer.Obstracle;
+                builder |= 1 << Layers.Obstracle;
             else
-                builder &= ~(1 << Layer.Obstracle);
+                builder &= ~(1 << Layers.Obstracle);
 
             if (visibleObject.notes.HasValue ? visibleObject.notes.Value : layerSetting.notes)
             {
-                builder &= ~(1 << Layer.CustomNoteLayer);
-                builder |= 1 << Layer.Notes;
+                builder &= ~(1 << Layers.CustomNoteLayer);
+                builder |= 1 << Layers.Notes;
             }
             else
             {
-                builder &= ~(1 << Layer.CustomNoteLayer);
-                builder &= ~(1 << Layer.Notes);
+                builder &= ~(1 << Layers.CustomNoteLayer);
+                builder &= ~(1 << Layers.Notes);
             }
 
             cam._cam.cullingMask = builder;

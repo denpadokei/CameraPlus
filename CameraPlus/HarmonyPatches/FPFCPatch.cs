@@ -7,12 +7,12 @@ namespace CameraPlus.HarmonyPatches
     [HarmonyPatch]
     internal class FPFCPatch
     {
-		public static FirstPersonFlyingController instance { get; private set; } = null;
-		//public static bool isInstanceFPFC => instance != null;
+		public static FirstPersonFlyingController Instance { get; private set; } = null;
+		//public static bool isInstanceFPFC => Instance != null;
 		public static bool isInstanceFPFC =false;
-		static void Postfix(FirstPersonFlyingController __instance)
+		static void Postfix(FirstPersonFlyingController __Instance)
 		{
-			instance = __instance;
+			Instance = __Instance;
 		}
 		[HarmonyTargetMethods]
 		static IEnumerable<MethodBase> TargetMethods()

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CameraPlus.Utilities
 {
-    internal class CustomUtils
+    public class CustomUtils
     {
         public static Texture2D LoadTextureRaw(byte[] file)
         {

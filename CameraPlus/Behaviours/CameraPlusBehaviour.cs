@@ -206,7 +206,7 @@ namespace CameraPlus.Behaviours
         public void InitExternalSender()
         {
             if (Config.vmcProtocol.mode == VMCProtocolMode.Sender)
-                Plugin.CameraController.externalSender.AddSendTask(this, Config.vmcProtocol.address, Config.vmcProtocol.port);
+                Plugin.CameraController._externalSender.AddSendTask(this, Config.vmcProtocol.address, Config.vmcProtocol.port);
         }
         public void InitExternalReceiver()
         {
@@ -224,7 +224,7 @@ namespace CameraPlus.Behaviours
             if (marionette)
                 Destroy(marionette);
 #endif
-            Plugin.CameraController.externalSender.RemoveTask(this);
+            Plugin.CameraController._externalSender.RemoveTask(this);
 
             if (Config.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
                 AddMovementScript();
@@ -249,7 +249,7 @@ namespace CameraPlus.Behaviours
             if (adjustParent)
                 Destroy(adjustParent);
 
-            Plugin.CameraController.externalSender.RemoveTask(this);
+            Plugin.CameraController._externalSender.RemoveTask(this);
 
             if (webCamScreen)
                 DisableWebCamScreen();
@@ -353,7 +353,7 @@ namespace CameraPlus.Behaviours
 
         private void OnFPFCToglleEvent()
         {
-            if (FPFCPatch.instance != null)
+            if (FPFCPatch.Instance != null)
             {
                 if (FPFCPatch.isInstanceFPFC)
                 {

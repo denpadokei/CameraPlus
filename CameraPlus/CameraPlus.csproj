@@ -217,7 +217,7 @@
     <Compile Include="UI\MenuSettingConverter.cs" />
     <Compile Include="Utilities\CameraUtilities.cs" />
     <Compile Include="Utilities\ConfigConverter.cs" />
-    <Compile Include="Utilities\Layer.cs" />
+    <Compile Include="Utilities\Layers.cs" />
     <Compile Include="Utilities\MultiplayerSession.cs" />
     <Compile Include="Utilities\Utilities.cs" />
     <Compile Include="VMCProtocol\ExternalSender.cs" />

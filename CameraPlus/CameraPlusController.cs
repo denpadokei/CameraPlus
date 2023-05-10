@@ -19,9 +19,10 @@ namespace CameraPlus
 {
     public class CameraPlusController : MonoBehaviour
     {
-        internal Action<Scene, Scene> ActiveSceneChanged;
-        internal static CameraPlusController instance { get; private set; }
-        internal ConcurrentDictionary<string, CameraPlusBehaviour> Cameras = new ConcurrentDictionary<string, CameraPlusBehaviour>();
+        public Action<Scene, Scene> ActiveSceneChanged;
+        public static CameraPlusController Instance { get; private set; }
+        public ConcurrentDictionary<string, GameObject> LoadedProfile = new ConcurrentDictionary<string, GameObject>();
+        public ConcurrentDictionary<string, CameraPlusBehaviour> Cameras = new ConcurrentDictionary<string, CameraPlusBehaviour>();
 
         internal string currentProfile;
         internal bool MultiplayerSessionInit;
@@ -33,11 +34,11 @@ namespace CameraPlus
         private RenderTexture _renderTexture;
         private ScreenCameraBehaviour _screenCameraBehaviour;
         private CameraMoverPointer _cameraMovePointer;
-        private bool initialized = false;
+        private bool _initialized = false;
 
-        internal UnityEvent OnFPFCToggleEvent = new UnityEvent();
+        public UnityEvent OnFPFCToggleEvent = new UnityEvent();
 
-        internal ExternalSender externalSender = null;
+        internal ExternalSender _externalSender = null;
 
         private WebCamTexture _webCamTexture = null;
         internal WebCamDevice[] webCamDevices;
@@ -45,15 +46,16 @@ namespace CameraPlus
 
         private void Awake()
         {
-            if (instance != null)
+            if (Instance != null)
             {
                 Plugin.Log?.Warn($"Instance of {this.GetType().Name} already exists, destroying.");
                 GameObject.DestroyImmediate(this);
                 return;
             }
             GameObject.DontDestroyOnLoad(this);
-            instance = this;
+            Instance = this;
 
+            /* Remove old cfg comverter
             string path = Path.Combine(UnityGame.UserDataPath, $"{Plugin.Name}.ini");
             string backupPath = backupPath = Path.Combine(UnityGame.UserDataPath, Plugin.Name, "OldProfiles");
             if (File.Exists(path))
@@ -65,12 +67,13 @@ namespace CameraPlus
             }
             
             ConfigConverter.ProfileConverter();
+            */
 
             SceneManager.activeSceneChanged += this.OnActiveSceneChanged;
             CameraUtilities.CreateMainDirectory();
             CameraUtilities.CreateExampleScript();
 
-            ConfigConverter.DefaultConfigConverter();
+            //ConfigConverter.DefaultConfigConverter();
         }
         private void Start()
         {
@@ -87,8 +90,8 @@ namespace CameraPlus
             CameraUtilities.AddNewCamera(Plugin.MainCamera);
             MultiplayerSessionInit = false;
 
-            externalSender = new GameObject("ExternalSender").AddComponent<ExternalSender>();
-            externalSender.transform.SetParent(transform);
+            _externalSender = new GameObject("ExternalSender").AddComponent<ExternalSender>();
+            _externalSender.transform.SetParent(transform);
 
             if (CustomUtils.IsModInstalled("VMCAvatar","0.99.0"))
                 existsVMCAvatar = true;
@@ -107,13 +110,13 @@ namespace CameraPlus
             MultiplayerSession.Close();
             SceneManager.activeSceneChanged -= this.OnActiveSceneChanged;
             Plugin.Log?.Debug($"{name}: OnDestroy()");
-            instance = null; // This MonoBehaviour is being destroyed, so set the static instance property to null.
+            Instance = null; // This MonoBehaviour is being destroyed, so set the static Instance property to null.
         }
 
         public void OnActiveSceneChanged(Scene from, Scene to)
         {
             if (isRestartingSong && to.name != "GameCore") return;
-            if (initialized || (!initialized && (to.name == "HealthWarning" || to.name == "MainMenu")))
+            if (_initialized || (!_initialized && (to.name == "HealthWarning" || to.name == "MainMenu")))
                 SharedCoroutineStarter.instance.StartCoroutine(DelayedActiveSceneChanged(from, to));
 #if DEBUG
             Plugin.Log.Info($"Scene Change {from.name} to {to.name}");
@@ -124,7 +127,7 @@ namespace CameraPlus
         {
             bool isRestart = isRestartingSong;
             bool isLevelEditor = false;
-            initialized = true;
+            _initialized = true;
             isRestartingSong = false;
 
             yield return waitMainCamera();
@@ -187,7 +190,7 @@ namespace CameraPlus
                 {
                     var chat = GameObject.Find("ChatDisplay");
                     if (chat)
-                        chat.layer = Layer.UI;
+                        chat.layer = Layers.UI;
                 }
             }
         }

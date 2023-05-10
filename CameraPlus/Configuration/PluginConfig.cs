@@ -54,7 +54,7 @@ namespace CameraPlus.Configuration
         /// </summary>
         public virtual void CopyFrom(PluginConfig other)
         {
-            // This instance's members populated from other
+            // This Instance's members populated from other
         }
     }
 }

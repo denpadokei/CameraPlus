@@ -107,13 +107,13 @@ namespace CameraPlus.Utilities
             return cameraName;
         }
 
-        internal static bool RemoveCamera(CameraPlusBehaviour instance, bool delete = true)
+        internal static bool RemoveCamera(CameraPlusBehaviour Instance, bool delete = true)
         {
             try
             {
-                if (Path.GetFileName(instance.Config.FilePath) != $"{Plugin.MainCamera}.json")
+                if (Path.GetFileName(Instance.Config.FilePath) != $"{Plugin.MainCamera}.json")
                 {
-                    if (Plugin.CameraController.Cameras.TryRemove(Plugin.CameraController.Cameras.Where(c => c.Value == instance && c.Key != $"{Plugin.MainCamera}.json")?.First().Key, out var removedEntry))
+                    if (Plugin.CameraController.Cameras.TryRemove(Plugin.CameraController.Cameras.Where(c => c.Value == Instance && c.Key != $"{Plugin.MainCamera}.json")?.First().Key, out var removedEntry))
                     {
                         if (delete)
                         {
@@ -134,8 +134,8 @@ namespace CameraPlus.Utilities
             catch (Exception ex)
             {
                 string msg
-                    = ((instance != null && instance.Config != null && instance.Config.FilePath != null)
-                    ? $"Could not remove camera with configuration: '{Path.GetFileName(instance.Config.FilePath)}'."
+                    = ((Instance != null && Instance.Config != null && Instance.Config.FilePath != null)
+                    ? $"Could not remove camera with configuration: '{Path.GetFileName(Instance.Config.FilePath)}'."
                     : $"Could not remove camera.");
 
                 Plugin.Log.Error($"{msg} CameraUtilities.RemoveCamera() threw an exception:" +

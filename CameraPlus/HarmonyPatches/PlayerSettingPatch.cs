@@ -9,9 +9,9 @@ namespace CameraPlus.HarmonyPatches
     internal class PlayerSettingPatch
     {
         internal static PlayerSpecificSettings playerSetting = null;
-        internal static void Postfix(PlayerData __instance)
+        internal static void Postfix(PlayerData __Instance)
         {
-            playerSetting = __instance.playerSpecificSettings;
+            playerSetting = __Instance.playerSpecificSettings;
             if (!MultiplayerSession.ConnectedMultiplay)
                 CameraUtilities.SetAllCameraCulling();
         }
