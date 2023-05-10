@@ -14,7 +14,7 @@ namespace CameraPlus.HarmonyPatches
             {
                 _latestSelectedSong = __instance.customLevelPath;
 #if DEBUG
-                Logger.log.Notice($"Selected CustomLevel Path :\n {__instance.customLevelPath}");
+                Plugin.Log.Notice($"Selected CustomLevel Path :\n {__instance.customLevelPath}");
 #endif
                 if (File.Exists(Path.Combine(__instance.customLevelPath, "SongScript.json")))
                     customLevelPath = Path.Combine(__instance.customLevelPath, "SongScript.json");

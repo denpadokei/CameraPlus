@@ -44,7 +44,7 @@ namespace CameraPlus.Camera2Utils
                 string ProfileName = CameraUtilities.GetNextProfileName(s.ToString());
                 if (ProfileName == string.Empty)
                 {
-                    Logger.log.Error("No ProfileName in LoadCamera2Scene");
+                    Plugin.Log.Error("No ProfileName in LoadCamera2Scene");
                     return;
                 }
                 CameraUtilities.DirectoryCreate(Path.Combine(CameraUtilities.profilePath, ProfileName));
@@ -52,7 +52,7 @@ namespace CameraPlus.Camera2Utils
                     Camera2ConfigLoader(Path.Combine(cam2Path,"Cameras", $"{cameraList[i]}.json"), ProfileName);
             }
             else
-                Logger.log.Error("No Camera Data from Camera2 Scene");
+                Plugin.Log.Error("No Camera Data from Camera2 Scene");
         }
         public static void SetSceneNext(string now = null)
         {
@@ -101,7 +101,7 @@ namespace CameraPlus.Camera2Utils
             FileInfo[] files = dir.GetFiles();
             if (files.Length <= 0)
             {
-                Logger.log.Notice("Return MainCameraName in GetNextCamera2Name");
+                Plugin.Log.Notice("Return MainCameraName in GetNextCamera2Name");
                 return $"{Plugin.MainCamera}";
             }
             int index = 1;
@@ -127,13 +127,13 @@ namespace CameraPlus.Camera2Utils
             else
             {
                 cameraName = CameraUtilities.GetNextCameraName();
-                Logger.log.Notice($"Adding new config with name {cameraName}.json");
+                Plugin.Log.Notice($"Adding new config with name {cameraName}.json");
 
                 path = Path.Combine(UnityGame.UserDataPath, Plugin.Name, $"{cameraName}.json");
-                if (!PluginConfig.Instance.ProfileLoadCopyMethod && Plugin.cameraController.currentProfile != null)
-                    path = Path.Combine(UnityGame.UserDataPath, "." + Plugin.Name.ToLower(), "Profiles", Plugin.cameraController.currentProfile, $"{cameraName}.json");
+                if (!PluginConfig.Instance.ProfileLoadCopyMethod && Plugin.CameraController.currentProfile != null)
+                    path = Path.Combine(UnityGame.UserDataPath, "." + Plugin.Name.ToLower(), "Profiles", Plugin.CameraController.currentProfile, $"{cameraName}.json");
             }
-            Logger.log.Notice($"Try Adding {path}");
+            Plugin.Log.Notice($"Try Adding {path}");
 
             CameraConfig config = new CameraConfig(path);
             Camera2Config config2 = null;
@@ -144,11 +144,11 @@ namespace CameraPlus.Camera2Utils
             }
             catch(Exception ex)
             {
-                Logger.log.Notice($"DeserializeObjectError {ex.Message}");
+                Plugin.Log.Notice($"DeserializeObjectError {ex.Message}");
             }
             config.ConvertFromCamera2(config2);
 
-            foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.OrderBy(i => i.Config.layer))
+            foreach (CameraPlusBehaviour c in Plugin.CameraController.Cameras.Values.OrderBy(i => i.Config.layer))
             {
                 if (c.Config.layer > config.layer)
                     config.layer += (c.Config.layer - config.layer);

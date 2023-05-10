@@ -25,11 +25,11 @@ namespace CameraPlus.VMCProtocol
             sendTask.client = new OscClient(address, port);
             if (sendTask.client != null)
             {
-                Logger.log.Notice($"Instance of OscClient {address}:{port} Starting.");
+                Plugin.Log.Notice($"Instance of OscClient {address}:{port} Starting.");
                 sendTasks.Add(sendTask);
             }
             else
-                Logger.log.Error($"Instance of OscClient Not Starting.");
+                Plugin.Log.Error($"Instance of OscClient Not Starting.");
         }
 
         internal void RemoveTask(CameraPlusBehaviour camplus)
@@ -62,7 +62,7 @@ namespace CameraPlus.VMCProtocol
                 }
                 catch (Exception e)
                 {
-                    Logger.log.Error($"ExternalSender Thread : {e}");
+                    Plugin.Log.Error($"ExternalSender Thread : {e}");
                 }
             });
         }

@@ -61,7 +61,7 @@ namespace CameraPlus.UI
             showMenu = true;
             this.parentBehaviour = parentBehaviour;
             scriptName = CameraUtilities.MovementScriptList();
-            webCameraName = Plugin.cameraController.WebCameraList();
+            webCameraName = Plugin.CameraController.WebCameraList();
 
             if (this.parentBehaviour.Config.cameraLock.lockScreen)
                 texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Lock.png");
@@ -143,10 +143,10 @@ namespace CameraPlus.UI
 
                     if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 60, 145, 60), new GUIContent("Add New Camera")))
                     {
-                        lock (Plugin.cameraController.Cameras)
+                        lock (Plugin.CameraController.Cameras)
                         {
                             string cameraName = CameraUtilities.GetNextCameraName();
-                            Logger.log.Notice($"Adding new config with name {cameraName}.json");
+                            Plugin.Log.Notice($"Adding new config with name {cameraName}.json");
                             CameraUtilities.AddNewCamera(cameraName);
                             CameraUtilities.ReloadCameras();
                             parentBehaviour.CloseContextMenu();
@@ -154,10 +154,10 @@ namespace CameraPlus.UI
                     }
                     if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 60, 145, 60), new GUIContent("Duplicate\nSelected Camera")))
                     {
-                        lock (Plugin.cameraController.Cameras)
+                        lock (Plugin.CameraController.Cameras)
                         {
                             string cameraName = CameraUtilities.GetNextCameraName();
-                            Logger.log.Notice($"Adding {cameraName}");
+                            Plugin.Log.Notice($"Adding {cameraName}");
                             CameraUtilities.AddNewCamera(cameraName, parentBehaviour.Config);
                             CameraUtilities.ReloadCameras();
                             parentBehaviour.CloseContextMenu();
@@ -165,14 +165,14 @@ namespace CameraPlus.UI
                     }
                     if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 130, 145, 50), new GUIContent("Remove\nSelected Camera")))
                     {
-                        lock (Plugin.cameraController.Cameras)
+                        lock (Plugin.CameraController.Cameras)
                         {
                             if (CameraUtilities.RemoveCamera(parentBehaviour))
                             {
                                 parentBehaviour._isCameraDestroyed = true;
                                 parentBehaviour.CreateScreenRenderTexture();
                                 parentBehaviour.CloseContextMenu();
-                                Logger.log.Notice("Camera removed!");
+                                Plugin.Log.Notice("Camera removed!");
                             }
                         }
                     }

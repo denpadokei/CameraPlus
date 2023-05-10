@@ -14,7 +14,7 @@ namespace CameraPlus.VMCProtocol
         public bool receivedData = false;
         public virtual void OnEnable()
         {
-            if (Plugin.cameraController.existsVMCAvatar)
+            if (Plugin.CameraController.existsVMCAvatar)
             {
                 var vmcProtocol = GameObject.Find("VMCProtocol");
                 if (vmcProtocol != null)

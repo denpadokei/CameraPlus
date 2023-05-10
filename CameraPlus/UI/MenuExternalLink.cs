@@ -17,7 +17,7 @@ namespace CameraPlus.UI
                 parentBehaviour.DestoryVMCProtocolObject();
                 parentBehaviour.InitExternalSender();
             }
-            if (Plugin.cameraController.existsVMCAvatar)
+            if (Plugin.CameraController.existsVMCAvatar)
             {
                 if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 45, 100, 40), new GUIContent("Receiver"), parentBehaviour.Config.vmcProtocol.mode == Configuration.VMCProtocolMode.Receiver ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
                 {
@@ -50,7 +50,7 @@ namespace CameraPlus.UI
                 if(GUI.Button(new Rect(menuPos.x + 200, menuPos.y + 105, 100, 30), "Save"))
                     parentBehaviour.Config.Save();
             }
-            if (Plugin.cameraController.webCamDevices.Length > 0)
+            if (Plugin.CameraController.webCamDevices.Length > 0)
             {
                 GUI.Box(new Rect(menuPos.x, menuPos.y + 145, 300, 150), "WebCamera");
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 170, 80, 25), new GUIContent("<")))
@@ -67,19 +67,19 @@ namespace CameraPlus.UI
                 {
                     if (i < contextMenu.webCameraName.Length)
                     {
-                        if (!parentBehaviour.webCamScreen && !Plugin.cameraController.inProgressCalibration())
+                        if (!parentBehaviour.webCamScreen && !Plugin.CameraController.inProgressCalibration())
                         {
-                            if (GUI.Button(new Rect(menuPos.x, menuPos.y + (i - contextMenu.webCameraPage * 5) * 25 + 195, 300, 25), new GUIContent(Plugin.cameraController.webCamDevices[i].name),
-                                    Plugin.cameraController.webCamDevices[i].name == parentBehaviour.Config.webCamera.name ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
-                                parentBehaviour.Config.webCamera.name = Plugin.cameraController.webCamDevices[i].name;
+                            if (GUI.Button(new Rect(menuPos.x, menuPos.y + (i - contextMenu.webCameraPage * 5) * 25 + 195, 300, 25), new GUIContent(Plugin.CameraController.webCamDevices[i].name),
+                                    Plugin.CameraController.webCamDevices[i].name == parentBehaviour.Config.webCamera.name ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                                parentBehaviour.Config.webCamera.name = Plugin.CameraController.webCamDevices[i].name;
                         }else
                         {
-                            GUI.Box(new Rect(menuPos.x, menuPos.y + (i - contextMenu.webCameraPage * 5) * 25 + 195, 300, 25), new GUIContent(Plugin.cameraController.webCamDevices[i].name));
+                            GUI.Box(new Rect(menuPos.x, menuPos.y + (i - contextMenu.webCameraPage * 5) * 25 + 195, 300, 25), new GUIContent(Plugin.CameraController.webCamDevices[i].name));
                         }
                     }
 
                 }
-                if (!Plugin.cameraController.inProgressCalibration())
+                if (!Plugin.CameraController.inProgressCalibration())
                 {
                     if (!parentBehaviour.webCamScreen)
                     {
@@ -95,15 +95,15 @@ namespace CameraPlus.UI
 
                 if (!parentBehaviour.webCamScreen)
                 {
-                    if (!Plugin.cameraController.inProgressCalibration())
+                    if (!Plugin.CameraController.inProgressCalibration())
                     {
                         if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 325, 150, 30), "Calibration"))
-                            Plugin.cameraController.WebCameraCalibration(parentBehaviour);
+                            Plugin.CameraController.WebCameraCalibration(parentBehaviour);
                     }
                     else
                     {
                         if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 325, 150, 30), "Abort Cal"))
-                            Plugin.cameraController.DestroyCalScreen();
+                            Plugin.CameraController.DestroyCalScreen();
                     }
                 }
                 if (parentBehaviour.webCamScreen)

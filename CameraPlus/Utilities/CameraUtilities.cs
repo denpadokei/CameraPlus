@@ -32,14 +32,14 @@ namespace CameraPlus.Utilities
 
         private static bool CameraExists(string cameraName)
         {
-            return Plugin.cameraController.Cameras.Keys.Where(c => c == $"{cameraName}.json").Count() > 0;
+            return Plugin.CameraController.Cameras.Keys.Where(c => c == $"{cameraName}.json").Count() > 0;
         }
 
         internal static void AddNewCamera(string cameraName, CameraConfig CopyConfig = null)
         {
             string path = Path.Combine(UnityGame.UserDataPath, Plugin.Name, $"{cameraName}.json");
-            if (!PluginConfig.Instance.ProfileLoadCopyMethod && Plugin.cameraController.currentProfile != null)
-                path = Path.Combine(profilePath, Plugin.cameraController.currentProfile, $"{cameraName}.json");
+            if (!PluginConfig.Instance.ProfileLoadCopyMethod && Plugin.CameraController.currentProfile != null)
+                path = Path.Combine(profilePath, Plugin.CameraController.currentProfile, $"{cameraName}.json");
 
             if (!File.Exists(path))
             {
@@ -53,7 +53,7 @@ namespace CameraPlus.Utilities
                             Directory.CreateDirectory(Path.GetDirectoryName(path));
 
                         File.Move(oldPath, path);
-                        Logger.log.Notice($"Copied old {Plugin.MainCamera}.json into new {Plugin.Name} folder in UserData");
+                        Plugin.Log.Notice($"Copied old {Plugin.MainCamera}.json into new {Plugin.Name} folder in UserData");
                     }
                 }
 
@@ -62,7 +62,7 @@ namespace CameraPlus.Utilities
                     File.Copy(CopyConfig.FilePath, path, true);
 
                 config = new CameraConfig(path);
-                foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.OrderBy(i => i.Config.layer))
+                foreach (CameraPlusBehaviour c in Plugin.CameraController.Cameras.Values.OrderBy(i => i.Config.layer))
                 {
                     if (c.Config.layer > config.layer)
                         config.layer += (c.Config.layer - config.layer);
@@ -84,11 +84,11 @@ namespace CameraPlus.Utilities
                 config.FirstPersonPositionOffset = config.DefaultFirstPersonPositionOffset;
                 config.FirstPersonRotationOffset = config.DefaultFirstPersonRotationOffset;
                 config.Save();
-                Logger.log.Notice($"Success creating new camera \"{cameraName}\"");
+                Plugin.Log.Notice($"Success creating new camera \"{cameraName}\"");
             }
             else
             {
-                Logger.log.Notice($"Camera \"{cameraName}\" already exists!");
+                Plugin.Log.Notice($"Camera \"{cameraName}\" already exists!");
             }
         }
 
@@ -113,7 +113,7 @@ namespace CameraPlus.Utilities
             {
                 if (Path.GetFileName(instance.Config.FilePath) != $"{Plugin.MainCamera}.json")
                 {
-                    if (Plugin.cameraController.Cameras.TryRemove(Plugin.cameraController.Cameras.Where(c => c.Value == instance && c.Key != $"{Plugin.MainCamera}.json")?.First().Key, out var removedEntry))
+                    if (Plugin.CameraController.Cameras.TryRemove(Plugin.CameraController.Cameras.Where(c => c.Value == instance && c.Key != $"{Plugin.MainCamera}.json")?.First().Key, out var removedEntry))
                     {
                         if (delete)
                         {
@@ -128,7 +128,7 @@ namespace CameraPlus.Utilities
                 }
                 else
                 {
-                    Logger.log.Warn("One does not simply remove the main camera!");
+                    Plugin.Log.Warn("One does not simply remove the main camera!");
                 }
             }
             catch (Exception ex)
@@ -138,7 +138,7 @@ namespace CameraPlus.Utilities
                     ? $"Could not remove camera with configuration: '{Path.GetFileName(instance.Config.FilePath)}'."
                     : $"Could not remove camera.");
 
-                Logger.log.Error($"{msg} CameraUtilities.RemoveCamera() threw an exception:" +
+                Plugin.Log.Error($"{msg} CameraUtilities.RemoveCamera() threw an exception:" +
                     $" {ex.Message}\n{ex.StackTrace}");
             }
             return false;
@@ -148,14 +148,14 @@ namespace CameraPlus.Utilities
         {
             try
             {
-                foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.ToArray())
+                foreach (CameraPlusBehaviour c in Plugin.CameraController.Cameras.Values.ToArray())
                 {
                     c.Config.SetCullingMask();
                 }
             }
             catch (Exception ex)
             {
-                Logger.log.Error($"Exception cameras culling! Exception:" +
+                Plugin.Log.Error($"Exception cameras culling! Exception:" +
                     $" {ex.Message}\n{ex.StackTrace}");
             }
         }
@@ -169,21 +169,21 @@ namespace CameraPlus.Utilities
 
                 string[] files = Directory.GetFiles(configPath);
 
-                if (!PluginConfig.Instance.ProfileLoadCopyMethod && Plugin.cameraController.currentProfile != null)
-                    files = Directory.GetFiles(Path.Combine(profilePath, Plugin.cameraController.currentProfile));
+                if (!PluginConfig.Instance.ProfileLoadCopyMethod && Plugin.CameraController.currentProfile != null)
+                    files = Directory.GetFiles(Path.Combine(profilePath, Plugin.CameraController.currentProfile));
 
                 foreach (string filePath in files)
                 {
                     string fileName = Path.GetFileName(filePath);
-                    if (fileName.EndsWith(".json") && !Plugin.cameraController.Cameras.ContainsKey(fileName))
+                    if (fileName.EndsWith(".json") && !Plugin.CameraController.Cameras.ContainsKey(fileName))
                     {
-                        Logger.log.Notice($"Found config {filePath}!");
+                        Plugin.Log.Notice($"Found config {filePath}!");
 
                         CameraConfig Config = new CameraConfig(filePath);
                         if (Config.configLoaded)
                         {
                             var cam = new GameObject($"CamPlus_{fileName}").AddComponent<CameraPlusBehaviour>();
-                            Plugin.cameraController.Cameras.TryAdd(fileName, cam);
+                            Plugin.CameraController.Cameras.TryAdd(fileName, cam);
                             cam.Init(Config);
                         }
                     }
@@ -191,7 +191,7 @@ namespace CameraPlus.Utilities
             }
             catch (Exception ex)
             {
-                Logger.log.Error($"Exception while reloading cameras! Exception:" +
+                Plugin.Log.Error($"Exception while reloading cameras! Exception:" +
                     $" {ex.Message}\n{ex.StackTrace}");
             }
         }
@@ -216,12 +216,12 @@ namespace CameraPlus.Utilities
                 return;
             if (Directory.GetFiles(dir.FullName, "*.json").Length <= 0)
             {
-                Logger.log.Error($"Not Found CameraConfig Json in \"{dir.FullName}\"");
+                Plugin.Log.Error($"Not Found CameraConfig Json in \"{dir.FullName}\"");
                 return;
             }
 
             ClearCameras();
-            Plugin.cameraController.currentProfile = ProfileName;
+            Plugin.CameraController.currentProfile = ProfileName;
 
             if (PluginConfig.Instance.ProfileLoadCopyMethod && ProfileName != null)
                 SetProfile(ProfileName);
@@ -238,9 +238,9 @@ namespace CameraPlus.Utilities
                 foreach (var c in cs)
                     CameraUtilities.RemoveCamera(c);
             }
-            foreach (var csi in Plugin.cameraController.Cameras.Values)
+            foreach (var csi in Plugin.CameraController.Cameras.Values)
                 GameObject.Destroy(csi.gameObject);
-            Plugin.cameraController.Cameras.Clear();
+            Plugin.CameraController.Cameras.Clear();
         }
 
         public static void CreateExampleScript()
@@ -267,9 +267,9 @@ namespace CameraPlus.Utilities
         internal static void SaveCurrent()
         {
             string cPath = configPath;
-            if (!PluginConfig.Instance.ProfileLoadCopyMethod && Plugin.cameraController.currentProfile != null)
+            if (!PluginConfig.Instance.ProfileLoadCopyMethod && Plugin.CameraController.currentProfile != null)
             {
-                cPath = Path.Combine(profilePath, Plugin.cameraController.currentProfile);
+                cPath = Path.Combine(profilePath, Plugin.CameraController.currentProfile);
             }
             DirectoryCopy(cPath, Path.Combine(profilePath, GetNextProfileName()), false);
         }

@@ -27,7 +27,7 @@ namespace CameraPlus.HarmonyPatches
 			private static void Postfix()
 			{
 				isInstanceFPFC = true;
-				Plugin.cameraController.OnFPFCToggleEvent?.Invoke();
+				Plugin.CameraController.OnFPFCToggleEvent?.Invoke();
 			}
 		}
 		[HarmonyPatch(typeof(FirstPersonFlyingController),"OnDisable")]
@@ -36,7 +36,7 @@ namespace CameraPlus.HarmonyPatches
 			private static void Postfix()
 			{
 				isInstanceFPFC = false;
-				Plugin.cameraController.OnFPFCToggleEvent?.Invoke();
+				Plugin.CameraController.OnFPFCToggleEvent?.Invoke();
 			}
 		}
 	}

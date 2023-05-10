@@ -66,31 +66,31 @@ namespace CameraPlus.UI
             if (GUI.Button(new Rect(menuPos.x + 50, menuPos.y + 135, 50, 25), new GUIContent("Top"), PluginConfig.Instance.CameraQuadPosition == "Top" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 PluginConfig.Instance.CameraQuadPosition = "Top";
-                foreach (CameraPlusBehaviour cam in Plugin.cameraController.Cameras.Values)
+                foreach (CameraPlusBehaviour cam in Plugin.CameraController.Cameras.Values)
                     cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
             }
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 160, 50, 25), new GUIContent("Left"), PluginConfig.Instance.CameraQuadPosition == "Left" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 PluginConfig.Instance.CameraQuadPosition = "Left";
-                foreach(CameraPlusBehaviour cam in Plugin.cameraController.Cameras.Values)
+                foreach(CameraPlusBehaviour cam in Plugin.CameraController.Cameras.Values)
                     cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
             }
             if (GUI.Button(new Rect(menuPos.x + 50, menuPos.y + 160, 50, 25), new GUIContent("Center"), PluginConfig.Instance.CameraQuadPosition == "Center" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 PluginConfig.Instance.CameraQuadPosition = "Center";
-                foreach (CameraPlusBehaviour cam in Plugin.cameraController.Cameras.Values)
+                foreach (CameraPlusBehaviour cam in Plugin.CameraController.Cameras.Values)
                     cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
             }
             if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 160, 50, 25), new GUIContent("Right"), PluginConfig.Instance.CameraQuadPosition == "Right" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 PluginConfig.Instance.CameraQuadPosition = "Right";
-                foreach (CameraPlusBehaviour cam in Plugin.cameraController.Cameras.Values)
+                foreach (CameraPlusBehaviour cam in Plugin.CameraController.Cameras.Values)
                     cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
             }
             if (GUI.Button(new Rect(menuPos.x + 50, menuPos.y + 185, 50, 25), new GUIContent("Bottom"), PluginConfig.Instance.CameraQuadPosition == "Bottom" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 PluginConfig.Instance.CameraQuadPosition = "Bottom";
-                foreach (CameraPlusBehaviour cam in Plugin.cameraController.Cameras.Values)
+                foreach (CameraPlusBehaviour cam in Plugin.CameraController.Cameras.Values)
                     cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
             }
             GUI.Box(new Rect(menuPos.x + 150, menuPos.y + 115, 150, 55), $"Scale");
@@ -100,7 +100,7 @@ namespace CameraPlus.UI
                 PluginConfig.Instance.CameraCubeSize -= 0.1f;
                 if (PluginConfig.Instance.CameraCubeSize < 0.1)
                     PluginConfig.Instance.CameraCubeSize = 0.1f;
-                foreach (CameraPlusBehaviour cam in Plugin.cameraController.Cameras.Values)
+                foreach (CameraPlusBehaviour cam in Plugin.CameraController.Cameras.Values)
                 {
                     cam._quad.SetCameraCubeSize(PluginConfig.Instance.CameraCubeSize);
                     cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
@@ -111,7 +111,7 @@ namespace CameraPlus.UI
                 PluginConfig.Instance.CameraCubeSize += 0.1f;
                 if (PluginConfig.Instance.CameraCubeSize > 1)
                     PluginConfig.Instance.CameraCubeSize = 1;
-                foreach (CameraPlusBehaviour cam in Plugin.cameraController.Cameras.Values)
+                foreach (CameraPlusBehaviour cam in Plugin.CameraController.Cameras.Values)
                 {
                     cam._quad.SetCameraCubeSize(PluginConfig.Instance.CameraCubeSize);
                     cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
@@ -136,13 +136,13 @@ namespace CameraPlus.UI
             if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 185, 75, 20), new GUIContent("Enable"), PluginConfig.Instance.CameraQuadStretch ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 PluginConfig.Instance.CameraQuadStretch = true;
-                foreach (CameraPlusBehaviour cam in Plugin.cameraController.Cameras.Values)
+                foreach (CameraPlusBehaviour cam in Plugin.CameraController.Cameras.Values)
                     cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
             }
             if (GUI.Button(new Rect(menuPos.x + 225, menuPos.y + 185, 75, 20), new GUIContent("Disable"), !PluginConfig.Instance.CameraQuadStretch ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 PluginConfig.Instance.CameraQuadStretch = false;
-                foreach (CameraPlusBehaviour cam in Plugin.cameraController.Cameras.Values)
+                foreach (CameraPlusBehaviour cam in Plugin.CameraController.Cameras.Values)
                     cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
             }
             GUI.Box(new Rect(menuPos.x + 150, menuPos.y + 203, 150, 35), $"Desktop screen");

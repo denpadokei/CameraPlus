@@ -43,7 +43,7 @@ namespace CameraPlus.Behaviours
             _vrControllerTriggerd = false;
             _state = CalState.WebCamPosition;
             if (_vrPointer == null)
-                Logger.log.Error($"VRController Null");
+                Plugin.Log.Error($"VRController Null");
         }
 
         private void Update()
@@ -108,7 +108,7 @@ namespace CameraPlus.Behaviours
                             _targetBehaviour.FOV = fov;
                             _targetBehaviour.Config.fov = fov;
 
-                            Plugin.cameraController.DestroyCalScreen();
+                            Plugin.CameraController.DestroyCalScreen();
                             break;
                     }
                 }
@@ -172,7 +172,7 @@ namespace CameraPlus.Behaviours
 
             _webCamTexture = new WebCamTexture(camplus.Config.webCamera.name);
             raw.texture = _webCamTexture;
-            Material rawMaterial = new Material(Plugin.cameraController.Shaders["BeatSaber/BlitCopyWithDepth"]);
+            Material rawMaterial = new Material(Plugin.CameraController.Shaders["BeatSaber/BlitCopyWithDepth"]);
             rawMaterial.SetColor("_Color", new Color(1.0f, 1.0f, 1.0f, 0));
             rawMaterial.SetFloat("_CullMode", 0);
             raw.material = rawMaterial;
@@ -183,7 +183,7 @@ namespace CameraPlus.Behaviours
             _cursorImage.transform.localPosition = Vector3.zero;
             _cursorImage.transform.localEulerAngles = Vector3.zero;
             _cursorImage.texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Xross.png");
-            Material cursorMat = new Material(Plugin.cameraController.Shaders["ChromaKey/Unlit/Cutout"]);
+            Material cursorMat = new Material(Plugin.CameraController.Shaders["ChromaKey/Unlit/Cutout"]);
             cursorMat.SetColor("_Color", new Color(1.0f, 1.0f, 1.0f, 0));
             cursorMat.SetColor("_ChromaKeyColor", Color.white);
             cursorMat.SetFloat("_ChromaKeyHueRange", 0.5f);
