@@ -128,6 +128,7 @@ namespace CameraPlus.Behaviours
                 if (destroyList.Contains(component.GetType().Name)) Destroy(component);
 
             _screenCamera = new GameObject("Screen Camera").AddComponent<ScreenCameraBehaviour>();
+            _screenCamera.transform.SetParent(transform);
 
             gameObj.SetActive(true);
 
