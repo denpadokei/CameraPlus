@@ -21,7 +21,7 @@ namespace CameraPlus.HarmonyPatches
         static void Postfix(AudioTimeSyncController __instance)
         {
 #if DEBUG
-            Plugin.Log.Notice("AudioTimeSyncController StartSong");
+            Plugin.Log.Notice("AudioTimeSyncController SetAllCameraCulling StartSong");
 #endif
             CameraUtilities.SetAllCameraCulling();
         }

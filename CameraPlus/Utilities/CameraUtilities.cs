@@ -16,15 +16,15 @@ namespace CameraPlus.Utilities
     public static class CameraUtilities
     {
         #region ** DefineStatic **
-        internal static string profilePath = Path.Combine(UnityGame.UserDataPath, Plugin.Name, "Profiles");
-        internal static string configPath = Path.Combine(UnityGame.UserDataPath, Plugin.Name);
-        internal static string scriptPath = Path.Combine(UnityGame.UserDataPath, Plugin.Name, "Scripts");
-        internal static string currentlySelected = "None";
+        public static string ProfilePath = Path.Combine(UnityGame.UserDataPath, Plugin.Name, "Profiles");
+        public static string ConfigPath = Path.Combine(UnityGame.UserDataPath, Plugin.Name);
+        public static string ScriptPath = Path.Combine(UnityGame.UserDataPath, Plugin.Name, "Scripts");
+        public static string CurrentlySelected = "None";
+        public static string RootProfile = "__Root__";
 
         internal static float[] mouseMoveSpeed = { -0.01f, -0.01f };//x, y
         internal static float mouseScrollSpeed = 0.5f;
         internal static float[] mouseRotateSpeed = { -0.05f, 0.05f, 1f };//x, y, z
-        internal static bool movementScriptEditMode = false;
 
         internal static Texture2D seekBarBackground = null;
         internal static Texture2D seekBar = null;
@@ -38,26 +38,11 @@ namespace CameraPlus.Utilities
         internal static void AddNewCamera(string cameraName, CameraConfig CopyConfig = null)
         {
             string path = Path.Combine(UnityGame.UserDataPath, Plugin.Name, $"{cameraName}.json");
-            if (Plugin.cameraController.currentProfile != null)
-                path = Path.Combine(profilePath, Plugin.cameraController.currentProfile, $"{cameraName}.json");
+            if (Plugin.cameraController.CurrentProfile != null)
+                path = Path.Combine(ProfilePath, Plugin.cameraController.CurrentProfile, $"{cameraName}.json");
 
             if (!File.Exists(path))
             {
-                /*
-                // Try to copy their old config file into the new camera location
-                if (cameraName == Plugin.MainCamera)
-                {
-                    string oldPath = Path.Combine(Environment.CurrentDirectory, $"{Plugin.MainCamera}.json");
-                    if (File.Exists(oldPath))
-                    {
-                        if (!Directory.Exists(Path.GetDirectoryName(path)))
-                            Directory.CreateDirectory(Path.GetDirectoryName(path));
-
-                        File.Move(oldPath, path);
-                        Plugin.Log.Notice($"Copied old {Plugin.MainCamera}.json into new {Plugin.Name} folder in UserData");
-                    }
-                }
-                */
                 CameraConfig config = null;
                 if (CopyConfig != null)
                     File.Copy(CopyConfig.FilePath, path, true);
@@ -161,17 +146,71 @@ namespace CameraPlus.Utilities
             }
         }
 
+        public static void LoadProfile(string profileName)
+        {
+            string workProfile;
+            GameObject profileObject;
+
+            workProfile = (profileName != string.Empty ? profileName : RootProfile);
+
+            if (!Plugin.cameraController.LoadedProfile.ContainsKey(workProfile))
+            {
+                profileObject = new GameObject(workProfile);
+                Plugin.cameraController.LoadedProfile.TryAdd(workProfile, profileObject);
+                profileObject.name = workProfile;
+                profileObject.transform.SetParent(Plugin.cameraController.gameObject.transform);
+                profileObject.transform.localPosition = Vector3.zero;
+                profileObject.transform.localRotation = Quaternion.identity;
+            }
+            else
+            {
+                profileObject = Plugin.cameraController.LoadedProfile[workProfile];
+            }
+
+            try
+            {
+                if (!Directory.Exists(ConfigPath))
+                    Directory.CreateDirectory(ConfigPath);
+
+                string[] files = (profileName != string.Empty ? Directory.GetFiles(Path.Combine(ProfilePath, profileName)) : Directory.GetFiles(ConfigPath));
+                string fileName, dictKey;
+                foreach (string filePath in files)
+                {
+                    fileName = Path.GetFileName(filePath);
+                    dictKey = (profileName == string.Empty ? $"{Plugin.Name}_{fileName}" : $"{profileName}_{fileName}");
+                    if (fileName.EndsWith(".json") && !Plugin.cameraController.Cameras.ContainsKey(dictKey))
+                    {
+                        Plugin.Log.Notice($"Found new CameraConfig {filePath}!");
+
+                        CameraConfig Config = new CameraConfig(filePath);
+                        if (Config.configLoaded)
+                        {
+                            var cam = new GameObject(dictKey).AddComponent<CameraPlusBehaviour>();
+                            cam.transform.SetParent(profileObject.transform);
+                            Plugin.cameraController.Cameras.TryAdd(dictKey, cam);
+                            cam.Init(Config);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log.Error($"Exception while loading profile cameras! Exception:" +
+                    $" {ex.Message}\n{ex.StackTrace}");
+            }
+        }
+
         internal static void ReloadCameras()
         {
             try
             {
-                if (!Directory.Exists(configPath))
-                    Directory.CreateDirectory(configPath);
+                if (!Directory.Exists(ConfigPath))
+                    Directory.CreateDirectory(ConfigPath);
 
-                string[] files = Directory.GetFiles(configPath);
+                string[] files = Directory.GetFiles(ConfigPath);
 
-                if (Plugin.cameraController.currentProfile != null)
-                    files = Directory.GetFiles(Path.Combine(profilePath, Plugin.cameraController.currentProfile));
+                if (Plugin.cameraController.CurrentProfile != null)
+                    files = Directory.GetFiles(Path.Combine(ProfilePath, Plugin.cameraController.CurrentProfile));
 
                 foreach (string filePath in files)
                 {
@@ -210,24 +249,21 @@ namespace CameraPlus.Utilities
             return Path.GetFileName(scriptPath);
         }
 
+        internal static string[] ProfileList()
+        {
+            return Directory.GetDirectories(ProfilePath);
+        }
+
         internal static void ProfileChange(String ProfileName)
         {
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(profilePath, ProfileName));
-            if (!dir.Exists)
-                return;
-            if (Directory.GetFiles(dir.FullName, "*.json").Length <= 0)
+            string profile = (ProfilePath == string.Empty ? RootProfile : ProfileName);
+            if (!Plugin.cameraController.LoadedProfile.ContainsKey(profile))
             {
-                Plugin.Log.Error($"Not Found CameraConfig Json in \"{dir.FullName}\"");
-                return;
+                LoadProfile(profile);
             }
-
-            ClearCameras();
-            Plugin.cameraController.currentProfile = ProfileName;
-
-            if (ProfileName != null)
-                SetProfile(ProfileName);
-
-            CameraUtilities.ReloadCameras();
+            Plugin.cameraController.LoadedProfile[Plugin.cameraController.CurrentProfile].SetActive(false);
+            Plugin.cameraController.LoadedProfile[profile].SetActive(true);
+            Plugin.cameraController.CurrentProfile = ProfileName;
         }
 
         internal static void ClearCameras()
@@ -241,43 +277,41 @@ namespace CameraPlus.Utilities
 
         public static void CreateExampleScript()
         {
-            if (!Directory.Exists(scriptPath))
-                Directory.CreateDirectory(scriptPath);
-            string defaultScript = Path.Combine(scriptPath, "ExampleMovementScript.json");
+            if (!Directory.Exists(ScriptPath))
+                Directory.CreateDirectory(ScriptPath);
+            string defaultScript = Path.Combine(ScriptPath, "ExampleMovementScript.json");
             if (!File.Exists(defaultScript))
                 File.WriteAllBytes(defaultScript, CustomUtils.GetResource(Assembly.GetExecutingAssembly(), "CameraPlus.Resources.ExampleMovementScript.json"));
         }
 
-        #region ** Profile **
-
         internal static void CreateMainDirectory()
         {
-            DirectoryInfo di = Directory.CreateDirectory(profilePath);
-            //di.Attributes = FileAttributes.Directory | FileAttributes.Hidden;
-            Directory.CreateDirectory(profilePath);
-            var a = new DirectoryInfo(profilePath).GetDirectories();
+            if(!Directory.Exists(ProfilePath))
+                Directory.CreateDirectory(ProfilePath);
+            
+            var a = new DirectoryInfo(ProfilePath).GetDirectories();
             if (a.Length > 0)
-                currentlySelected = a.First().Name;
+                CurrentlySelected = a.First().Name;
         }
 
-        internal static void SaveCurrent()
+        internal static void SaveNewProfile()
         {
-            string cPath = configPath;
-            if (Plugin.cameraController.currentProfile != null)
+            string cPath = ConfigPath;
+            if (Plugin.cameraController.CurrentProfile != null)
             {
-                cPath = Path.Combine(profilePath, Plugin.cameraController.currentProfile);
+                cPath = Path.Combine(ProfilePath, Plugin.cameraController.CurrentProfile);
             }
-            DirectoryCopy(cPath, Path.Combine(profilePath, GetNextProfileName()), false);
+            DirectoryCopy(cPath, Path.Combine(ProfilePath, GetNextProfileName()), false);
         }
 
         internal static void SetNext(string now = null)
         {
-            DirectoryInfo[] dis = new DirectoryInfo(profilePath).GetDirectories();
+            DirectoryInfo[] dis = new DirectoryInfo(ProfilePath).GetDirectories();
             if (now == null)
             {
-                currentlySelected = "None";
+                CurrentlySelected = "None";
                 if (dis.Length > 0)
-                    currentlySelected = dis.First().Name;
+                    CurrentlySelected = dis.First().Name;
                 return;
             }
             int index = 0;
@@ -286,26 +320,26 @@ namespace CameraPlus.Utilities
             {
                 index = dis.ToList().IndexOf(a.First());
                 if (index < dis.Count() - 1)
-                    currentlySelected = dis.ElementAtOrDefault(index + 1).Name;
+                    CurrentlySelected = dis.ElementAtOrDefault(index + 1).Name;
                 else
-                    currentlySelected = dis.ElementAtOrDefault(0).Name;
+                    CurrentlySelected = dis.ElementAtOrDefault(0).Name;
             }
             else
             {
-                currentlySelected = "None";
+                CurrentlySelected = "None";
                 if (dis.Length > 0)
-                    currentlySelected = dis.First().Name;
+                    CurrentlySelected = dis.First().Name;
             }
         }
 
         internal static void TrySetLast(string now = null)
         {
-            DirectoryInfo[] dis = new DirectoryInfo(profilePath).GetDirectories();
+            DirectoryInfo[] dis = new DirectoryInfo(ProfilePath).GetDirectories();
             if (now == null)
             {
-                currentlySelected = "None";
+                CurrentlySelected = "None";
                 if (dis.Length > 0)
-                    currentlySelected = dis.First().Name;
+                    CurrentlySelected = dis.First().Name;
                 return;
             }
             int index = 0;
@@ -314,24 +348,24 @@ namespace CameraPlus.Utilities
             {
                 index = dis.ToList().IndexOf(a.First());
                 if (index == 0 && dis.Length >= 2)
-                    currentlySelected = dis.ElementAtOrDefault(dis.Count() - 1).Name;
+                    CurrentlySelected = dis.ElementAtOrDefault(dis.Count() - 1).Name;
                 else if (index < dis.Count() && dis.Length >= 2)
-                    currentlySelected = dis.ElementAtOrDefault(index - 1).Name;
+                    CurrentlySelected = dis.ElementAtOrDefault(index - 1).Name;
                 else
-                    currentlySelected = dis.ElementAtOrDefault(0).Name;
+                    CurrentlySelected = dis.ElementAtOrDefault(0).Name;
             }
             else
             {
-                currentlySelected = "None";
+                CurrentlySelected = "None";
                 if (dis.Length > 0)
-                    currentlySelected = dis.First().Name;
+                    CurrentlySelected = dis.First().Name;
             }
         }
 
         internal static void DeleteProfile(string name)
         {
-            if (Directory.Exists(Path.Combine(profilePath, name)))
-                Directory.Delete(Path.Combine(profilePath, name), true);
+            if (Directory.Exists(Path.Combine(ProfilePath, name)))
+                Directory.Delete(Path.Combine(ProfilePath, name), true);
         }
 
         internal static string GetNextProfileName(string BaseName = "")
@@ -343,7 +377,7 @@ namespace CameraPlus.Utilities
                 bname = "CameraPlusProfile";
             else
                 bname = BaseName;
-            DirectoryInfo dir = new DirectoryInfo(profilePath);
+            DirectoryInfo dir = new DirectoryInfo(ProfilePath);
             DirectoryInfo[] dirs = dir.GetDirectories($"{bname}*");
             foreach (var dire in dirs)
             {
@@ -355,13 +389,13 @@ namespace CameraPlus.Utilities
 
         internal static void SetProfile(string name)
         {
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(profilePath, name));
+            DirectoryInfo dir = new DirectoryInfo(Path.Combine(ProfilePath, name));
             if (!dir.Exists)
                 return;
-            DirectoryInfo di = new DirectoryInfo(configPath);
+            DirectoryInfo di = new DirectoryInfo(ConfigPath);
             foreach (FileInfo file in di.GetFiles())
                 file.Delete();
-            DirectoryCopy(dir.FullName, configPath, false);
+            DirectoryCopy(dir.FullName, ConfigPath, false);
         }
 
         internal static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
@@ -396,8 +430,6 @@ namespace CameraPlus.Utilities
             if (!Directory.Exists(sourceDirName))
                 Directory.CreateDirectory(sourceDirName);
         }
-        #endregion
-
 
         public static string GetFullPath(this GameObject obj)
         {

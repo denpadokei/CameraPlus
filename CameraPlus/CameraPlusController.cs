@@ -19,11 +19,13 @@ namespace CameraPlus
 {
     public class CameraPlusController : MonoBehaviour
     {
-        internal Action<Scene, Scene> ActiveSceneChanged;
+        public Action<Scene, Scene> ActiveSceneChanged;
         internal static CameraPlusController instance { get; private set; }
-        internal ConcurrentDictionary<string, CameraPlusBehaviour> Cameras = new ConcurrentDictionary<string, CameraPlusBehaviour>();
+        public ConcurrentDictionary<string, GameObject> LoadedProfile = new ConcurrentDictionary<string, GameObject>();
+        public ConcurrentDictionary<string, CameraPlusBehaviour> Cameras = new ConcurrentDictionary<string, CameraPlusBehaviour>();
 
-        internal string currentProfile;
+        public string CurrentProfile;
+
         internal bool MultiplayerSessionInit;
         internal bool existsVMCAvatar = false;
         internal bool isRestartingSong = false;
@@ -120,15 +122,14 @@ namespace CameraPlus
 
         private IEnumerator DelayedActiveSceneChanged(Scene from, Scene to)
         {
-            bool isRestart = isRestartingSong;
             bool isLevelEditor = false;
-            initialized = true;
-            isRestartingSong = false;
 
             yield return waitMainCamera();
 
-            if (!isRestart)
-                CameraUtilities.ReloadCameras();
+            if(!initialized)
+                CameraUtilities.ProfileChange(string.Empty);
+
+            initialized = true;
 
             IEnumerator waitForcam()
             {
@@ -136,7 +137,7 @@ namespace CameraPlus
                 while (Camera.main == null) yield return new WaitForSeconds(0.05f);
             }
 
-            if (PluginConfig.Instance.ProfileSceneChange && !isRestart)
+            if (PluginConfig.Instance.ProfileSceneChange)
             {
                 if (!MultiplayerSession.ConnectedMultiplay || PluginConfig.Instance.MultiplayerProfile == "")
                 {

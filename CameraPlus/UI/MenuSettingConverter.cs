@@ -19,11 +19,11 @@ namespace CameraPlus.UI
 
             GUI.Box(new Rect(menuPos.x, menuPos.y + 150, 300, 120), "Select profile Export to Scene in Camera2");
             if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 175, 140, 25), new GUIContent("<")))
-                CameraUtilities.TrySetLast(CameraUtilities.currentlySelected);
+                CameraUtilities.TrySetLast(CameraUtilities.CurrentlySelected);
             if (GUI.Button(new Rect(menuPos.x + 155, menuPos.y + 175, 140, 25), new GUIContent(">")))
-                CameraUtilities.SetNext(CameraUtilities.currentlySelected);
-            if (GUI.Button(new Rect(menuPos.x + 30, menuPos.y + 205, 230, 60), new GUIContent("Currently Selected:\n" + CameraUtilities.currentlySelected)))
-                CameraUtilities.SetNext(CameraUtilities.currentlySelected);
+                CameraUtilities.SetNext(CameraUtilities.CurrentlySelected);
+            if (GUI.Button(new Rect(menuPos.x + 30, menuPos.y + 205, 230, 60), new GUIContent("Currently Selected:\n" + CameraUtilities.CurrentlySelected)))
+                CameraUtilities.SetNext(CameraUtilities.CurrentlySelected);
 
             if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 280, 295, 25), new GUIContent("Export to Selected Scene")))
                 Camera2ConfigExporter.ExportCamera2Scene();

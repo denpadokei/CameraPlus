@@ -581,8 +581,8 @@ namespace CameraPlus.Behaviours
 
                 if (CustomPreviewBeatmapLevelPatch.customLevelPath != String.Empty && Config.movementScript.songSpecificScript)
                     songScriptPath = CustomPreviewBeatmapLevelPatch.customLevelPath;
-                else if (File.Exists(Path.Combine(CameraUtilities.scriptPath, Path.GetFileName(Config.movementScript.movementScript))))
-                    songScriptPath = Path.Combine(CameraUtilities.scriptPath, Path.GetFileName(Config.movementScript.movementScript));
+                else if (File.Exists(Path.Combine(CameraUtilities.ScriptPath, Path.GetFileName(Config.movementScript.movementScript))))
+                    songScriptPath = Path.Combine(CameraUtilities.ScriptPath, Path.GetFileName(Config.movementScript.movementScript));
                 else
                     return "Not Find Script";
 

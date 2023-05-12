@@ -54,6 +54,9 @@ namespace CameraPlus.UI
         private MenuExternalLink _menuExternalLink = new MenuExternalLink();
         private MenuChromakey _menuChromakey = new MenuChromakey();
 
+        private float _menuWidth = 300;
+        private float _menuHeight = 440;
+
         public void EnableMenu(Vector2 mousePos, CameraPlusBehaviour parentBehaviour)
         {
             this.enabled = true;
@@ -148,7 +151,7 @@ namespace CameraPlus.UI
                             string cameraName = CameraUtilities.GetNextCameraName();
                             Plugin.Log.Notice($"Adding new config with name {cameraName}.json");
                             CameraUtilities.AddNewCamera(cameraName);
-                            CameraUtilities.ReloadCameras();
+                            CameraUtilities.LoadProfile(Plugin.cameraController.CurrentProfile);
                             parentBehaviour.CloseContextMenu();
                         }
                     }
@@ -159,7 +162,7 @@ namespace CameraPlus.UI
                             string cameraName = CameraUtilities.GetNextCameraName();
                             Plugin.Log.Notice($"Adding {cameraName}");
                             CameraUtilities.AddNewCamera(cameraName, parentBehaviour.Config);
-                            CameraUtilities.ReloadCameras();
+                            CameraUtilities.LoadProfile(Plugin.cameraController.CurrentProfile);
                             parentBehaviour.CloseContextMenu();
                         }
                     }
@@ -254,6 +257,11 @@ namespace CameraPlus.UI
                     _menuChromakey.DiplayMenu(parentBehaviour, this, menuPos);
                 GUI.matrix = originalMatrix;
             }
+        }
+
+        private void UI_SelectionList(float top, float left)
+        {
+
         }
     }
 }

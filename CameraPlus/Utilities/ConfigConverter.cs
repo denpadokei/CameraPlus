@@ -113,7 +113,6 @@ namespace CameraPlus.Utilities
             config.cameraExtensions.rotation360Smooth = cfg.cam360Smoothness;
             config.cameraExtensions.firstPersonCameraForceUpRight = cfg.forceFirstPersonUpRight;
             config.cameraExtensions.follow360map = cfg.use360Camera;
-            config.cameraExtensions.follow360mapUseLegacyProcess = !cfg.cam360RotateControlNew;
             config.cameraExtensions.followNoodlePlayerTrack = cfg.NoodleTrack;
             config.cameraExtensions.turnToHead = cfg.turnToHead;
 

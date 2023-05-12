@@ -274,6 +274,34 @@ namespace CameraPlus.Configuration
                 return new Vector3(0, 0, 0);
             }
         }
+
+        public Vector3 PreviewQuadPosition
+        {
+            get
+            {
+                return new Vector3(_previewQuadPos.x, _previewQuadPos.y, _previewQuadPos.z);
+            }
+            set
+            {
+                _previewQuadPos.x = value.x;
+                _previewQuadPos.y = value.y;
+                _previewQuadPos.z = value.z;
+            }
+        }
+        public Vector3 PreviewQuadRotation
+        {
+            get
+            {
+                return new Vector3(_previewQuadRot.x, _previewQuadRot.y, _previewQuadRot.z);
+            }
+            set
+            {
+                _previewQuadRot.x = value.x;
+                _previewQuadRot.y = value.y;
+                _previewQuadRot.z = value.z;
+            }
+        }
+
         public Vector3 TurnToHeadOffset
         {
             get{

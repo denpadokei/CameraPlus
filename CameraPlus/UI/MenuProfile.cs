@@ -10,22 +10,21 @@ namespace CameraPlus.UI
         internal void DiplayMenu(CameraPlusBehaviour parentBehaviour, ContextMenu contextMenu, Vector2 menuPos)
         {
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 25, 140, 25), new GUIContent("<")))
-                CameraUtilities.TrySetLast(CameraUtilities.currentlySelected);
+                CameraUtilities.TrySetLast(CameraUtilities.CurrentlySelected);
             if (GUI.Button(new Rect(menuPos.x + 155, menuPos.y + 25, 140, 25), new GUIContent(">")))
-                CameraUtilities.SetNext(CameraUtilities.currentlySelected);
-            if (GUI.Button(new Rect(menuPos.x + 30, menuPos.y + 50, 230, 50), new GUIContent("Currently Selected:\n" + CameraUtilities.currentlySelected)))
-                CameraUtilities.SetNext(CameraUtilities.currentlySelected);
+                CameraUtilities.SetNext(CameraUtilities.CurrentlySelected);
+            if (GUI.Button(new Rect(menuPos.x + 30, menuPos.y + 50, 230, 50), new GUIContent("Currently Selected:\n" + CameraUtilities.CurrentlySelected)))
+                CameraUtilities.SetNext(CameraUtilities.CurrentlySelected);
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 100, 140, 25), new GUIContent("Save")))
-                CameraUtilities.SaveCurrent();
+                CameraUtilities.SaveNewProfile();
             if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 100, 140, 25), new GUIContent("Delete")))
             {
-                if (!PluginConfig.Instance.ProfileLoadCopyMethod)
-                    CameraUtilities.ProfileChange(null);
-                CameraUtilities.DeleteProfile(CameraUtilities.currentlySelected);
+                CameraUtilities.ProfileChange(string.Empty);
+                CameraUtilities.DeleteProfile(CameraUtilities.CurrentlySelected);
                 CameraUtilities.TrySetLast();
             }
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 125, 300, 30), new GUIContent("Load Selected")))
-                CameraUtilities.ProfileChange(CameraUtilities.currentlySelected);
+                CameraUtilities.ProfileChange(CameraUtilities.CurrentlySelected);
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 160, 145, 30), new GUIContent("SceneProfile On"), PluginConfig.Instance.ProfileSceneChange ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 PluginConfig.Instance.ProfileSceneChange = true;
@@ -69,23 +68,23 @@ namespace CameraPlus.UI
                 }
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 350, 145, 25), new GUIContent("Menu Selected")))
                 {
-                    PluginConfig.Instance.MenuProfile = CameraUtilities.currentlySelected;
+                    PluginConfig.Instance.MenuProfile = CameraUtilities.CurrentlySelected;
                 }
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 375, 145, 25), new GUIContent("Game Selected")))
                 {
-                    PluginConfig.Instance.GameProfile = CameraUtilities.currentlySelected;
+                    PluginConfig.Instance.GameProfile = CameraUtilities.CurrentlySelected;
                 }
                 if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 375, 145, 25), new GUIContent("90/360 Selected")))
                 {
-                    PluginConfig.Instance.RotateProfile = CameraUtilities.currentlySelected;
+                    PluginConfig.Instance.RotateProfile = CameraUtilities.CurrentlySelected;
                 }
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 400, 145, 25), new GUIContent("Multiplay Selected")))
                 {
-                    PluginConfig.Instance.MultiplayerProfile = CameraUtilities.currentlySelected;
+                    PluginConfig.Instance.MultiplayerProfile = CameraUtilities.CurrentlySelected;
                 }
                 if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 400, 145, 25), new GUIContent("SongSciript Selected")))
                 {
-                    PluginConfig.Instance.SongSpecificScriptProfile = CameraUtilities.currentlySelected;
+                    PluginConfig.Instance.SongSpecificScriptProfile = CameraUtilities.CurrentlySelected;
                 }
             }
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close Profile Menu")))

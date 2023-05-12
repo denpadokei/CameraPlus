@@ -197,7 +197,6 @@
     <Compile Include="HarmonyPatches\MainCameraPatch.cs" />
     <Compile Include="HarmonyPatches\MultiplayerPatch.cs" />
     <Compile Include="HarmonyPatches\PlayerSettingPatch.cs" />
-    <Compile Include="HarmonyPatches\RestartLevelPatch.cs" />
     <Compile Include="HarmonyPatches\RoomAdjustPatch.cs" />
     <Compile Include="HarmonyPatches\RotateMapPatch.cs" />
     <Compile Include="HarmonyPatches\TransparentWallsPatch.cs" />
