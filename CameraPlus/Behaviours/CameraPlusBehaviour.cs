@@ -1,4 +1,5 @@
-﻿using System;
+﻿#define WITH_VMCA
+using System;
 using System.IO;
 using System.Linq;
 using System.Collections;
@@ -85,7 +86,7 @@ namespace CameraPlus.Behaviours
         internal WebCamScreen webCamScreen = null;
         internal CameraEffectStruct effectElements = new CameraEffectStruct();
 
-#if WithVMCAvatar
+#if WITH_VMCA
         private VMCAvatarMarionette marionette = null;
 #endif
         public virtual void Init(CameraConfig config)
@@ -208,7 +209,7 @@ namespace CameraPlus.Behaviours
         }
         public void InitExternalReceiver()
         {
-#if WithVMCAvatar
+#if WITH_VMCA
             if (Config.vmcProtocol.mode == VMCProtocolMode.Receiver && Plugin.cameraController.existsVMCAvatar)
             {
                 marionette = this.gameObject.AddComponent<VMCProtocol.VMCAvatarMarionette>();
@@ -218,7 +219,7 @@ namespace CameraPlus.Behaviours
         }
         public void DestoryVMCProtocolObject()
         {
-#if WithVMCAvatar
+#if WITH_VMCA
             if (marionette)
                 Destroy(marionette);
 #endif
@@ -240,7 +241,7 @@ namespace CameraPlus.Behaviours
 
             _camRenderTexture?.Release();
 
-#if WithVMCAvatar
+#if WITH_VMCA
             if (marionette)
                 Destroy(marionette);
 #endif
@@ -399,7 +400,7 @@ namespace CameraPlus.Behaviours
 
                 if (ThirdPerson)
                 {
-#if WithVMCAvatar
+#if WITH_VMCA
                     if (Plugin.cameraController.existsVMCAvatar)
                         if (Config.vmcProtocol.mode == VMCProtocolMode.Receiver && marionette)
                             if (marionette.receivedData)

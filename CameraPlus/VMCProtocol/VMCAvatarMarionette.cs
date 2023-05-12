@@ -1,11 +1,13 @@
-﻿using UnityEngine;
-#if WithVMCAvatar
+﻿#define WITH_VMCA
+using UnityEngine;
+
+#if WITH_VMCA
 using VMCP = global::VMCProtocol;
 #endif
 
 namespace CameraPlus.VMCProtocol
 {
-#if WithVMCAvatar
+#if WITH_VMCA
     public class VMCAvatarMarionette : MonoBehaviour
     {
         public Vector3 position;
