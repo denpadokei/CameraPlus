@@ -39,25 +39,6 @@
     <DisableCopyToPlugins>True</DisableCopyToPlugins>
     <DisableZipRelease>True</DisableZipRelease>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'DebugWithVMCA'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\DebugWithVMCA\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;WithVMCAvatar</DefineConstants>
-    <DebugType>portable</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'ReleaseWithVMCA'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\ReleaseWithVMCA\</OutputPath>
-    <Optimize>true</Optimize>
-    <DebugType>portable</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-    <DefineConstants>WithVMCAvatar</DefineConstants>
-  </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>$(GameDirectory)\Libs\0Harmony.dll</HintPath>
