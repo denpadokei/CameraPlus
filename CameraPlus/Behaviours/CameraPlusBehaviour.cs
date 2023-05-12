@@ -14,6 +14,7 @@ using CameraPlus.HarmonyPatches;
 using CameraPlus.VMCProtocol;
 using CameraPlus.Utilities;
 using CameraPlus.UI;
+using Unity.IO.LowLevel.Unsafe;
 
 namespace CameraPlus.Behaviours
 {
@@ -36,6 +37,7 @@ namespace CameraPlus.Behaviours
         public Vector3 OffsetPosition;
         public Vector3 OffsetAngle;
         public CameraConfig Config;
+        public bool RunCullingMask = false;
 
         internal Camera _cam;
         internal CameraPreviewQuad _quad;
@@ -169,7 +171,6 @@ namespace CameraPlus.Behaviours
                 InitExternalSender();
 
             Plugin.cameraController.OnFPFCToggleEvent.AddListener(OnFPFCToglleEvent);
-
             if (Config.webCamera.autoConnect)
                 CreateWebCamScreen();
         }
@@ -343,12 +344,29 @@ namespace CameraPlus.Behaviours
                 Plugin.Log.Error($"Fail CreateScreenRenderTexture {ex}");
             }
         }
+        
         public virtual void SceneManager_activeSceneChanged(Scene from, Scene to)
         {
             CloseContextMenu();
+            OnFPFCToglleEvent();
             StartCoroutine(GetMainCamera());
             Config.SetCullingMask();
-            OnFPFCToglleEvent();
+        }
+
+        public virtual void OnEnable()
+        {
+            Plugin.cameraController.OnSetCullingMask.AddListener(OnCullingMaskChangeEvent);
+
+        }
+        public virtual void OnDisable()
+        {
+            Plugin.cameraController.OnSetCullingMask.RemoveListener(OnCullingMaskChangeEvent);
+        }
+
+        public void OnCullingMaskChangeEvent()
+        {
+            StartCoroutine(GetMainCamera());
+            Config.SetCullingMask();
         }
 
         private void OnFPFCToglleEvent()

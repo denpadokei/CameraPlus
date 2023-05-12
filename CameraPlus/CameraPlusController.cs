@@ -20,6 +20,7 @@ namespace CameraPlus
     public class CameraPlusController : MonoBehaviour
     {
         public Action<Scene, Scene> ActiveSceneChanged;
+
         internal static CameraPlusController instance { get; private set; }
         public ConcurrentDictionary<string, GameObject> LoadedProfile = new ConcurrentDictionary<string, GameObject>();
         public ConcurrentDictionary<string, CameraPlusBehaviour> Cameras = new ConcurrentDictionary<string, CameraPlusBehaviour>();
@@ -38,6 +39,7 @@ namespace CameraPlus
         private bool initialized = false;
 
         internal UnityEvent OnFPFCToggleEvent = new UnityEvent();
+        internal UnityEvent OnSetCullingMask = new UnityEvent();
         public bool isFPFC = false;
 
         internal ExternalSender externalSender = null;
@@ -99,7 +101,7 @@ namespace CameraPlus
         public void OnActiveSceneChanged(Scene from, Scene to)
         {
             if (isRestartingSong && to.name != "GameCore") return;
-            if (initialized || (!initialized && (to.name == "HealthWarning" || to.name == "MainMenu")))
+            if (initialized || (!initialized && (to.name == "MainMenu")))
                 SharedCoroutineStarter.instance.StartCoroutine(DelayedActiveSceneChanged(from, to));
 #if DEBUG
             Plugin.Log.Info($"Scene Change {from.name} to {to.name}");
@@ -112,18 +114,14 @@ namespace CameraPlus
 
             yield return waitMainCamera();
 
-            if (!initialized)
-            {
-                CameraUtilities.ProfileChange(string.Empty);
-            }
-
-            initialized = true;
-
             IEnumerator waitForcam()
             {
                 yield return new WaitForSeconds(0.1f);
                 while (Camera.main == null) yield return new WaitForSeconds(0.05f);
             }
+            if(!initialized)
+                CameraUtilities.ProfileChange(string.Empty);
+            initialized = true;
 
             if (PluginConfig.Instance.ProfileSceneChange)
             {

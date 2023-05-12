@@ -75,19 +75,22 @@ namespace CameraPlus.Behaviours
 		}
 		public void SetCameraQuadPosition(string quadPosition, float cubeScale = 1)
         {
-			_cameraQuad.transform.localEulerAngles = new Vector3(0, 180, 0);
-			SetCameraQuadSize(_cameraPlus.Config.cameraExtensions.previewCameraQuadScale, _cameraPlus.Config.cameraExtensions.previewCameraMirrorMode);
-			if (quadPosition == "Top")
-				_cameraQuad.transform.localPosition = new Vector3(0, _cameraQuad.transform.localScale.y / 2 + _cameraCube.transform.localScale.y / 2, 0.05f * cubeScale);
-			else if (quadPosition == "Bottom")
-				_cameraQuad.transform.localPosition = new Vector3(0, -_cameraQuad.transform.localScale.y / 2 - _cameraCube.transform.localScale.y / 2, 0.05f * cubeScale);
-			else if (quadPosition == "Left")
-				_cameraQuad.transform.localPosition = new Vector3(Mathf.Abs(_cameraQuad.transform.localScale.x) / 2 + _cameraCube.transform.localScale.x / 2, 0, 0.05f * cubeScale);
-			else if (quadPosition == "Center")
-				_cameraQuad.transform.localPosition = new Vector3(0, 0, 0.15f * cubeScale);
-			else
-				_cameraQuad.transform.localPosition = new Vector3(-Mathf.Abs(_cameraQuad.transform.localScale.x) / 2 - _cameraCube.transform.localScale.x / 2, 0, 0.05f * cubeScale);
-		}
+			if (!_cameraPlus.Config.cameraExtensions.previewQuadSeparate)
+			{
+                _cameraQuad.transform.localEulerAngles = new Vector3(0, 180, 0);
+                SetCameraQuadSize(_cameraPlus.Config.cameraExtensions.previewCameraQuadScale, _cameraPlus.Config.cameraExtensions.previewCameraMirrorMode);
+                if (quadPosition == "Top")
+                    _cameraQuad.transform.localPosition = new Vector3(0, _cameraQuad.transform.localScale.y / 2 + _cameraCube.transform.localScale.y / 2, 0.05f * cubeScale);
+                else if (quadPosition == "Bottom")
+                    _cameraQuad.transform.localPosition = new Vector3(0, -_cameraQuad.transform.localScale.y / 2 - _cameraCube.transform.localScale.y / 2, 0.05f * cubeScale);
+                else if (quadPosition == "Left")
+                    _cameraQuad.transform.localPosition = new Vector3(Mathf.Abs(_cameraQuad.transform.localScale.x) / 2 + _cameraCube.transform.localScale.x / 2, 0, 0.05f * cubeScale);
+                else if (quadPosition == "Center")
+                    _cameraQuad.transform.localPosition = new Vector3(0, 0, 0.15f * cubeScale);
+                else
+                    _cameraQuad.transform.localPosition = new Vector3(-Mathf.Abs(_cameraQuad.transform.localScale.x) / 2 - _cameraCube.transform.localScale.x / 2, 0, 0.05f * cubeScale);
+            }
+        }
 		public void SetCameraCubeSize(float cubeScale)
         {
 			_cameraCube.transform.localScale = new Vector3(0.15f * cubeScale, 0.15f * cubeScale, 0.22f * cubeScale);
@@ -103,9 +106,9 @@ namespace CameraPlus.Behaviours
 
 		public void SeparateQuad()
 		{
-			_cameraQuad.transform.SetParent(_cameraPlus.transform.parent);
-			_cameraPlus.Config.PreviewQuadPosition = _cameraQuad.transform.position;
+            _cameraPlus.Config.PreviewQuadPosition = _cameraQuad.transform.position;
             _cameraPlus.Config.PreviewQuadRotation = _cameraQuad.transform.eulerAngles;
+            _cameraQuad.transform.SetParent(_cameraPlus.transform.parent);
         }
 		public void CombineQuad()
 		{

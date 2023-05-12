@@ -63,6 +63,21 @@ namespace CameraPlus.UI
                 }
             }
             GUI.Box(new Rect(menuPos.x, menuPos.y + 115, 150, 95), "PreviewQuadPosition");
+            
+            if (GUI.Button(new Rect(menuPos.x , menuPos.y + 135, 50, 25), new GUIContent("Separate"), parentBehaviour.Config.cameraExtensions.previewQuadSeparate ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            {
+                parentBehaviour.Config.cameraExtensions.previewQuadSeparate = true;
+                parentBehaviour._quad.SeparateQuad();
+                parentBehaviour.Config.Save();
+            }
+            if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 135, 50, 25), new GUIContent("Combine"), !parentBehaviour.Config.cameraExtensions.previewQuadSeparate ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            {
+                parentBehaviour.Config.cameraExtensions.previewQuadSeparate = false;
+                parentBehaviour._quad.CombineQuad();
+                parentBehaviour.Config.Save();
+            }
+
+
             if (GUI.Button(new Rect(menuPos.x + 50, menuPos.y + 135, 50, 25), new GUIContent("Top"), PluginConfig.Instance.CameraQuadPosition == "Top" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 PluginConfig.Instance.CameraQuadPosition = "Top";

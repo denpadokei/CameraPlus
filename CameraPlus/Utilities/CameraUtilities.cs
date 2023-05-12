@@ -187,8 +187,8 @@ namespace CameraPlus.Utilities
                         {
                             var cam = new GameObject(dictKey).AddComponent<CameraPlusBehaviour>();
                             cam.transform.SetParent(profileObject.transform);
-                            Plugin.cameraController.Cameras.TryAdd(dictKey, cam);
                             cam.Init(Config);
+                            Plugin.cameraController.Cameras.TryAdd(dictKey, cam);
                         }
                     }
                 }

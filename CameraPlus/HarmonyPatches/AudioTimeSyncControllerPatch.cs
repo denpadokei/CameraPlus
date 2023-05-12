@@ -23,7 +23,7 @@ namespace CameraPlus.HarmonyPatches
 #if DEBUG
             Plugin.Log.Notice("AudioTimeSyncController SetAllCameraCulling StartSong");
 #endif
-            CameraUtilities.SetAllCameraCulling();
+            Plugin.cameraController.OnSetCullingMask.Invoke();
         }
     }
     [HarmonyPatch(typeof(AudioTimeSyncController), nameof(AudioTimeSyncController.StopSong))]

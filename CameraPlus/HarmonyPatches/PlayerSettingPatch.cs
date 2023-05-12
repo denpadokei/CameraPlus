@@ -17,7 +17,8 @@ namespace CameraPlus.HarmonyPatches
 #if DEBUG
                 Plugin.Log.Notice("PlayerSpecificSettings SetAllCameraCulling");
 #endif
-                CameraUtilities.SetAllCameraCulling();
+                Plugin.cameraController.OnSetCullingMask.Invoke();
+
             }
         }
     }
