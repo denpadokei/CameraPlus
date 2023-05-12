@@ -38,7 +38,7 @@ namespace CameraPlus.Utilities
         internal static void AddNewCamera(string cameraName, CameraConfig CopyConfig = null)
         {
             string path = Path.Combine(UnityGame.UserDataPath, Plugin.Name, $"{cameraName}.json");
-            if (!PluginConfig.Instance.ProfileLoadCopyMethod && Plugin.cameraController.currentProfile != null)
+            if (Plugin.cameraController.currentProfile != null)
                 path = Path.Combine(profilePath, Plugin.cameraController.currentProfile, $"{cameraName}.json");
 
             if (!File.Exists(path))
@@ -170,7 +170,7 @@ namespace CameraPlus.Utilities
 
                 string[] files = Directory.GetFiles(configPath);
 
-                if (!PluginConfig.Instance.ProfileLoadCopyMethod && Plugin.cameraController.currentProfile != null)
+                if (Plugin.cameraController.currentProfile != null)
                     files = Directory.GetFiles(Path.Combine(profilePath, Plugin.cameraController.currentProfile));
 
                 foreach (string filePath in files)
@@ -224,7 +224,7 @@ namespace CameraPlus.Utilities
             ClearCameras();
             Plugin.cameraController.currentProfile = ProfileName;
 
-            if (PluginConfig.Instance.ProfileLoadCopyMethod && ProfileName != null)
+            if (ProfileName != null)
                 SetProfile(ProfileName);
 
             CameraUtilities.ReloadCameras();
@@ -234,11 +234,6 @@ namespace CameraPlus.Utilities
         {
             var cs = Resources.FindObjectsOfTypeAll<CameraPlusBehaviour>();
 
-            if (PluginConfig.Instance.ProfileLoadCopyMethod)
-            {
-                foreach (var c in cs)
-                    CameraUtilities.RemoveCamera(c);
-            }
             foreach (var csi in Plugin.cameraController.Cameras.Values)
                 GameObject.Destroy(csi.gameObject);
             Plugin.cameraController.Cameras.Clear();
@@ -268,7 +263,7 @@ namespace CameraPlus.Utilities
         internal static void SaveCurrent()
         {
             string cPath = configPath;
-            if (!PluginConfig.Instance.ProfileLoadCopyMethod && Plugin.cameraController.currentProfile != null)
+            if (Plugin.cameraController.currentProfile != null)
             {
                 cPath = Path.Combine(profilePath, Plugin.cameraController.currentProfile);
             }

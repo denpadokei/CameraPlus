@@ -54,33 +54,16 @@ namespace CameraPlus
             GameObject.DontDestroyOnLoad(this);
             instance = this;
 
-            string path = Path.Combine(UnityGame.UserDataPath, $"{Plugin.Name}.ini");
-            string backupPath = backupPath = Path.Combine(UnityGame.UserDataPath, Plugin.Name, "OldProfiles");
-            if (File.Exists(path))
-            {
-                if (!Directory.Exists(backupPath))
-                    Directory.CreateDirectory(backupPath);
-                File.Copy(path, Path.Combine(backupPath, $"{Plugin.Name}.ini"), true);
-                File.Delete(path);
-            }
-            
-            ConfigConverter.ProfileConverter();
-
             SceneManager.activeSceneChanged += this.OnActiveSceneChanged;
             CameraUtilities.CreateMainDirectory();
             CameraUtilities.CreateExampleScript();
-
-            ConfigConverter.DefaultConfigConverter();
         }
         private void Start()
         {
-            if (PluginConfig.Instance.ScreenFillBlack)
-            {
-                _renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
-                _screenCameraBehaviour = this.gameObject.AddComponent<ScreenCameraBehaviour>();
-                _screenCameraBehaviour.SetCameraInfo(new Vector2(0, 0), new Vector2(Screen.width, Screen.height), -2000);
-                _screenCameraBehaviour.SetRenderTexture(_renderTexture);
-            }
+            _renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
+            _screenCameraBehaviour = this.gameObject.AddComponent<ScreenCameraBehaviour>();
+            _screenCameraBehaviour.SetCameraInfo(new Vector2(0, 0), new Vector2(Screen.width, Screen.height), -2000);
+            _screenCameraBehaviour.SetRenderTexture(_renderTexture);
 
             ShaderLoad();
             _cameraMovePointer = this.gameObject.AddComponent<CameraMoverPointer>();

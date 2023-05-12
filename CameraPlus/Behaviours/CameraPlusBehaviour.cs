@@ -90,12 +90,9 @@ namespace CameraPlus.Behaviours
 #endif
         public virtual void Init(CameraConfig config)
         {
-            DontDestroyOnLoad(gameObject);
-
             Config = config;
             Config.cam = this;
             _isMainCamera = Path.GetFileName(Config.FilePath) == $"{Plugin.MainCamera}.json";
-            //_contextMenuEnabled = Array.IndexOf(Environment.GetCommandLineArgs(), "fpfc") == -1;
 
             StartCoroutine(DelayedInit());
         }
@@ -513,10 +510,7 @@ namespace CameraPlus.Behaviours
             else
                 b = this._environmentSpawnRotation.targetRotation;
 
-            if (!Config.cameraExtensions.follow360mapUseLegacyProcess)
-                _yAngle = Mathf.LerpAngle(_yAngle, b, Mathf.Clamp(Time.deltaTime * Config.cameraExtensions.rotation360Smooth, 0f, 1f));
-            else
-                _yAngle = Mathf.Lerp(_yAngle, b, Mathf.Clamp(Time.deltaTime * Config.cameraExtensions.rotation360Smooth, 0f, 1f));
+            _yAngle = Mathf.LerpAngle(_yAngle, b, Mathf.Clamp(Time.deltaTime * Config.cameraExtensions.rotation360Smooth, 0f, 1f));
 
             ThirdPersonRot = new Vector3(Config.Rotation.x, _yAngle + Config.Rotation.y, Config.Rotation.z);
 
