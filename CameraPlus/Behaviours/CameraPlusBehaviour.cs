@@ -349,11 +349,12 @@ namespace CameraPlus.Behaviours
             CloseContextMenu();
             StartCoroutine(GetMainCamera());
             Config.SetCullingMask();
+            OnFPFCToglleEvent();
         }
 
         private void OnFPFCToglleEvent()
         {
-            if (FPFCPatch.isFPFC)
+            if (Plugin.cameraController.isFPFC)
             {
                 turnToHead = false;
                 _screenCamera.SetLayer(Config.layer);
@@ -454,7 +455,7 @@ namespace CameraPlus.Behaviours
                     {
                         effectElements.dofFocusDistance = (Camera.main.transform.position - transform.position).magnitude;
                     }
-                    if (Camera.main && turnToHead && !FPFCPatch.isFPFC && !Config.cameraExtensions.follow360map)
+                    if (Camera.main && turnToHead && !Plugin.cameraController.isFPFC && !Config.cameraExtensions.follow360map)
                     {
                         turnToTarget = Camera.main.transform;
                         turnToTarget.transform.position += turnToHeadOffset;
