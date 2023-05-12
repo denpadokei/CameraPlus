@@ -200,42 +200,6 @@ namespace CameraPlus.Utilities
             }
         }
 
-        internal static void ReloadCameras()
-        {
-            try
-            {
-                if (!Directory.Exists(ConfigPath))
-                    Directory.CreateDirectory(ConfigPath);
-
-                string[] files = Directory.GetFiles(ConfigPath);
-
-                if (Plugin.cameraController.CurrentProfile != null)
-                    files = Directory.GetFiles(Path.Combine(ProfilePath, Plugin.cameraController.CurrentProfile));
-
-                foreach (string filePath in files)
-                {
-                    string fileName = Path.GetFileName(filePath);
-                    if (fileName.EndsWith(".json") && !Plugin.cameraController.Cameras.ContainsKey(fileName))
-                    {
-                        Plugin.Log.Notice($"Found config {filePath}!");
-
-                        CameraConfig Config = new CameraConfig(filePath);
-                        if (Config.configLoaded)
-                        {
-                            var cam = new GameObject($"CamPlus_{fileName}").AddComponent<CameraPlusBehaviour>();
-                            Plugin.cameraController.Cameras.TryAdd(fileName, cam);
-                            cam.Init(Config);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Plugin.Log.Error($"Exception while reloading cameras! Exception:" +
-                    $" {ex.Message}\n{ex.StackTrace}");
-            }
-        }
-
         internal static string[] MovementScriptList()
         {
             string[] spath = Directory.GetFiles(Path.Combine(UnityGame.UserDataPath, Plugin.Name, "Scripts"), "*.json");
@@ -256,12 +220,14 @@ namespace CameraPlus.Utilities
 
         internal static void ProfileChange(String ProfileName)
         {
-            string profile = (ProfilePath == string.Empty ? RootProfile : ProfileName);
+            string profile = (ProfileName == string.Empty ? RootProfile : ProfileName);
+            string currentprofile = (Plugin.cameraController.CurrentProfile == string.Empty ? RootProfile : Plugin.cameraController.CurrentProfile);
+            Plugin.Log.Notice($"ProfileChange {currentprofile} to {profile}");
             if (!Plugin.cameraController.LoadedProfile.ContainsKey(profile))
             {
-                LoadProfile(profile);
+                LoadProfile(ProfileName);
             }
-            Plugin.cameraController.LoadedProfile[Plugin.cameraController.CurrentProfile].SetActive(false);
+            Plugin.cameraController.LoadedProfile[currentprofile].SetActive(false);
             Plugin.cameraController.LoadedProfile[profile].SetActive(true);
             Plugin.cameraController.CurrentProfile = ProfileName;
         }

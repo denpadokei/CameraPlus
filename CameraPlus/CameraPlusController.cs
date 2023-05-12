@@ -24,7 +24,7 @@ namespace CameraPlus
         public ConcurrentDictionary<string, GameObject> LoadedProfile = new ConcurrentDictionary<string, GameObject>();
         public ConcurrentDictionary<string, CameraPlusBehaviour> Cameras = new ConcurrentDictionary<string, CameraPlusBehaviour>();
 
-        public string CurrentProfile;
+        public string CurrentProfile = string.Empty;
 
         internal bool MultiplayerSessionInit;
         internal bool existsVMCAvatar = false;
@@ -38,6 +38,7 @@ namespace CameraPlus
         private bool initialized = false;
 
         internal UnityEvent OnFPFCToggleEvent = new UnityEvent();
+        public bool isFPFC = false;
 
         internal ExternalSender externalSender = null;
 
@@ -95,21 +96,6 @@ namespace CameraPlus
             instance = null; // This MonoBehaviour is being destroyed, so set the static instance property to null.
         }
 
-        private void Update()
-        {
-            if(FPFCPatch.instance != null) 
-            {
-                if (FPFCPatch.FPFCEventSystemTransform.hasChanged)
-                {
-                    if (CameraUtilities.GetFullPath(FPFCPatch.FPFCEventSystemTransform) == "Wrapper/MenuCore/UI/EventSystem")
-                        FPFCPatch.isFPFC = false;
-                    else
-                        FPFCPatch.isFPFC = true;
-                    OnFPFCToggleEvent?.Invoke();
-                    FPFCPatch.FPFCEventSystemTransform.hasChanged = false;
-                }
-            }
-        }
         public void OnActiveSceneChanged(Scene from, Scene to)
         {
             if (isRestartingSong && to.name != "GameCore") return;
@@ -126,8 +112,10 @@ namespace CameraPlus
 
             yield return waitMainCamera();
 
-            if(!initialized)
+            if (!initialized)
+            {
                 CameraUtilities.ProfileChange(string.Empty);
+            }
 
             initialized = true;
 

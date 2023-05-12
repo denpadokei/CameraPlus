@@ -346,13 +346,12 @@ namespace CameraPlus.Behaviours
         public virtual void SceneManager_activeSceneChanged(Scene from, Scene to)
         {
             CloseContextMenu();
-            StartCoroutine(GetMainCamera());
-            Config.SetCullingMask();
+            OnFPFCToglleEvent();
         }
 
         private void OnFPFCToglleEvent()
         {
-            if (FPFCPatch.isFPFC)
+            if (Plugin.cameraController.isFPFC)
             {
                 turnToHead = false;
                 _screenCamera.SetLayer(Config.layer);
@@ -453,7 +452,7 @@ namespace CameraPlus.Behaviours
                     {
                         effectElements.dofFocusDistance = (Camera.main.transform.position - transform.position).magnitude;
                     }
-                    if (Camera.main && turnToHead && !FPFCPatch.isFPFC && !Config.cameraExtensions.follow360map)
+                    if (Camera.main && turnToHead && !!Plugin.cameraController.isFPFC && !Config.cameraExtensions.follow360map)
                     {
                         turnToTarget = Camera.main.transform;
                         turnToTarget.transform.position += turnToHeadOffset;
@@ -641,17 +640,21 @@ namespace CameraPlus.Behaviours
             if (!IsWithinRenderArea(mousePos, Config)) return false;
             foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.ToArray())
             {
-                if (c == this) continue;
-                if (!IsWithinRenderArea(mousePos, c.Config) && !c._mouseHeld) continue;
-                if (c.Config.layer > Config.layer)
+                if (c == this)
                 {
-                    return false;
-                }
+                    if (!IsWithinRenderArea(mousePos, c.Config) && !c._mouseHeld)
+                    {
+                        if (c.Config.layer > Config.layer)
+                        {
+                            return false;
+                        }
 
-                if (c._mouseHeld && (c._isMoving ||
-                    c._isResizing || c._contextMenuOpen))
-                {
-                    return false;
+                        if (c._mouseHeld && (c._isMoving ||
+                            c._isResizing || c._contextMenuOpen))
+                        {
+                            return false;
+                        }
+                    }
                 }
             }
             return true;
