@@ -6,7 +6,6 @@ using UnityEngine;
 
 namespace CameraPlus.HarmonyPatches
 {
-    [HarmonyPatch]
     internal class FPFCToggleEnable
     {
         //Temporarily monitor FPFCToggle of SiraUtil due to FPFC change in 1.29.4
@@ -22,12 +21,13 @@ namespace CameraPlus.HarmonyPatches
         private static void Postfix()
         {
             Plugin.cameraController.isFPFC = true;
+#if DEBUG
             Plugin.Log.Notice("SiraUtil FPFC Toggle Enable");
+#endif
             Plugin.cameraController.OnFPFCToggleEvent.Invoke();
         }
     }
 
-    [HarmonyPatch]
     internal class FPFCToggleDisbale
     {
         private static MethodBase TargetMethod()
@@ -42,7 +42,9 @@ namespace CameraPlus.HarmonyPatches
         private static void Postfix()
         {
             Plugin.cameraController.isFPFC = false;
+#if DEBUG
             Plugin.Log.Notice("SiraUtil FPFC Toggle False");
+#endif
             Plugin.cameraController.OnFPFCToggleEvent.Invoke();
         }
     }
