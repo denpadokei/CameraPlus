@@ -114,7 +114,14 @@ namespace CameraPlus.Configuration
             }
         }
         public float fov { get => _fieldOfView; set { _fieldOfView = value; } }
-        public int layer { get => _layer; set { _layer = value; } }
+        public int layer {
+            get {
+                if (FPFCPatch.instance != null && !Plugin.cameraController.isFPFC)
+                    return _layer + 1000;
+                else
+                    return _layer;
+            } 
+            set { _layer = value; } }
         public int antiAliasing { get => _antiAliasing; set { _antiAliasing = value; } }
         public float renderScale { get => _renderScale; set { _renderScale = value; } }
         public bool fitToCanvas { get => _windowRect.fitToCanvas; set { _windowRect.fitToCanvas = value; } }

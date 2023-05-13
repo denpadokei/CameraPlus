@@ -1,11 +1,24 @@
 ﻿using HarmonyLib;
 using IPA.Loader;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
 namespace CameraPlus.HarmonyPatches
 {
+    [HarmonyPatch(typeof(FirstPersonFlyingController), "Start")]
+    internal class FPFCPatch
+    {
+        public static FirstPersonFlyingController instance { get; private set; } = null;
+        static void Postfix(FirstPersonFlyingController __instance)
+        {
+            instance = __instance;
+#if DEBUG
+            Plugin.Log.Notice("Find FPFC");
+#endif
+        }
+    }
     internal class FPFCToggleEnable
     {
         //Temporarily monitor FPFCToggle of SiraUtil due to FPFC change in 1.29.4

@@ -50,7 +50,6 @@ namespace CameraPlus.Behaviours
 			_cameraCube.transform.localEulerAngles = Vector3.zero;
 
 			_cameraQuad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            _cameraQuad.name = $"{_cameraPlus.gameObject.name}_Quad";
 			DestroyImmediate(_cameraQuad.GetComponent<Collider>());
 			_cameraQuad.GetComponent<MeshRenderer>().material = _previewMaterial;
 
@@ -89,22 +88,26 @@ namespace CameraPlus.Behaviours
                     _cameraQuad.transform.localPosition = new Vector3(0, 0, 0.15f * cubeScale);
                 else
                     _cameraQuad.transform.localPosition = new Vector3(-Mathf.Abs(_cameraQuad.transform.localScale.x) / 2 - _cameraCube.transform.localScale.x / 2, 0, 0.05f * cubeScale);
+			}
+			else
+			{
+                SetCameraQuadSize(_cameraPlus.Config.cameraExtensions.previewCameraQuadScale, _cameraPlus.Config.cameraExtensions.previewCameraMirrorMode);
             }
         }
 		public void SetCameraCubeSize(float cubeScale)
         {
-			_cameraCube.transform.localScale = new Vector3(0.15f * cubeScale, 0.15f * cubeScale, 0.22f * cubeScale);
+            _cameraCube.transform.localScale = new Vector3(0.15f * cubeScale, 0.15f * cubeScale, 0.22f * cubeScale);
 		}
 
 		public void SetCameraQuadSize(float quadScale, bool isMirror=false)
         {
-			if(isMirror)
-				_cameraQuad.transform.localScale = new Vector3(-1 * 0.15f * (PluginConfig.Instance.CameraQuadStretch ? 1.7778f : _cameraPlus._cam.aspect) * quadScale, 0.15f * 1 * quadScale, 1); //1.7778f = 16 / 9
-			else
-				_cameraQuad.transform.localScale = new Vector3(0.15f * (PluginConfig.Instance.CameraQuadStretch ? 1.7778f : _cameraPlus._cam.aspect) * quadScale, 0.15f * 1 * quadScale, 1); //1.7778f = 16 / 9
-		}
+            if (isMirror)
+                _cameraQuad.transform.localScale = new Vector3(-1 * 0.15f * (PluginConfig.Instance.CameraQuadStretch ? 1.7778f : _cameraPlus._cam.aspect) * quadScale, 0.15f * 1 * quadScale, 1); //1.7778f = 16 / 9
+            else
+                _cameraQuad.transform.localScale = new Vector3(0.15f * (PluginConfig.Instance.CameraQuadStretch ? 1.7778f : _cameraPlus._cam.aspect) * quadScale, 0.15f * 1 * quadScale, 1); //1.7778f = 16 / 9
+        }
 
-		public void SeparateQuad()
+        public void SeparateQuad()
 		{
             _cameraPlus.Config.PreviewQuadPosition = _cameraQuad.transform.position;
             _cameraPlus.Config.PreviewQuadRotation = _cameraQuad.transform.eulerAngles;
