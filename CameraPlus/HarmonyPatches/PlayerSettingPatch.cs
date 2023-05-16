@@ -13,7 +13,13 @@ namespace CameraPlus.HarmonyPatches
         {
             playerSetting = __instance.playerSpecificSettings;
             if (!MultiplayerSession.ConnectedMultiplay)
-                CameraUtilities.SetAllCameraCulling();
+            {
+#if DEBUG
+                Plugin.Log.Notice("PlayerSpecificSettings SetAllCameraCulling");
+#endif
+                Plugin.cameraController.OnSetCullingMask.Invoke();
+
+            }
         }
     }
 }

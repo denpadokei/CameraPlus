@@ -1,5 +1,10 @@
 # v7.0.0 Changes
 - Support game version 1.29.4
+- The camera preview can now be detached from the cube and fixed in place.
+- Temporarily monitor FPFCToggle of SiraUtil due to FPFC change in 1.29.4.
+- Changed the way the camera is rebuilt every time you switch scenes. Bugs may be less likely to occur in long-time play.
+- Stopped automatic conversion from old configuration file cfg.
+- I changed the target framework to .net framework 4.8.
 
 # v6.11.0 Chanegs
 - Add near/far clip setting. (yet json only)

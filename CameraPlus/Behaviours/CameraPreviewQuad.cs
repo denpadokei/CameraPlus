@@ -1,12 +1,13 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using CameraPlus.Configuration;
+using UniGLTF;
 
 namespace CameraPlus.Behaviours
 {
 	internal class CameraPreviewQuad : MonoBehaviour, IPointerClickHandler
 	{
-		internal CameraPlusBehaviour cam { get; private set; }
+		internal CameraPlusBehaviour _cameraPlus { get; private set; }
 		private GameObject _cameraCube;
 		private GameObject _cameraQuad;
 
@@ -38,57 +39,84 @@ namespace CameraPlus.Behaviours
 		}
 		public void Init(CameraPlusBehaviour camera)
         {
-			cam = camera;
+            _cameraPlus = camera;
 			_cameraCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			DontDestroyOnLoad(_cameraCube);
 			_cameraCube.GetComponent<MeshRenderer>().material = _cubeMaterial;
 			SetCameraCubeSize(PluginConfig.Instance.CameraCubeSize);
-			Plugin.Log.Notice($"Camera Aspect {cam._cam.aspect}");
+			Plugin.Log.Notice($"Camera Aspect {_cameraPlus._cam.aspect}");
 			_cameraCube.name = "CameraCube";
 			_cameraCube.transform.SetParent(transform);
 			_cameraCube.transform.localPosition = Vector3.zero;
 			_cameraCube.transform.localEulerAngles = Vector3.zero;
 
 			_cameraQuad = GameObject.CreatePrimitive(PrimitiveType.Quad);
-			DontDestroyOnLoad(_cameraQuad);
 			DestroyImmediate(_cameraQuad.GetComponent<Collider>());
 			_cameraQuad.GetComponent<MeshRenderer>().material = _previewMaterial;
-			_cameraQuad.transform.SetParent(transform);
-			SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
-			IsDisplayMaterialVROnly = cam.Config.PreviewCameraVROnly;
+
+			if (_cameraPlus.Config.cameraExtensions.previewQuadSeparate)
+			{
+                _cameraQuad.transform.SetParent(_cameraPlus.transform.parent);
+                _cameraQuad.transform.position = _cameraPlus.Config.PreviewQuadPosition;
+                _cameraQuad.transform.eulerAngles = _cameraPlus.Config.PreviewQuadRotation;
+            }
+            else
+			{
+                _cameraQuad.transform.SetParent(transform);
+                SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
+            }
+            IsDisplayMaterialVROnly = _cameraPlus.Config.PreviewCameraVROnly;
 		}
 		public void OnPointerClick(PointerEventData eventData)
 		{
 			if (!(eventData.currentInputModule is VRUIControls.VRInputModule)) return;
-			if (cam.Config.cameraLock.lockCamera) return;
-			CameraMoverPointer.BeginDragCamera(cam);
+			if (_cameraPlus.Config.cameraLock.lockCamera) return;
+			CameraMoverPointer.BeginDragCamera(_cameraPlus);
 		}
 		public void SetCameraQuadPosition(string quadPosition, float cubeScale = 1)
         {
-			_cameraQuad.transform.localEulerAngles = new Vector3(0, 180, 0);
-			SetCameraQuadSize(cam.Config.cameraExtensions.previewCameraQuadScale, cam.Config.cameraExtensions.previewCameraMirrorMode);
-			if (quadPosition == "Top")
-				_cameraQuad.transform.localPosition = new Vector3(0, _cameraQuad.transform.localScale.y / 2 + _cameraCube.transform.localScale.y / 2, 0.05f * cubeScale);
-			else if (quadPosition == "Bottom")
-				_cameraQuad.transform.localPosition = new Vector3(0, -_cameraQuad.transform.localScale.y / 2 - _cameraCube.transform.localScale.y / 2, 0.05f * cubeScale);
-			else if (quadPosition == "Left")
-				_cameraQuad.transform.localPosition = new Vector3(Mathf.Abs(_cameraQuad.transform.localScale.x) / 2 + _cameraCube.transform.localScale.x / 2, 0, 0.05f * cubeScale);
-			else if (quadPosition == "Center")
-				_cameraQuad.transform.localPosition = new Vector3(0, 0, 0.15f * cubeScale);
+			if (!_cameraPlus.Config.cameraExtensions.previewQuadSeparate)
+			{
+                _cameraQuad.transform.localEulerAngles = new Vector3(0, 180, 0);
+                SetCameraQuadSize(_cameraPlus.Config.cameraExtensions.previewCameraQuadScale, _cameraPlus.Config.cameraExtensions.previewCameraMirrorMode);
+                if (quadPosition == "Top")
+                    _cameraQuad.transform.localPosition = new Vector3(0, _cameraQuad.transform.localScale.y / 2 + _cameraCube.transform.localScale.y / 2, 0.05f * cubeScale);
+                else if (quadPosition == "Bottom")
+                    _cameraQuad.transform.localPosition = new Vector3(0, -_cameraQuad.transform.localScale.y / 2 - _cameraCube.transform.localScale.y / 2, 0.05f * cubeScale);
+                else if (quadPosition == "Left")
+                    _cameraQuad.transform.localPosition = new Vector3(Mathf.Abs(_cameraQuad.transform.localScale.x) / 2 + _cameraCube.transform.localScale.x / 2, 0, 0.05f * cubeScale);
+                else if (quadPosition == "Center")
+                    _cameraQuad.transform.localPosition = new Vector3(0, 0, 0.15f * cubeScale);
+                else
+                    _cameraQuad.transform.localPosition = new Vector3(-Mathf.Abs(_cameraQuad.transform.localScale.x) / 2 - _cameraCube.transform.localScale.x / 2, 0, 0.05f * cubeScale);
+			}
 			else
-				_cameraQuad.transform.localPosition = new Vector3(-Mathf.Abs(_cameraQuad.transform.localScale.x) / 2 - _cameraCube.transform.localScale.x / 2, 0, 0.05f * cubeScale);
-		}
+			{
+                SetCameraQuadSize(_cameraPlus.Config.cameraExtensions.previewCameraQuadScale, _cameraPlus.Config.cameraExtensions.previewCameraMirrorMode);
+            }
+        }
 		public void SetCameraCubeSize(float cubeScale)
         {
-			_cameraCube.transform.localScale = new Vector3(0.15f * cubeScale, 0.15f * cubeScale, 0.22f * cubeScale);
+            _cameraCube.transform.localScale = new Vector3(0.15f * cubeScale, 0.15f * cubeScale, 0.22f * cubeScale);
 		}
 
 		public void SetCameraQuadSize(float quadScale, bool isMirror=false)
         {
-			if(isMirror)
-				_cameraQuad.transform.localScale = new Vector3(-1 * 0.15f * (PluginConfig.Instance.CameraQuadStretch ? 1.7778f : cam._cam.aspect) * quadScale, 0.15f * 1 * quadScale, 1); //1.7778f = 16 / 9
-			else
-				_cameraQuad.transform.localScale = new Vector3(0.15f * (PluginConfig.Instance.CameraQuadStretch ? 1.7778f : cam._cam.aspect) * quadScale, 0.15f * 1 * quadScale, 1); //1.7778f = 16 / 9
-		}
-	}
+            if (isMirror)
+                _cameraQuad.transform.localScale = new Vector3(-1 * 0.15f * (PluginConfig.Instance.CameraQuadStretch ? 1.7778f : _cameraPlus._cam.aspect) * quadScale, 0.15f * 1 * quadScale, 1); //1.7778f = 16 / 9
+            else
+                _cameraQuad.transform.localScale = new Vector3(0.15f * (PluginConfig.Instance.CameraQuadStretch ? 1.7778f : _cameraPlus._cam.aspect) * quadScale, 0.15f * 1 * quadScale, 1); //1.7778f = 16 / 9
+        }
+
+        public void SeparateQuad()
+		{
+            _cameraPlus.Config.PreviewQuadPosition = _cameraQuad.transform.position;
+            _cameraPlus.Config.PreviewQuadRotation = _cameraQuad.transform.eulerAngles;
+            _cameraQuad.transform.SetParent(_cameraPlus.transform.parent);
+        }
+		public void CombineQuad()
+		{
+            _cameraQuad.transform.SetParent(transform);
+            SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
+        }
+    }
 }

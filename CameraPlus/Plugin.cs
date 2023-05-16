@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using IPA;
 using IPA.Config;
 using IPA.Config.Stores;
@@ -34,15 +35,14 @@ namespace CameraPlus
         {
             _harmony = new Harmony("com.brian91292.beatsaber.cameraplus");
             _harmony.PatchAll(Assembly.GetExecutingAssembly());
-            try
+            if (HarmonyPatches.FPFCToggleEnable.TargetMethod() != null)
             {
                 _harmony.PatchAll(typeof(HarmonyPatches.FPFCToggleEnable));
                 _harmony.PatchAll(typeof(HarmonyPatches.FPFCToggleDisbale));
             }
-            catch
-            {
+            else
                 Log.Warn("SiraUtil Not Detected.");
-            }
+
             cameraController = new GameObject("CameraPlusController").AddComponent<CameraPlusController>();
         }
 

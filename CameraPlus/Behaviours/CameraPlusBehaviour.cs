@@ -14,6 +14,7 @@ using CameraPlus.HarmonyPatches;
 using CameraPlus.VMCProtocol;
 using CameraPlus.Utilities;
 using CameraPlus.UI;
+using Unity.IO.LowLevel.Unsafe;
 
 namespace CameraPlus.Behaviours
 {
@@ -36,6 +37,7 @@ namespace CameraPlus.Behaviours
         public Vector3 OffsetPosition;
         public Vector3 OffsetAngle;
         public CameraConfig Config;
+        public bool RunCullingMask = false;
 
         internal Camera _cam;
         internal CameraPreviewQuad _quad;
@@ -91,12 +93,9 @@ namespace CameraPlus.Behaviours
 #endif
         public virtual void Init(CameraConfig config)
         {
-            DontDestroyOnLoad(gameObject);
-
             Config = config;
             Config.cam = this;
             _isMainCamera = Path.GetFileName(Config.FilePath) == $"{Plugin.MainCamera}.json";
-            //_contextMenuEnabled = Array.IndexOf(Environment.GetCommandLineArgs(), "fpfc") == -1;
 
             StartCoroutine(DelayedInit());
         }
@@ -132,6 +131,7 @@ namespace CameraPlus.Behaviours
                 if (destroyList.Contains(component.GetType().Name)) Destroy(component);
 
             _screenCamera = new GameObject("Screen Camera").AddComponent<ScreenCameraBehaviour>();
+            _screenCamera.transform.SetParent(transform);
 
             gameObj.SetActive(true);
 
@@ -171,7 +171,6 @@ namespace CameraPlus.Behaviours
                 InitExternalSender();
 
             Plugin.cameraController.OnFPFCToggleEvent.AddListener(OnFPFCToglleEvent);
-
             if (Config.webCamera.autoConnect)
                 CreateWebCamScreen();
         }
@@ -345,9 +344,30 @@ namespace CameraPlus.Behaviours
                 Plugin.Log.Error($"Fail CreateScreenRenderTexture {ex}");
             }
         }
+        
         public virtual void SceneManager_activeSceneChanged(Scene from, Scene to)
         {
             CloseContextMenu();
+            OnFPFCToglleEvent();
+            if (this.gameObject.activeInHierarchy)
+            {
+                StartCoroutine(GetMainCamera());
+                Config.SetCullingMask();
+            }
+        }
+
+        public virtual void OnEnable()
+        {
+            Plugin.cameraController.OnSetCullingMask.AddListener(OnCullingMaskChangeEvent);
+
+        }
+        public virtual void OnDisable()
+        {
+            Plugin.cameraController.OnSetCullingMask.RemoveListener(OnCullingMaskChangeEvent);
+        }
+
+        public void OnCullingMaskChangeEvent()
+        {
             StartCoroutine(GetMainCamera());
             Config.SetCullingMask();
             OnFPFCToglleEvent();
@@ -515,10 +535,7 @@ namespace CameraPlus.Behaviours
             else
                 b = this._environmentSpawnRotation.targetRotation;
 
-            if (!Config.cameraExtensions.follow360mapUseLegacyProcess)
-                _yAngle = Mathf.LerpAngle(_yAngle, b, Mathf.Clamp(Time.deltaTime * Config.cameraExtensions.rotation360Smooth, 0f, 1f));
-            else
-                _yAngle = Mathf.Lerp(_yAngle, b, Mathf.Clamp(Time.deltaTime * Config.cameraExtensions.rotation360Smooth, 0f, 1f));
+            _yAngle = Mathf.LerpAngle(_yAngle, b, Mathf.Clamp(Time.deltaTime * Config.cameraExtensions.rotation360Smooth, 0f, 1f));
 
             ThirdPersonRot = new Vector3(Config.Rotation.x, _yAngle + Config.Rotation.y, Config.Rotation.z);
 
@@ -589,8 +606,8 @@ namespace CameraPlus.Behaviours
 
                 if (CustomPreviewBeatmapLevelPatch.customLevelPath != String.Empty && Config.movementScript.songSpecificScript)
                     songScriptPath = CustomPreviewBeatmapLevelPatch.customLevelPath;
-                else if (File.Exists(Path.Combine(CameraUtilities.scriptPath, Path.GetFileName(Config.movementScript.movementScript))))
-                    songScriptPath = Path.Combine(CameraUtilities.scriptPath, Path.GetFileName(Config.movementScript.movementScript));
+                else if (File.Exists(Path.Combine(CameraUtilities.ScriptPath, Path.GetFileName(Config.movementScript.movementScript))))
+                    songScriptPath = Path.Combine(CameraUtilities.ScriptPath, Path.GetFileName(Config.movementScript.movementScript));
                 else
                     return "Not Find Script";
 
@@ -647,17 +664,21 @@ namespace CameraPlus.Behaviours
             if (!IsWithinRenderArea(mousePos, Config)) return false;
             foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.ToArray())
             {
-                if (c == this) continue;
-                if (!IsWithinRenderArea(mousePos, c.Config) && !c._mouseHeld) continue;
-                if (c.Config.layer > Config.layer)
+                if (c == this)
                 {
-                    return false;
-                }
+                    if (!IsWithinRenderArea(mousePos, c.Config) && !c._mouseHeld)
+                    {
+                        if (c.Config.layer > Config.layer)
+                        {
+                            return false;
+                        }
 
-                if (c._mouseHeld && (c._isMoving ||
-                    c._isResizing || c._contextMenuOpen))
-                {
-                    return false;
+                        if (c._mouseHeld && (c._isMoving ||
+                            c._isResizing || c._contextMenuOpen))
+                        {
+                            return false;
+                        }
+                    }
                 }
             }
             return true;

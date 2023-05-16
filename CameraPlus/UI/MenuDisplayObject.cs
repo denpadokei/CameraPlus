@@ -63,6 +63,21 @@ namespace CameraPlus.UI
                 }
             }
             GUI.Box(new Rect(menuPos.x, menuPos.y + 115, 150, 95), "PreviewQuadPosition");
+            
+            if (GUI.Button(new Rect(menuPos.x , menuPos.y + 135, 50, 25), new GUIContent("Separate"), parentBehaviour.Config.cameraExtensions.previewQuadSeparate ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            {
+                parentBehaviour.Config.cameraExtensions.previewQuadSeparate = true;
+                parentBehaviour._quad.SeparateQuad();
+                parentBehaviour.Config.Save();
+            }
+            if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 135, 50, 25), new GUIContent("Combine"), !parentBehaviour.Config.cameraExtensions.previewQuadSeparate ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            {
+                parentBehaviour.Config.cameraExtensions.previewQuadSeparate = false;
+                parentBehaviour._quad.CombineQuad();
+                parentBehaviour.Config.Save();
+            }
+
+
             if (GUI.Button(new Rect(menuPos.x + 50, menuPos.y + 135, 50, 25), new GUIContent("Top"), PluginConfig.Instance.CameraQuadPosition == "Top" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 PluginConfig.Instance.CameraQuadPosition = "Top";
@@ -102,8 +117,11 @@ namespace CameraPlus.UI
                     PluginConfig.Instance.CameraCubeSize = 0.1f;
                 foreach (CameraPlusBehaviour cam in Plugin.cameraController.Cameras.Values)
                 {
-                    cam._quad.SetCameraCubeSize(PluginConfig.Instance.CameraCubeSize);
-                    cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
+                    if (cam.gameObject.activeInHierarchy)
+                    {
+                        cam._quad.SetCameraCubeSize(PluginConfig.Instance.CameraCubeSize);
+                        cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
+                    }
                 }
             }
             if (GUI.Button(new Rect(menuPos.x + 187, menuPos.y + 150, 38, 20), new GUIContent("+")))
@@ -113,8 +131,11 @@ namespace CameraPlus.UI
                     PluginConfig.Instance.CameraCubeSize = 1;
                 foreach (CameraPlusBehaviour cam in Plugin.cameraController.Cameras.Values)
                 {
-                    cam._quad.SetCameraCubeSize(PluginConfig.Instance.CameraCubeSize);
-                    cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
+                    if (cam.gameObject.activeInHierarchy)
+                    {
+                        cam._quad.SetCameraCubeSize(PluginConfig.Instance.CameraCubeSize);
+                        cam._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
+                    }
                 }
             }
             GUI.Box(new Rect(menuPos.x + 225, menuPos.y + 132, 75, 38), $"Quad:{parentBehaviour.Config.cameraExtensions.previewCameraQuadScale.ToString("F1")}");

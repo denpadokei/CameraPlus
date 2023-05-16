@@ -117,9 +117,11 @@
     </Reference>
     <Reference Include="UnityEngine.ImageConversionModule">
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.IMGUIModule">
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.InputLegacyModule">
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\UnityEngine.InputLegacyModule.dll</HintPath>
@@ -127,6 +129,7 @@
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\UnityEngine.PhysicsModule.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine.TextRenderingModule">
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
@@ -150,6 +153,7 @@
     </Reference>
     <Reference Include="VMCAvatar">
       <HintPath>$(GameDirectory)\Plugins\VMCAvatar.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="VRUI">
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\VRUI.dll</HintPath>
@@ -172,13 +176,12 @@
     <Compile Include="Configuration\PreviousConfig.cs" />
     <Compile Include="HarmonyPatches\AudioTimeSyncControllerPatch.cs" />
     <Compile Include="HarmonyPatches\CustomPreviewBeatmapLevelPatch.cs" />
-    <Compile Include="HarmonyPatches\DisableSmoothCamera.cs" />
+    <Compile Include="HarmonyPatches\SmoothCameraPatch.cs" />
     <Compile Include="HarmonyPatches\FPFCPatch.cs" />
     <Compile Include="HarmonyPatches\LevelDataPatch.cs" />
     <Compile Include="HarmonyPatches\MainCameraPatch.cs" />
     <Compile Include="HarmonyPatches\MultiplayerPatch.cs" />
     <Compile Include="HarmonyPatches\PlayerSettingPatch.cs" />
-    <Compile Include="HarmonyPatches\RestartLevelPatch.cs" />
     <Compile Include="HarmonyPatches\RoomAdjustPatch.cs" />
     <Compile Include="HarmonyPatches\RotateMapPatch.cs" />
     <Compile Include="HarmonyPatches\TransparentWallsPatch.cs" />

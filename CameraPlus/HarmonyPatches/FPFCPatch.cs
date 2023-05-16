@@ -1,24 +1,37 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using IPA.Loader;
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
 namespace CameraPlus.HarmonyPatches
 {
+    [HarmonyPatch(typeof(FirstPersonFlyingController), "Start")]
+    internal class FPFCPatch
+    {
+        public static FirstPersonFlyingController instance { get; private set; } = null;
+        static void Postfix(FirstPersonFlyingController __instance)
+        {
+            instance = __instance;
+#if DEBUG
+            Plugin.Log.Notice("Find FPFC");
+#endif
+        }
+    }
     internal class FPFCToggleEnable
     {
         //Temporarily monitor FPFCToggle of SiraUtil due to FPFC change in 1.29.4
-        private static MethodBase TargetMethod()
-		{
-			PluginMetadata siraUtil = PluginManager.GetPluginFromId("SiraUtil");
+        internal static MethodBase TargetMethod()
+        {
+            PluginMetadata siraUtil = PluginManager.GetPluginFromId("SiraUtil");
             if (siraUtil != null)
             {
                 return siraUtil.Assembly.GetType("SiraUtil.Tools.FPFC.FPFCToggle").GetMethod("EnableFPFC", BindingFlags.Instance | BindingFlags.NonPublic);
             }
             else return null;
         }
-        private static void Postfix()
+        internal static void Postfix()
         {
             Plugin.cameraController.isFPFC = true;
 #if DEBUG
@@ -30,7 +43,7 @@ namespace CameraPlus.HarmonyPatches
 
     internal class FPFCToggleDisbale
     {
-        private static MethodBase TargetMethod()
+        internal static MethodBase TargetMethod()
         {
             PluginMetadata siraUtil = PluginManager.GetPluginFromId("SiraUtil");
             if (siraUtil != null)
@@ -39,7 +52,7 @@ namespace CameraPlus.HarmonyPatches
             }
             else return null;
         }
-        private static void Postfix()
+        internal static void Postfix()
         {
             Plugin.cameraController.isFPFC = false;
 #if DEBUG

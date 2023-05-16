@@ -19,11 +19,14 @@ namespace CameraPlus
 {
     public class CameraPlusController : MonoBehaviour
     {
-        internal Action<Scene, Scene> ActiveSceneChanged;
-        internal static CameraPlusController instance { get; private set; }
-        internal ConcurrentDictionary<string, CameraPlusBehaviour> Cameras = new ConcurrentDictionary<string, CameraPlusBehaviour>();
+        public Action<Scene, Scene> ActiveSceneChanged;
 
-        internal string currentProfile;
+        internal static CameraPlusController instance { get; private set; }
+        public ConcurrentDictionary<string, GameObject> LoadedProfile = new ConcurrentDictionary<string, GameObject>();
+        public ConcurrentDictionary<string, CameraPlusBehaviour> Cameras = new ConcurrentDictionary<string, CameraPlusBehaviour>();
+
+        public string CurrentProfile = string.Empty;
+
         internal bool MultiplayerSessionInit;
         internal bool existsVMCAvatar = false;
         internal bool isRestartingSong = false;
@@ -33,9 +36,10 @@ namespace CameraPlus
         private RenderTexture _renderTexture;
         private ScreenCameraBehaviour _screenCameraBehaviour;
         private CameraMoverPointer _cameraMovePointer;
-        private bool initialized = false;
+        public bool Initialized = false;
 
         internal UnityEvent OnFPFCToggleEvent = new UnityEvent();
+        internal UnityEvent OnSetCullingMask = new UnityEvent();
         public bool isFPFC = false;
 
         internal ExternalSender externalSender = null;
@@ -55,33 +59,16 @@ namespace CameraPlus
             GameObject.DontDestroyOnLoad(this);
             instance = this;
 
-            string path = Path.Combine(UnityGame.UserDataPath, $"{Plugin.Name}.ini");
-            string backupPath = backupPath = Path.Combine(UnityGame.UserDataPath, Plugin.Name, "OldProfiles");
-            if (File.Exists(path))
-            {
-                if (!Directory.Exists(backupPath))
-                    Directory.CreateDirectory(backupPath);
-                File.Copy(path, Path.Combine(backupPath, $"{Plugin.Name}.ini"), true);
-                File.Delete(path);
-            }
-            
-            ConfigConverter.ProfileConverter();
-
             SceneManager.activeSceneChanged += this.OnActiveSceneChanged;
             CameraUtilities.CreateMainDirectory();
             CameraUtilities.CreateExampleScript();
-
-            ConfigConverter.DefaultConfigConverter();
         }
         private void Start()
         {
-            if (PluginConfig.Instance.ScreenFillBlack)
-            {
-                _renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
-                _screenCameraBehaviour = this.gameObject.AddComponent<ScreenCameraBehaviour>();
-                _screenCameraBehaviour.SetCameraInfo(new Vector2(0, 0), new Vector2(Screen.width, Screen.height), -2000);
-                _screenCameraBehaviour.SetRenderTexture(_renderTexture);
-            }
+            _renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
+            _screenCameraBehaviour = this.gameObject.AddComponent<ScreenCameraBehaviour>();
+            _screenCameraBehaviour.SetCameraInfo(new Vector2(0, 0), new Vector2(Screen.width, Screen.height), -2000);
+            _screenCameraBehaviour.SetRenderTexture(_renderTexture);
 
             ShaderLoad();
             _cameraMovePointer = this.gameObject.AddComponent<CameraMoverPointer>();
@@ -114,7 +101,7 @@ namespace CameraPlus
         public void OnActiveSceneChanged(Scene from, Scene to)
         {
             if (isRestartingSong && to.name != "GameCore") return;
-            if (initialized || (!initialized && (to.name == "HealthWarning" || to.name == "MainMenu")))
+            if (Initialized || (!Initialized && (to.name == "MainMenu")))
                 SharedCoroutineStarter.instance.StartCoroutine(DelayedActiveSceneChanged(from, to));
 #if DEBUG
             Plugin.Log.Info($"Scene Change {from.name} to {to.name}");
@@ -123,23 +110,10 @@ namespace CameraPlus
 
         private IEnumerator DelayedActiveSceneChanged(Scene from, Scene to)
         {
-            bool isRestart = isRestartingSong;
             bool isLevelEditor = false;
-            initialized = true;
-            isRestartingSong = false;
-
             yield return waitMainCamera();
 
-            if (!isRestart)
-                CameraUtilities.ReloadCameras();
-
-            IEnumerator waitForcam()
-            {
-                yield return new WaitForSeconds(0.1f);
-                while (Camera.main == null) yield return new WaitForSeconds(0.05f);
-            }
-
-            if (PluginConfig.Instance.ProfileSceneChange && !isRestart)
+            if (PluginConfig.Instance.ProfileSceneChange)
             {
                 if (!MultiplayerSession.ConnectedMultiplay || PluginConfig.Instance.MultiplayerProfile == "")
                 {
@@ -162,7 +136,6 @@ namespace CameraPlus
             {
                 if (ActiveSceneChanged != null)
                 {
-                    yield return waitForcam();
                     // Invoke each activeSceneChanged event
                     foreach (var func in ActiveSceneChanged?.GetInvocationList())
                     {
@@ -179,8 +152,6 @@ namespace CameraPlus
                 }
                 else if (PluginConfig.Instance.ProfileSceneChange && to.name == "HealthWarning" && PluginConfig.Instance.MenuProfile != "")
                     CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
-
-                yield return waitForcam();
 
                 if (to.name == "GameCore")
                     origin = GameObject.Find("LocalPlayerGameCore/Origin")?.transform;

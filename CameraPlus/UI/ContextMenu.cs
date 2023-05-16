@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using CameraPlus.Camera2Utils;
 using CameraPlus.Behaviours;
 using CameraPlus.Utilities;
@@ -54,6 +55,9 @@ namespace CameraPlus.UI
         private MenuExternalLink _menuExternalLink = new MenuExternalLink();
         private MenuChromakey _menuChromakey = new MenuChromakey();
 
+        private float _menuWidth = 300;
+        private float _menuHeight = 440;
+
         public void EnableMenu(Vector2 mousePos, CameraPlusBehaviour parentBehaviour)
         {
             this.enabled = true;
@@ -78,6 +82,7 @@ namespace CameraPlus.UI
             this.enabled = false;
             showMenu = false;
         }
+
         void OnGUI()
         {
 
@@ -148,7 +153,7 @@ namespace CameraPlus.UI
                             string cameraName = CameraUtilities.GetNextCameraName();
                             Plugin.Log.Notice($"Adding new config with name {cameraName}.json");
                             CameraUtilities.AddNewCamera(cameraName);
-                            CameraUtilities.ReloadCameras();
+                            CameraUtilities.LoadProfile(Plugin.cameraController.CurrentProfile);
                             parentBehaviour.CloseContextMenu();
                         }
                     }
@@ -159,7 +164,7 @@ namespace CameraPlus.UI
                             string cameraName = CameraUtilities.GetNextCameraName();
                             Plugin.Log.Notice($"Adding {cameraName}");
                             CameraUtilities.AddNewCamera(cameraName, parentBehaviour.Config);
-                            CameraUtilities.ReloadCameras();
+                            CameraUtilities.LoadProfile(Plugin.cameraController.CurrentProfile);
                             parentBehaviour.CloseContextMenu();
                         }
                     }
@@ -253,6 +258,31 @@ namespace CameraPlus.UI
                 else if (MenuMode == MenuState.ChromaKey)
                     _menuChromakey.DiplayMenu(parentBehaviour, this, menuPos);
                 GUI.matrix = originalMatrix;
+            }
+        }
+
+        private void UI_SelectionList(float top, float left,ref string[] contentList, ref int currentPageNo)
+        {
+            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 140, 80, 30), new GUIContent("<")))
+            {
+                if (currentPageNo > 0) currentPageNo--;
+            }
+            GUI.Box(new Rect(menuPos.x + 80, menuPos.y + 140, 140, 30), new GUIContent($"{currentPageNo + 1} / {Math.Ceiling(Decimal.Parse(contentList.Length.ToString()) / 5)}"));
+            if (GUI.Button(new Rect(menuPos.x + 220, menuPos.y + 140, 80, 30), new GUIContent(">")))
+            {
+                if (currentPageNo < Math.Ceiling(Decimal.Parse(contentList.Length.ToString()) / 5) - 1) currentPageNo++;
+            }
+            for (int i = currentPageNo * 5; i < currentPageNo * 5 + 5; i++)
+            {
+                if (i < contentList.Length)
+                {
+                    if (GUI.Button(new Rect(menuPos.x, menuPos.y + (i - currentPageNo * 5) * 30 + 170, 300, 30), new GUIContent(contentList[i]), CameraUtilities.CurrentMovementScript(parentBehaviour.Config.movementScript.movementScript) == scriptName[i] ? CustomEnableStyle : CustomDisableStyle))
+                    {
+                        parentBehaviour.Config.movementScript.movementScript = contentList[i];
+                        parentBehaviour.Config.Save();
+                        parentBehaviour.AddMovementScript();
+                    }
+                }
             }
         }
     }

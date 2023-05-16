@@ -46,8 +46,6 @@ namespace CameraPlus.Behaviours
 #if DEBUG
             Plugin.Log.Notice("Created new screen camera behaviour component!");
 #endif
-            DontDestroyOnLoad(gameObject);
-
             _cam = gameObject.AddComponent<Camera>();
             _cam.clearFlags = CameraClearFlags.Nothing;
             _cam.cullingMask = 0;

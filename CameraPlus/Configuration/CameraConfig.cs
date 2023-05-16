@@ -48,14 +48,22 @@ namespace CameraPlus.Configuration
         private float _renderScale = 1;
         [JsonProperty("WindowRect")]
         private windowRectElement _windowRect = new windowRectElement();
+
         [JsonProperty("ThirdPersonPos")]
         private targetTransformElements _thirdPersonPos = new targetTransformElements();
         [JsonProperty("ThirdPersonRot")]
         private targetTransformElements _thirdPersonRot = new targetTransformElements();
+
         [JsonProperty("FirstPersonPos")]
         private targetTransformElements _firstPersonPos = new targetTransformElements();
         [JsonProperty("FirstPersonRot")]
         private targetTransformElements _firstPersonRot = new targetTransformElements();
+
+        [JsonProperty("PreviewQuadPos")]
+        private targetTransformElements _previewQuadPos = new targetTransformElements();
+        [JsonProperty("PreviewQuadRot")]
+        private targetTransformElements _previewQuadRot = new targetTransformElements();
+
         [JsonProperty("TurnToHeadOffset")]
         private targetTransformElements _turnToHeadOffset = new targetTransformElements();
         [JsonProperty("MovementScript")]
@@ -106,7 +114,14 @@ namespace CameraPlus.Configuration
             }
         }
         public float fov { get => _fieldOfView; set { _fieldOfView = value; } }
-        public int layer { get => _layer; set { _layer = value; } }
+        public int layer {
+            get {
+                if (FPFCPatch.instance != null && !Plugin.cameraController.isFPFC)
+                    return _layer + 1000;
+                else
+                    return _layer;
+            } 
+            set { _layer = value; } }
         public int antiAliasing { get => _antiAliasing; set { _antiAliasing = value; } }
         public float renderScale { get => _renderScale; set { _renderScale = value; } }
         public bool fitToCanvas { get => _windowRect.fitToCanvas; set { _windowRect.fitToCanvas = value; } }
@@ -121,6 +136,8 @@ namespace CameraPlus.Configuration
         public targetTransformElements thirdPersonRot { get => _thirdPersonRot; set { _thirdPersonRot = value; } }
         public targetTransformElements firstPersonPos { get => _firstPersonPos; set { _firstPersonPos = value; } }
         public targetTransformElements firstPersonRot { get => _firstPersonRot; set { _firstPersonRot = value; } }
+        public targetTransformElements previewQuadPos { get => _previewQuadPos; set { _previewQuadPos = value; } }
+        public targetTransformElements previewQuadRot { get => _previewQuadRot; set { _previewQuadRot = value; } }
         public targetTransformElements turnToHeadOffsetTransform { get => _turnToHeadOffset; set { _turnToHeadOffset = value; } }
         public visibleObjectsElements layerSetting { get => _visibleObject; set { _visibleObject = value; } }
         public movementScriptElements movementScript { get => _movementScript; set { _movementScript = value; } }
@@ -264,6 +281,34 @@ namespace CameraPlus.Configuration
                 return new Vector3(0, 0, 0);
             }
         }
+
+        public Vector3 PreviewQuadPosition
+        {
+            get
+            {
+                return new Vector3(_previewQuadPos.x, _previewQuadPos.y, _previewQuadPos.z);
+            }
+            set
+            {
+                _previewQuadPos.x = value.x;
+                _previewQuadPos.y = value.y;
+                _previewQuadPos.z = value.z;
+            }
+        }
+        public Vector3 PreviewQuadRotation
+        {
+            get
+            {
+                return new Vector3(_previewQuadRot.x, _previewQuadRot.y, _previewQuadRot.z);
+            }
+            set
+            {
+                _previewQuadRot.x = value.x;
+                _previewQuadRot.y = value.y;
+                _previewQuadRot.z = value.z;
+            }
+        }
+
         public Vector3 TurnToHeadOffset
         {
             get{
@@ -359,7 +404,7 @@ namespace CameraPlus.Configuration
         internal virtual void SetCullingMask(VisibleObject visibleObject = null)
         {
             if (!cam) return;
-            int builder = Camera.main.cullingMask;
+            int builder = CameraUtilities.BaseCullingMask;
             if (visibleObject == null) visibleObject = new VisibleObject();
             if (visibleObject.avatar.HasValue ? visibleObject.avatar.Value : layerSetting.avatar)
             {
@@ -574,6 +619,9 @@ namespace CameraPlus.Configuration
         public float previewCameraQuadScale = 1.0f;
         [JsonProperty("PreviewCameraMirrorMode")]
         public bool previewCameraMirrorMode = false;
+        [JsonProperty("PreviewQuadSeparate")]
+        public bool previewQuadSeparate = false;
+
         [JsonProperty("OrthographicMode")]
         public bool orthographicMode = false;
         [JsonProperty("OrthographicSize")]
@@ -587,20 +635,22 @@ namespace CameraPlus.Configuration
         public float positionSmooth = 10.0f;
         [JsonProperty("RotationSmooth")]
         public float rotationSmooth = 5.0f;
-        [JsonProperty("Rotation360Smooth")]
-        public float rotation360Smooth = 2.0f;
         [JsonProperty("FirstPersonCameraForceUpRight")]
         public bool firstPersonCameraForceUpRight = false;
+
+        [JsonProperty("Rotation360Smooth")]
+        public float rotation360Smooth = 2.0f;
         [JsonProperty("Follow360Map")]
         public bool follow360map = false;
-        [JsonProperty("Follow360MapUseLegacyProcess")]
-        public bool follow360mapUseLegacyProcess = false;
+
         [JsonProperty("FollowNoodlePlayerTrack")]
         public bool followNoodlePlayerTrack = true;
+
         [JsonProperty("TurnToHead")]
         public bool turnToHead = false;
         [JsonProperty("TurnToHeadHorizontal")]
         public bool turnToHeadHorizontal = false;
+
         [JsonProperty("DontDrawDesktop")]
         public bool dontDrawDesktop = false;
     }
