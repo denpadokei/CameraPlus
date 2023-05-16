@@ -349,8 +349,11 @@ namespace CameraPlus.Behaviours
         {
             CloseContextMenu();
             OnFPFCToglleEvent();
-            StartCoroutine(GetMainCamera());
-            Config.SetCullingMask();
+            if (this.gameObject.activeInHierarchy)
+            {
+                StartCoroutine(GetMainCamera());
+                Config.SetCullingMask();
+            }
         }
 
         public virtual void OnEnable()

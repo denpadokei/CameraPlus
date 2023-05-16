@@ -36,7 +36,7 @@ namespace CameraPlus
         private RenderTexture _renderTexture;
         private ScreenCameraBehaviour _screenCameraBehaviour;
         private CameraMoverPointer _cameraMovePointer;
-        private bool initialized = false;
+        public bool Initialized = false;
 
         internal UnityEvent OnFPFCToggleEvent = new UnityEvent();
         internal UnityEvent OnSetCullingMask = new UnityEvent();
@@ -101,7 +101,7 @@ namespace CameraPlus
         public void OnActiveSceneChanged(Scene from, Scene to)
         {
             if (isRestartingSong && to.name != "GameCore") return;
-            if (initialized || (!initialized && (to.name == "MainMenu")))
+            if (Initialized || (!Initialized && (to.name == "MainMenu")))
                 SharedCoroutineStarter.instance.StartCoroutine(DelayedActiveSceneChanged(from, to));
 #if DEBUG
             Plugin.Log.Info($"Scene Change {from.name} to {to.name}");
@@ -111,17 +111,7 @@ namespace CameraPlus
         private IEnumerator DelayedActiveSceneChanged(Scene from, Scene to)
         {
             bool isLevelEditor = false;
-
             yield return waitMainCamera();
-
-            IEnumerator waitForcam()
-            {
-                yield return new WaitForSeconds(0.1f);
-                while (Camera.main == null) yield return new WaitForSeconds(0.05f);
-            }
-            if(!initialized)
-                CameraUtilities.ProfileChange(string.Empty);
-            initialized = true;
 
             if (PluginConfig.Instance.ProfileSceneChange)
             {
@@ -146,7 +136,6 @@ namespace CameraPlus
             {
                 if (ActiveSceneChanged != null)
                 {
-                    yield return waitForcam();
                     // Invoke each activeSceneChanged event
                     foreach (var func in ActiveSceneChanged?.GetInvocationList())
                     {
@@ -163,8 +152,6 @@ namespace CameraPlus
                 }
                 else if (PluginConfig.Instance.ProfileSceneChange && to.name == "HealthWarning" && PluginConfig.Instance.MenuProfile != "")
                     CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
-
-                yield return waitForcam();
 
                 if (to.name == "GameCore")
                     origin = GameObject.Find("LocalPlayerGameCore/Origin")?.transform;

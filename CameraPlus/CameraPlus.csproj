@@ -176,7 +176,7 @@
     <Compile Include="Configuration\PreviousConfig.cs" />
     <Compile Include="HarmonyPatches\AudioTimeSyncControllerPatch.cs" />
     <Compile Include="HarmonyPatches\CustomPreviewBeatmapLevelPatch.cs" />
-    <Compile Include="HarmonyPatches\DisableSmoothCamera.cs" />
+    <Compile Include="HarmonyPatches\SmoothCameraPatch.cs" />
     <Compile Include="HarmonyPatches\FPFCPatch.cs" />
     <Compile Include="HarmonyPatches\LevelDataPatch.cs" />
     <Compile Include="HarmonyPatches\MainCameraPatch.cs" />

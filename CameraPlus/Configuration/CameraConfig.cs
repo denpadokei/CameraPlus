@@ -404,7 +404,7 @@ namespace CameraPlus.Configuration
         internal virtual void SetCullingMask(VisibleObject visibleObject = null)
         {
             if (!cam) return;
-            int builder = Camera.main.cullingMask;
+            int builder = CameraUtilities.BaseCullingMask;
             if (visibleObject == null) visibleObject = new VisibleObject();
             if (visibleObject.avatar.HasValue ? visibleObject.avatar.Value : layerSetting.avatar)
             {

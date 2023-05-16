@@ -26,8 +26,7 @@ namespace CameraPlus.Utilities
         internal static float mouseScrollSpeed = 0.5f;
         internal static float[] mouseRotateSpeed = { -0.05f, 0.05f, 1f };//x, y, z
 
-        internal static Texture2D seekBarBackground = null;
-        internal static Texture2D seekBar = null;
+        public static int BaseCullingMask = 0;
         #endregion
 
         private static bool CameraExists(string cameraName)
