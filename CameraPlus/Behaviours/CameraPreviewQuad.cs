@@ -65,14 +65,19 @@ namespace CameraPlus.Behaviours
                 SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
             }
             IsDisplayMaterialVROnly = _cameraPlus.Config.PreviewCameraVROnly;
-		}
-		public void OnPointerClick(PointerEventData eventData)
+            CubeDisplay(!_cameraPlus.Config.PreviewCameraQuadOnly);
+        }
+        public void OnPointerClick(PointerEventData eventData)
 		{
 			if (!(eventData.currentInputModule is VRUIControls.VRInputModule)) return;
 			if (_cameraPlus.Config.cameraLock.lockCamera) return;
 			CameraMoverPointer.BeginDragCamera(_cameraPlus);
 		}
-		public void SetCameraQuadPosition(string quadPosition, float cubeScale = 1)
+        public void CubeDisplay(bool isEnable)
+        {
+            _cameraCube.SetActive(isEnable);
+        }
+        public void SetCameraQuadPosition(string quadPosition, float cubeScale = 1)
         {
 			if (!_cameraPlus.Config.cameraExtensions.previewQuadSeparate)
 			{

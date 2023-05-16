@@ -36,15 +36,24 @@ namespace CameraPlus.UI
 
             //Display Preview Quad
             GUI.Box(new Rect(menuPos.x, menuPos.y + 70, 150, 45), "PreviewCamera");
-            if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 90, 70, 25), new GUIContent("Display"), parentBehaviour.Config.PreviewCamera ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 90, 50, 25), new GUIContent("Display"), parentBehaviour.Config.PreviewCamera && !parentBehaviour.Config.PreviewCameraQuadOnly ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 parentBehaviour.Config.PreviewCamera = true;
+                parentBehaviour.Config.PreviewCameraQuadOnly = false;
                 parentBehaviour.Config.Save();
                 parentBehaviour.CreateScreenRenderTexture();
             }
-            if (GUI.Button(new Rect(menuPos.x + 75, menuPos.y + 90, 70, 25), new GUIContent("Hide"), !parentBehaviour.Config.PreviewCamera ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 50, menuPos.y + 90, 50, 25), new GUIContent("Hide"), !parentBehaviour.Config.PreviewCamera ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
             {
                 parentBehaviour.Config.PreviewCamera = false;
+                parentBehaviour.Config.PreviewCameraQuadOnly = false;
+                parentBehaviour.Config.Save();
+                parentBehaviour.CreateScreenRenderTexture();
+            }
+            if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 90, 50, 25), new GUIContent("QuadOnly"), parentBehaviour.Config.PreviewCameraQuadOnly ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            {
+                parentBehaviour.Config.PreviewCamera = true;
+                parentBehaviour.Config.PreviewCameraQuadOnly = true;
                 parentBehaviour.Config.Save();
                 parentBehaviour.CreateScreenRenderTexture();
             }

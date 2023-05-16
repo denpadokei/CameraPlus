@@ -186,6 +186,15 @@ namespace CameraPlus.Configuration
                 cam._quad.IsDisplayMaterialVROnly = value;
             }
         }
+        public bool PreviewCameraQuadOnly
+        {
+            get => _cameraExtensions.previewCameraQuadOnly;
+            set
+            {
+                _cameraExtensions.previewCameraQuadOnly = value;
+                cam?._quad.CubeDisplay(!value);
+            }
+        }
         public bool Avatar { get => _visibleObject.avatar; set { _visibleObject.avatar = value;SetCullingMask(); } }
         public bool UI { get => _visibleObject.ui; set { _visibleObject.ui = value; SetCullingMask(); } }
         public bool Wall { get => _visibleObject.wall; set { _visibleObject.wall = value; SetCullingMask(); } }
@@ -629,6 +638,8 @@ namespace CameraPlus.Configuration
         public bool previewCameraMirrorMode = false;
         [JsonProperty("PreviewQuadSeparate")]
         public bool previewQuadSeparate = false;
+        [JsonProperty("PreviewCameraQuadOnly")]
+        public bool previewCameraQuadOnly = false;
 
         [JsonProperty("OrthographicMode")]
         public bool orthographicMode = false;
