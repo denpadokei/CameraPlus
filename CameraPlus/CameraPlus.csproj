@@ -227,7 +227,6 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Resources\CameraLock.png" />
     <EmbeddedResource Include="Resources\CameraUnlock.png" />

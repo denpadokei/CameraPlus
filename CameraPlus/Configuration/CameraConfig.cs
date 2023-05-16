@@ -830,6 +830,7 @@ namespace CameraPlus.Configuration
         public float glitchLineSpeed;
         [JsonProperty("GlitchLineSize")]
         public float glitchLineSize;
+        [JsonProperty("GlitchColorGap")]
         public float glitchColorGap;
         [JsonProperty("GlitchFrameRate")]
         public float glitchFrameRate;

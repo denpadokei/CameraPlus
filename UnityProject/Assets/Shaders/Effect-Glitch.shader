@@ -75,9 +75,12 @@ Shader "Effect/Glitch"
                             u.y) + 0.5f;
             }
 
+
+
             v2f vert(appdata v)
             {
                 v2f o;
+                UNITY_INITIALIZE_OUTPUT(v2f,o);
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = v.uv;
                 o.line_uv.y = v.line_uv.y - _Time.z * _LineSpeed;

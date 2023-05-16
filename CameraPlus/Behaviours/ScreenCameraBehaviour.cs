@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using CameraPlus.Utilities;
+using UnityEngine;
 
 namespace CameraPlus.Behaviours
 {
