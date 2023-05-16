@@ -15,7 +15,7 @@ namespace CameraPlus.Behaviours
         private Material _dofMaterial;
         private Material _wipeMaterial;
         private Material _outlineMaterial;
-
+        private Material _glitchMaterial;
         public void SetRenderTexture(RenderTexture renderTexture,CameraPlusBehaviour parent=null)
         {
             _renderTexture = renderTexture;
@@ -106,6 +106,21 @@ namespace CameraPlus.Behaviours
                     RenderTexture.ReleaseTemporary(temp2);
                 }
                 */
+                if (_parent.effectElements.enableGlitch)
+                {
+                    if (_glitchMaterial == null) _glitchMaterial = new Material(Plugin.cameraController.Shaders["Effect/Glitch"]);
+                    if (_parentCam.depthTextureMode != (DepthTextureMode.Depth))
+                        _parentCam.depthTextureMode = DepthTextureMode.Depth;
+
+                    _glitchMaterial.SetFloat("_LineSpeed", _parent.effectElements.glitchLineSpeed);
+                    _glitchMaterial.SetFloat("_LineSize", _parent.effectElements.glitchLineSize);
+                    _glitchMaterial.SetFloat("_ColorGap", _parent.effectElements.glitchColorGap);
+                    _glitchMaterial.SetFloat("_FrameRate", _parent.effectElements.glitchFrameRate);
+                    _glitchMaterial.SetFloat("_Frequency", _parent.effectElements.glitchFrequency);
+                    _glitchMaterial.SetFloat("_GlitchScale", _parent.effectElements.glitchScale);
+
+                    Graphics.Blit(_renderTexture, _renderTexture, _glitchMaterial);
+                }
 
                 if (_parent.effectElements.enableOutline)
                 {

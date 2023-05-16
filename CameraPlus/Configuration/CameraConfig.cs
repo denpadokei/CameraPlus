@@ -94,7 +94,15 @@ namespace CameraPlus.Configuration
             enableOutline = false,
             outlineOnly = 0,
             outlineColor = Color.black,
-            outlineBGColor = Color.white
+            outlineBGColor = Color.white,
+
+            enableGlitch = false,
+            glitchLineSpeed = 5,
+            glitchLineSize = 0.01f,
+            glitchColorGap = 0.01f,
+            glitchFrameRate = 15,
+            glitchFrequency = 0.1f,
+            glitchScale = 1
         };
 
         public bool thirdPerson { 
@@ -123,7 +131,7 @@ namespace CameraPlus.Configuration
             } 
             set { _layer = value; } }
         public int antiAliasing { get => _antiAliasing; set { _antiAliasing = value; } }
-        public float renderScale { get => _renderScale; set { _renderScale = value; } }
+        public float renderScale { get => _renderScale; set { _renderScale = Mathf.Clamp(value, 0.1f, 4.0f); } }
         public bool fitToCanvas { get => _windowRect.fitToCanvas; set { _windowRect.fitToCanvas = value; } }
         public int screenPosX { get => _windowRect.x; set { _windowRect.x = value; } }
         public int screenPosY { get => _windowRect.y; set { _windowRect.y = value; } }
@@ -803,5 +811,21 @@ namespace CameraPlus.Configuration
                 _outlineBGColor[2] = value.b;
             }
         }
+
+        //GlitchEffect
+        [JsonProperty("EnableGlitch")]
+        public bool enableGlitch;
+        [JsonProperty("GlitchLineSpeed")]
+        public float glitchLineSpeed { get { return glitchLineSpeed; } set { glitchLineSpeed = Mathf.Clamp(value, 0, 10); } }
+        [JsonProperty("GlitchLineSize")]
+        public float glitchLineSize { get { return glitchLineSize; } set { glitchLineSize = Mathf.Clamp(value, 0, 1); } }
+        [JsonProperty("GlitchColorGap")]
+        public float glitchColorGap { get { return glitchColorGap; } set { glitchColorGap = Mathf.Clamp(value, 0, 1); } }
+        [JsonProperty("GlitchFrameRate")]
+        public float glitchFrameRate { get { return glitchFrameRate; } set { glitchFrameRate = Mathf.Clamp(value, 0, 30); } }
+        [JsonProperty("GlitchFrequency")]
+        public float glitchFrequency { get { return glitchFrequency; } set { glitchFrequency = Mathf.Clamp(value, 0, 1); } }
+        [JsonProperty("GlitchScale")]
+        public float glitchScale { get { return glitchScale; } set { glitchScale = Mathf.Clamp(value, 1, 10); } }
     }
 }

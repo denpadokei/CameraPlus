@@ -209,6 +209,25 @@ namespace CameraPlus.Behaviours
                         if (InputEffect.EndOutlineEffect.outlineBackgroundColor != null) cameraEffects[1].outlineBGColor
                                 = new Color(System.Convert.ToSingle(InputEffect.EndOutlineEffect.outlineBackgroundColor.r), System.Convert.ToSingle(InputEffect.EndOutlineEffect.outlineBackgroundColor.g), System.Convert.ToSingle(InputEffect.EndOutlineEffect.outlineBackgroundColor.b), 0);
                     }
+
+                    if (InputEffect.StartGlitchEffect != null)
+                    {
+                        if (InputEffect.StartGlitchEffect.glitchLineSpeed != null) cameraEffects[0].glitchLineSpeed = System.Convert.ToSingle(InputEffect.StartGlitchEffect.glitchLineSpeed);
+                        if (InputEffect.StartGlitchEffect.glitchLineSize != null) cameraEffects[0].glitchLineSize = System.Convert.ToSingle(InputEffect.StartGlitchEffect.glitchLineSize);
+                        if (InputEffect.StartGlitchEffect.glitchColorGap != null) cameraEffects[0].glitchColorGap = System.Convert.ToSingle(InputEffect.StartGlitchEffect.glitchColorGap);
+                        if (InputEffect.StartGlitchEffect.glitchFrameRate != null) cameraEffects[0].glitchFrameRate = System.Convert.ToSingle(InputEffect.StartGlitchEffect.glitchFrameRate);
+                        if (InputEffect.StartGlitchEffect.glitchFrequency != null) cameraEffects[0].glitchFrequency = System.Convert.ToSingle(InputEffect.StartGlitchEffect.glitchFrequency);
+                        if (InputEffect.StartGlitchEffect.glitchScale != null) cameraEffects[0].glitchScale = System.Convert.ToSingle(InputEffect.StartGlitchEffect.glitchScale);
+                    }
+                    if (InputEffect.EndGlitchEffect != null)
+                    {
+                        if (InputEffect.EndGlitchEffect.glitchLineSpeed != null) cameraEffects[1].glitchLineSpeed = System.Convert.ToSingle(InputEffect.EndGlitchEffect.glitchLineSpeed);
+                        if (InputEffect.EndGlitchEffect.glitchLineSize != null) cameraEffects[1].glitchLineSize = System.Convert.ToSingle(InputEffect.EndGlitchEffect.glitchLineSize);
+                        if (InputEffect.EndGlitchEffect.glitchColorGap != null) cameraEffects[1].glitchColorGap = System.Convert.ToSingle(InputEffect.EndGlitchEffect.glitchColorGap);
+                        if (InputEffect.EndGlitchEffect.glitchFrameRate != null) cameraEffects[1].glitchFrameRate = System.Convert.ToSingle(InputEffect.EndGlitchEffect.glitchFrameRate);
+                        if (InputEffect.EndGlitchEffect.glitchFrequency != null) cameraEffects[1].glitchFrequency = System.Convert.ToSingle(InputEffect.EndGlitchEffect.glitchFrequency);
+                        if (InputEffect.EndGlitchEffect.glitchScale != null) cameraEffects[1].glitchScale = System.Convert.ToSingle(InputEffect.EndGlitchEffect.glitchScale);
+                    }
                 }
                 return cameraEffects;
             }
@@ -281,6 +300,15 @@ namespace CameraPlus.Behaviours
             _cameraPlus.effectElements.outlineOnly = Mathf.LerpAngle(CameraEffect[0].outlineOnly, CameraEffect[1].outlineOnly, Ease(movePerc));
             _cameraPlus.effectElements.outlineColor = LerpColor(CameraEffect[0].outlineColor, CameraEffect[1].outlineColor, Ease(movePerc));
             _cameraPlus.effectElements.outlineBGColor = LerpColor(CameraEffect[0].outlineBGColor, CameraEffect[1].outlineBGColor, Ease(movePerc));
+
+            _cameraPlus.effectElements.enableGlitch = CameraEffect[0].enableGlitch;
+            _cameraPlus.effectElements.glitchLineSpeed = Mathf.LerpAngle(CameraEffect[0].glitchLineSpeed, CameraEffect[1].glitchLineSpeed, Ease(movePerc));
+            _cameraPlus.effectElements.glitchLineSize = Mathf.LerpAngle(CameraEffect[0].glitchLineSize, CameraEffect[1].glitchLineSize, Ease(movePerc));
+            _cameraPlus.effectElements.glitchColorGap = Mathf.LerpAngle(CameraEffect[0].glitchColorGap, CameraEffect[1].glitchColorGap, Ease(movePerc));
+            _cameraPlus.effectElements.glitchFrameRate = Mathf.LerpAngle(CameraEffect[0].glitchFrameRate, CameraEffect[1].glitchFrameRate, Ease(movePerc));
+            _cameraPlus.effectElements.glitchFrequency = Mathf.LerpAngle(CameraEffect[0].glitchFrequency, CameraEffect[1].glitchFrequency, Ease(movePerc));
+            _cameraPlus.effectElements.glitchScale = Mathf.LerpAngle(CameraEffect[0].glitchScale, CameraEffect[1].glitchScale, Ease(movePerc));
+
             //
 
             _cameraPlus.ThirdPersonPos = LerpVector3(StartPos, EndPos, Ease(movePerc));

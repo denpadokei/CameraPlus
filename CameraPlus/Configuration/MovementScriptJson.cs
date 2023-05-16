@@ -56,6 +56,17 @@ namespace CameraPlus.Configuration
         public ColorElements outlineColor { get; set; }
         public ColorElements outlineBackgroundColor { get; set; }
     }
+
+    public class GlitchParmsElements
+    {
+        public string glitchLineSpeed { get; set; }
+        public string glitchLineSize { get; set; }
+        public string glitchColorGap { get; set; }
+        public string glitchFrameRate { get; set; }
+        public string glitchFrequency { get; set; }
+        public string glitchScale { get; set; }
+    }
+
     public class EffectObject
     {
         public string enableDoF { get; set; }
@@ -70,6 +81,11 @@ namespace CameraPlus.Configuration
         public string enableOutlineEffect { get; set; }
         public OutlineParamsElements StartOutlineEffect { get; set; }
         public OutlineParamsElements EndOutlineEffect { get; set; }
+
+        public string enableGlitchEffect { get; set; }
+        public GlitchParmsElements StartGlitchEffect { get; set; }
+        public GlitchParmsElements EndGlitchEffect { get; set; }
+
     }
 
     [JsonObject("Movements")]
