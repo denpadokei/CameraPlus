@@ -131,7 +131,7 @@ namespace CameraPlus.Configuration
             } 
             set { _layer = value; } }
         public int antiAliasing { get => _antiAliasing; set { _antiAliasing = value; } }
-        public float renderScale { get => _renderScale; set { _renderScale = Mathf.Clamp(value, 0.1f, 4.0f); } }
+        public float renderScale { get => _renderScale; set { _renderScale = value; } }
         public bool fitToCanvas { get => _windowRect.fitToCanvas; set { _windowRect.fitToCanvas = value; } }
         public int screenPosX { get => _windowRect.x; set { _windowRect.x = value; } }
         public int screenPosY { get => _windowRect.y; set { _windowRect.y = value; } }
@@ -816,16 +816,15 @@ namespace CameraPlus.Configuration
         [JsonProperty("EnableGlitch")]
         public bool enableGlitch;
         [JsonProperty("GlitchLineSpeed")]
-        public float glitchLineSpeed { get { return glitchLineSpeed; } set { glitchLineSpeed = Mathf.Clamp(value, 0, 10); } }
+        public float glitchLineSpeed;
         [JsonProperty("GlitchLineSize")]
-        public float glitchLineSize { get { return glitchLineSize; } set { glitchLineSize = Mathf.Clamp(value, 0, 1); } }
-        [JsonProperty("GlitchColorGap")]
-        public float glitchColorGap { get { return glitchColorGap; } set { glitchColorGap = Mathf.Clamp(value, 0, 1); } }
+        public float glitchLineSize;
+        public float glitchColorGap;
         [JsonProperty("GlitchFrameRate")]
-        public float glitchFrameRate { get { return glitchFrameRate; } set { glitchFrameRate = Mathf.Clamp(value, 0, 30); } }
+        public float glitchFrameRate;
         [JsonProperty("GlitchFrequency")]
-        public float glitchFrequency { get { return glitchFrequency; } set { glitchFrequency = Mathf.Clamp(value, 0, 1); } }
+        public float glitchFrequency;
         [JsonProperty("GlitchScale")]
-        public float glitchScale { get { return glitchScale; } set { glitchScale = Mathf.Clamp(value, 1, 10); } }
+        public float glitchScale;
     }
 }
