@@ -52,13 +52,16 @@ namespace CameraPlus.Behaviours
         {
             if (_renderTexture == null) return;
 
-            if (_cameraPlus.effectElements.enableDOF) PostEffect.DepthOfField(_cameraPlus, _renderTexture, _dofMaterial);
-            if (_cameraPlus.effectElements.enableGlitch) PostEffect.Glitch(_cameraPlus, _renderTexture, _glitchMaterial);
-            if (_cameraPlus.effectElements.enableOutline) PostEffect.Outline(_cameraPlus, _renderTexture, _outlineMaterial);
-            if (_cameraPlus.effectElements.wipeProgress > 0)
+            if (_cameraPlus)
             {
-                PostEffect.Wipe(_cameraPlus, _renderTexture, dest, _wipeMaterial);
-                return;
+                if (_cameraPlus.effectElements.enableDOF) PostEffect.DepthOfField(_cameraPlus, _renderTexture, _dofMaterial);
+                if (_cameraPlus.effectElements.enableGlitch) PostEffect.Glitch(_cameraPlus, _renderTexture, _glitchMaterial);
+                if (_cameraPlus.effectElements.enableOutline) PostEffect.Outline(_cameraPlus, _renderTexture, _outlineMaterial);
+                if (_cameraPlus.effectElements.wipeProgress > 0)
+                {
+                    PostEffect.Wipe(_cameraPlus, _renderTexture, dest, _wipeMaterial);
+                    return;
+                }
             }
             Graphics.Blit(_renderTexture, dest);
         }
