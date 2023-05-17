@@ -34,7 +34,7 @@ namespace CameraPlus
 
         internal Dictionary<string, Shader> Shaders = new Dictionary<string, Shader>();
         private RenderTexture _renderTexture;
-        private ScreenCameraBehaviour _screenCameraBehaviour;
+        private ScreenCameraBehaviour _fillBlackScreen;
         private CameraMoverPointer _cameraMovePointer;
         public bool Initialized = false;
 
@@ -66,9 +66,9 @@ namespace CameraPlus
         private void Start()
         {
             _renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
-            _screenCameraBehaviour = this.gameObject.AddComponent<ScreenCameraBehaviour>();
-            _screenCameraBehaviour.SetCameraInfo(new Vector2(0, 0), new Vector2(Screen.width, Screen.height), -2000);
-            _screenCameraBehaviour.SetRenderTexture(_renderTexture);
+            _fillBlackScreen = this.gameObject.AddComponent<ScreenCameraBehaviour>();
+            _fillBlackScreen.SetCameraInfo(new Vector2(0, 0), new Vector2(Screen.width, Screen.height), -2000);
+            _fillBlackScreen.SetRenderTexture(_renderTexture);
 
             ShaderLoad();
             _cameraMovePointer = this.gameObject.AddComponent<CameraMoverPointer>();

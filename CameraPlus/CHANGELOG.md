@@ -1,6 +1,7 @@
 # v7.0.0 Changes
 - Support game version 1.29.4
 - The camera preview can now be detached from the cube and fixed in place.
+- Add camera effect (Glitch noise).
 - Temporarily monitor FPFCToggle of SiraUtil due to FPFC change in 1.29.4.
 - Changed the way the camera is rebuilt every time you switch scenes. Bugs may be less likely to occur in long-time play.
 - Stopped automatic conversion from old configuration file cfg.
