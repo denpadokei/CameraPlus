@@ -203,6 +203,7 @@
     <Compile Include="Utilities\ConfigConverter.cs" />
     <Compile Include="Utilities\Layer.cs" />
     <Compile Include="Utilities\MultiplayerSession.cs" />
+    <Compile Include="Utilities\PostEffect.cs" />
     <Compile Include="Utilities\Utilities.cs" />
     <Compile Include="VMCProtocol\ExternalSender.cs" />
     <Compile Include="VMCProtocol\OscClient.cs" />
