@@ -78,6 +78,8 @@ namespace CameraPlus
             externalSender = new GameObject("ExternalSender").AddComponent<ExternalSender>();
             externalSender.transform.SetParent(transform);
 
+            OnFPFCToggleEvent.AddListener(OnFPFCToglleEvent);
+
             if (CustomUtils.IsModInstalled("VMCAvatar","0.99.0"))
                 existsVMCAvatar = true;
             _webCamTexture = new WebCamTexture();
@@ -176,6 +178,14 @@ namespace CameraPlus
                 while (Camera.main == null)
                     yield return null;
             }
+        }
+
+        private void OnFPFCToglleEvent()
+        {
+            if (isFPFC)
+                _fillBlackScreen.SetLayer(-2000);
+            else
+                _fillBlackScreen.SetLayer(1);
         }
 
         internal string[] WebCameraList()

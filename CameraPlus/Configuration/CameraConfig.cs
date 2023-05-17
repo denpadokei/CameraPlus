@@ -125,7 +125,7 @@ namespace CameraPlus.Configuration
         public int layer {
             get {
                 if (FPFCPatch.instance != null && !Plugin.cameraController.isFPFC)
-                    return _layer + 1000;
+                    return _layer + 1001;
                 else
                     return _layer;
             } 

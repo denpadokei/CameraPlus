@@ -383,7 +383,7 @@ namespace CameraPlus.Behaviours
             else
             {
                 turnToHead = Config.cameraExtensions.turnToHead;
-                _screenCamera.SetLayer(Config.layer + 1000);
+                _screenCamera.SetLayer(Config.layer + 1001);
             }
         }
 
