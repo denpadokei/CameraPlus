@@ -194,6 +194,7 @@
     <Compile Include="UI\MenuDisplayObject.cs" />
     <Compile Include="UI\MenuEffect.cs" />
     <Compile Include="UI\MenuExternalLink.cs" />
+    <Compile Include="UI\MenuUI.cs" />
     <Compile Include="UI\MenuLayout.cs" />
     <Compile Include="UI\MenuMovementScript.cs" />
     <Compile Include="UI\MenuMultiplayer.cs" />

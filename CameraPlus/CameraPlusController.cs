@@ -14,6 +14,7 @@ using CameraPlus.Configuration;
 using CameraPlus.Behaviours;
 using CameraPlus.Utilities;
 using CameraPlus.VMCProtocol;
+using CameraPlus.UI;
 
 namespace CameraPlus
 {
@@ -77,6 +78,8 @@ namespace CameraPlus
 
             externalSender = new GameObject("ExternalSender").AddComponent<ExternalSender>();
             externalSender.transform.SetParent(transform);
+
+            MenuUI.Initialize();
 
             OnFPFCToggleEvent.AddListener(OnFPFCToglleEvent);
 
