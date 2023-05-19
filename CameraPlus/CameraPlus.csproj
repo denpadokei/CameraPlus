@@ -163,6 +163,7 @@
   <ItemGroup>
     <Compile Include="Behaviours\CameraMovement.cs" />
     <Compile Include="Behaviours\CameraMoverPointer.cs" />
+    <Compile Include="Behaviours\CameraOrigin.cs" />
     <Compile Include="Behaviours\CameraPlusBehaviour.cs" />
     <Compile Include="Behaviours\CameraPreviewQuad.cs" />
     <Compile Include="Behaviours\ScreenCameraBehaviour.cs" />

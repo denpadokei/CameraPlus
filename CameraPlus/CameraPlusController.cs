@@ -28,9 +28,8 @@ namespace CameraPlus
 
         public string CurrentProfile = string.Empty;
 
-        internal bool MultiplayerSessionInit;
+        public bool MultiplayerSessionInit;
         internal bool existsVMCAvatar = false;
-        internal bool isRestartingSong = false;
         internal Transform origin;
 
         internal Dictionary<string, Shader> Shaders = new Dictionary<string, Shader>();
@@ -105,7 +104,6 @@ namespace CameraPlus
 
         public void OnActiveSceneChanged(Scene from, Scene to)
         {
-            if (isRestartingSong && to.name != "GameCore") return;
             if (Initialized || (!Initialized && (to.name == "MainMenu")))
                 SharedCoroutineStarter.instance.StartCoroutine(DelayedActiveSceneChanged(from, to));
 #if DEBUG

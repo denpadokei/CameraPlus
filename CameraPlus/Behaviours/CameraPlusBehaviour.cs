@@ -14,7 +14,6 @@ using CameraPlus.HarmonyPatches;
 using CameraPlus.VMCProtocol;
 using CameraPlus.Utilities;
 using CameraPlus.UI;
-using Unity.IO.LowLevel.Unsafe;
 
 namespace CameraPlus.Behaviours
 {
@@ -43,6 +42,7 @@ namespace CameraPlus.Behaviours
         internal CameraPreviewQuad _quad;
         protected RenderTexture _camRenderTexture;
         internal ScreenCameraBehaviour _screenCamera;
+        internal CameraOrigin _cameraOrigin;
         protected Camera _mainCamera = null;
         protected CameraMovement _cameraMovement = null;
         protected BeatLineManager _beatLineManager;
@@ -111,9 +111,14 @@ namespace CameraPlus.Behaviours
             }
             XRSettings.showDeviceView = false;
 
-            var gameObj = Instantiate(_mainCamera.gameObject);
-
             Config.ConfigChangedEvent += PluginOnConfigChangedEvent;
+
+            _cameraOrigin = new GameObject("CameraPlusOrigin").AddComponent<CameraOrigin>();
+            _cameraOrigin.transform.SetParent(transform);
+            _cameraOrigin._cameraPlus = this;
+
+            var gameObj = Instantiate(_mainCamera.gameObject, Vector3.zero, Quaternion.identity, _cameraOrigin.gameObject.transform);
+            gameObj.transform.localScale = Vector3.one;
 
             gameObj.SetActive(false);
             gameObj.name = "Camera Plus";
@@ -138,11 +143,6 @@ namespace CameraPlus.Behaviours
             var camera = _mainCamera.transform;
             transform.position = camera.position;
             transform.rotation = camera.rotation;
-
-            gameObj.transform.parent = transform;
-            gameObj.transform.localPosition = Vector3.zero;
-            gameObj.transform.localRotation = Quaternion.identity;
-            gameObj.transform.localScale = Vector3.one;
 
             _quad = new GameObject("PreviewQuad").AddComponent<CameraPreviewQuad>();
             _quad.transform.SetParent(_cam.transform);
@@ -439,6 +439,7 @@ namespace CameraPlus.Behaviours
                     HandleMultiPlayerGame();
                     HandleThirdPerson360();
 
+                    /*
                     if (Config.cameraExtensions.followNoodlePlayerTrack && Plugin.cameraController.origin)
                     {
                         if (adjustOffset == null)
@@ -461,15 +462,18 @@ namespace CameraPlus.Behaviours
                         transform.position = ThirdPersonPos;
                         transform.eulerAngles = ThirdPersonRot;
                     }
+                    */
+                    transform.localPosition = ThirdPersonPos;
+                    transform.localEulerAngles = ThirdPersonRot;
 
                     if (OffsetPosition != Vector3.zero && OffsetAngle != Vector3.zero)
                     {
-                        transform.position = ThirdPersonPos + OffsetPosition;
-                        transform.eulerAngles = ThirdPersonRot + OffsetAngle;
+                        transform.localPosition = ThirdPersonPos + OffsetPosition;
+                        transform.localEulerAngles = ThirdPersonRot + OffsetAngle;
                         Quaternion angle = Quaternion.AngleAxis(OffsetAngle.y, Vector3.up);
-                        transform.position -= OffsetPosition;
-                        transform.position = angle * transform.position;
-                        transform.position += OffsetPosition;
+                        transform.localPosition -= OffsetPosition;
+                        transform.localPosition = angle * transform.position;
+                        transform.localPosition += OffsetPosition;
 
                     }
                     if (Camera.main && effectElements.dofAutoDistance)
@@ -483,11 +487,11 @@ namespace CameraPlus.Behaviours
                         var direction = turnToTarget.position - transform.position;
                         var lookRotation = Quaternion.LookRotation(direction);
                         if (turnToHeadHorizontal)
-                            transform.eulerAngles = new Vector3(transform.eulerAngles.x,lookRotation.eulerAngles.y, transform.eulerAngles.z);
+                            transform.localEulerAngles = new Vector3(transform.eulerAngles.x,lookRotation.eulerAngles.y, transform.eulerAngles.z);
                         else
-                            transform.rotation = lookRotation;
+                            transform.localRotation = lookRotation;
                         //transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, Config.cameraExtensions.rotationSmooth);
-                        turnToTarget.transform.position -= turnToHeadOffset;
+                        turnToTarget.transform.localPosition -= turnToHeadOffset;
                     }
                     return;
                 }
