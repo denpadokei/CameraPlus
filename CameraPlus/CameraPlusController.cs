@@ -72,13 +72,14 @@ namespace CameraPlus
 
             ShaderLoad();
             _cameraMovePointer = this.gameObject.AddComponent<CameraMoverPointer>();
+
             CameraUtilities.AddNewCamera(Plugin.MainCamera);
             MultiplayerSessionInit = false;
 
             externalSender = new GameObject("ExternalSender").AddComponent<ExternalSender>();
             externalSender.transform.SetParent(transform);
 
-            MenuUI.Initialize();
+            //MenuUI.Initialize();
 
             OnFPFCToggleEvent.AddListener(OnFPFCToglleEvent);
 

@@ -141,8 +141,10 @@ namespace CameraPlus.Behaviours
             gameObj.SetActive(true);
 
             var camera = _mainCamera.transform;
-            transform.position = camera.position;
-            transform.rotation = camera.rotation;
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+            _cam.transform.position = camera.position;
+            _cam.transform.rotation = camera.rotation;
 
             _quad = new GameObject("PreviewQuad").AddComponent<CameraPreviewQuad>();
             _quad.transform.SetParent(_cam.transform);
@@ -157,8 +159,8 @@ namespace CameraPlus.Behaviours
                 ThirdPersonPos = Config.Position;
                 ThirdPersonRot = Config.Rotation;
 
-                transform.position = ThirdPersonPos;
-                transform.eulerAngles = ThirdPersonRot;
+                _cam.transform.position = ThirdPersonPos;
+                _cam.transform.eulerAngles = ThirdPersonRot;
             }
 
             AddMovementScript();
@@ -418,7 +420,7 @@ namespace CameraPlus.Behaviours
                 OffsetPosition = Vector3.zero;
                 OffsetAngle = Vector3.zero;
 
-                if (!_mainCamera) return;
+                if (!_mainCamera || _cam==null) return;
                 var camera = _mainCamera?.transform;
 
                 if (ThirdPerson)
@@ -463,22 +465,22 @@ namespace CameraPlus.Behaviours
                         transform.eulerAngles = ThirdPersonRot;
                     }
                     */
-                    transform.localPosition = ThirdPersonPos;
-                    transform.localEulerAngles = ThirdPersonRot;
+                    _cam.transform.localPosition = ThirdPersonPos;
+                    _cam.transform.localEulerAngles = ThirdPersonRot;
 
                     if (OffsetPosition != Vector3.zero && OffsetAngle != Vector3.zero)
                     {
-                        transform.localPosition = ThirdPersonPos + OffsetPosition;
-                        transform.localEulerAngles = ThirdPersonRot + OffsetAngle;
+                        _cam.transform.localPosition = ThirdPersonPos + OffsetPosition;
+                        _cam.transform.localEulerAngles = ThirdPersonRot + OffsetAngle;
                         Quaternion angle = Quaternion.AngleAxis(OffsetAngle.y, Vector3.up);
-                        transform.localPosition -= OffsetPosition;
-                        transform.localPosition = angle * transform.position;
-                        transform.localPosition += OffsetPosition;
+                        _cam.transform.localPosition -= OffsetPosition;
+                        _cam.transform.localPosition = angle * transform.position;
+                        _cam.transform.localPosition += OffsetPosition;
 
                     }
                     if (Camera.main && effectElements.dofAutoDistance)
                     {
-                        effectElements.dofFocusDistance = (Camera.main.transform.position - transform.position).magnitude;
+                        effectElements.dofFocusDistance = (Camera.main.transform.position - _cam.transform.position).magnitude;
                     }
                     if (Camera.main && turnToHead && !Plugin.cameraController.isFPFC && !Config.cameraExtensions.follow360map)
                     {
@@ -487,26 +489,26 @@ namespace CameraPlus.Behaviours
                         var direction = turnToTarget.position - transform.position;
                         var lookRotation = Quaternion.LookRotation(direction);
                         if (turnToHeadHorizontal)
-                            transform.localEulerAngles = new Vector3(transform.eulerAngles.x,lookRotation.eulerAngles.y, transform.eulerAngles.z);
+                            _cam.transform.localEulerAngles = new Vector3(_cam.transform.eulerAngles.x,lookRotation.eulerAngles.y, _cam.transform.eulerAngles.z);
                         else
-                            transform.localRotation = lookRotation;
+                            _cam.transform.localRotation = lookRotation;
                         //transform.rotation = Quaternion.Lerp(transform.rotation, lookRotation, Config.cameraExtensions.rotationSmooth);
                         turnToTarget.transform.localPosition -= turnToHeadOffset;
                     }
                     return;
                 }
-                transform.position = Vector3.Lerp(transform.position, camera.position + Config.FirstPersonPositionOffset,
+                _cam.transform.position = Vector3.Lerp(_cam.transform.position, camera.position + Config.FirstPersonPositionOffset,
                     Config.cameraExtensions.positionSmooth * Time.unscaledDeltaTime);
 
                 if (!Config.cameraExtensions.firstPersonCameraForceUpRight)
-                    transform.rotation = Quaternion.Slerp(transform.rotation, camera.rotation * Quaternion.Euler(Config.FirstPersonRotationOffset),
+                    _cam.transform.rotation = Quaternion.Slerp(_cam.transform.rotation, camera.rotation * Quaternion.Euler(Config.FirstPersonRotationOffset),
                         Config.cameraExtensions.rotationSmooth * Time.unscaledDeltaTime);
                 else
 
                 {
-                    Quaternion rot = Quaternion.Slerp(transform.rotation, camera.rotation * Quaternion.Euler(Config.FirstPersonRotationOffset),
+                    Quaternion rot = Quaternion.Slerp(_cam.transform.rotation, camera.rotation * Quaternion.Euler(Config.FirstPersonRotationOffset),
                         Config.cameraExtensions.rotationSmooth * Time.unscaledDeltaTime);
-                    transform.rotation = rot * Quaternion.Euler(0, 0, -(rot.eulerAngles.z));
+                    _cam.transform.rotation = rot * Quaternion.Euler(0, 0, -(rot.eulerAngles.z));
                 }
             }
             catch(Exception ex)

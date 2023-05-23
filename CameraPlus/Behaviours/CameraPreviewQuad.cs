@@ -55,7 +55,7 @@ namespace CameraPlus.Behaviours
 
 			if (_cameraPlus.Config.cameraExtensions.previewQuadSeparate)
 			{
-                _cameraQuad.transform.SetParent(_cameraPlus.transform.parent);
+                _cameraQuad.transform.SetParent(_cameraPlus._cameraOrigin.transform);
                 _cameraQuad.transform.position = _cameraPlus.Config.PreviewQuadPosition;
                 _cameraQuad.transform.eulerAngles = _cameraPlus.Config.PreviewQuadRotation;
             }
@@ -116,7 +116,7 @@ namespace CameraPlus.Behaviours
 		{
             _cameraPlus.Config.PreviewQuadPosition = _cameraQuad.transform.position;
             _cameraPlus.Config.PreviewQuadRotation = _cameraQuad.transform.eulerAngles;
-            _cameraQuad.transform.SetParent(_cameraPlus.transform.parent);
+            _cameraQuad.transform.SetParent(_cameraPlus._cameraOrigin.transform);
         }
 		public void CombineQuad()
 		{

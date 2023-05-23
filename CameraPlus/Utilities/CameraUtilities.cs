@@ -37,9 +37,10 @@ namespace CameraPlus.Utilities
         internal static void AddNewCamera(string cameraName, CameraConfig CopyConfig = null)
         {
             string path = Path.Combine(UnityGame.UserDataPath, Plugin.Name, $"{cameraName}.json");
-            if (Plugin.cameraController.CurrentProfile != null)
+            if (Plugin.cameraController.CurrentProfile !=  string.Empty)
                 path = Path.Combine(ProfilePath, Plugin.cameraController.CurrentProfile, $"{cameraName}.json");
 
+            Plugin.Log.Notice($"Add New Camera : {path}");
             if (!File.Exists(path))
             {
                 CameraConfig config = null;
@@ -186,6 +187,8 @@ namespace CameraPlus.Utilities
                         {
                             var cam = new GameObject(dictKey).AddComponent<CameraPlusBehaviour>();
                             cam.transform.SetParent(profileObject.transform);
+                            cam.transform.localPosition = Vector3.zero;
+                            cam.transform.localRotation = Quaternion.identity;
                             cam.Init(Config);
                             Plugin.cameraController.Cameras.TryAdd(dictKey, cam);
                         }

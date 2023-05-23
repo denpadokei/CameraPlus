@@ -29,12 +29,12 @@ namespace CameraPlus.HarmonyPatches
         {
             if (!Plugin.cameraController.Initialized)
             {
-#if DEBUG
-                Plugin.Log.Notice("Initialize in SmoothCameraController");
-#endif
-				CameraUtilities.BaseCullingMask = Camera.main.cullingMask;
+                CameraUtilities.BaseCullingMask = Camera.main.cullingMask;
                 CameraUtilities.ProfileChange(string.Empty);
                 Plugin.cameraController.Initialized = true;
+#if DEBUG
+                Plugin.Log.Notice("Profile Initialize in SmoothCameraController.Start");
+#endif
             }
         }
     }
