@@ -146,6 +146,14 @@ namespace CameraPlus.Utilities
             }
         }
 
+        public static GameObject GetMainCamera()
+        {
+            var cam = Camera.main;
+            if (cam == null)
+                return GameObject.FindGameObjectsWithTag("MainCamera")[0];
+            return cam.gameObject;
+        }
+
         public static void LoadProfile(string profileName)
         {
             string workProfile;

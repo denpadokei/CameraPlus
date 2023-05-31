@@ -97,13 +97,6 @@ namespace CameraPlus.Behaviours
             Config.cam = this;
             _isMainCamera = Path.GetFileName(Config.FilePath) == $"{Plugin.MainCamera}.json";
 
-            StartCoroutine(DelayedInit());
-        }
-
-        protected IEnumerator DelayedInit()
-        {
-            yield return StartCoroutine(GetMainCamera());
-
             if (_contextMenu == null)
             {
                 MenuObj = new GameObject("CameraPlusMenu");
@@ -117,7 +110,7 @@ namespace CameraPlus.Behaviours
             _cameraOrigin.transform.SetParent(transform);
             _cameraOrigin._cameraPlus = this;
 
-            var gameObj = Instantiate(_mainCamera.gameObject, Vector3.zero, Quaternion.identity, _cameraOrigin.gameObject.transform);
+            var gameObj = Instantiate(CameraUtilities.GetMainCamera(), Vector3.zero, Quaternion.identity, _cameraOrigin.gameObject.transform);
             gameObj.transform.localScale = Vector3.one;
 
             gameObj.SetActive(false);
@@ -140,11 +133,12 @@ namespace CameraPlus.Behaviours
 
             gameObj.SetActive(true);
 
-            var camera = _mainCamera.transform;
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
-            _cam.transform.position = camera.position;
-            _cam.transform.rotation = camera.rotation;
+
+            //var camera = _mainCamera.transform;
+            //_cam.transform.position = camera.position;
+            //_cam.transform.rotation = camera.rotation;
 
             _quad = new GameObject("PreviewQuad").AddComponent<CameraPreviewQuad>();
             _quad.transform.SetParent(_cam.transform);
@@ -271,8 +265,8 @@ namespace CameraPlus.Behaviours
         {
             if (!ThirdPerson)
             {
-                transform.position = _mainCamera.transform.position;
-                transform.rotation = _mainCamera.transform.rotation;
+                _cam.transform.position = _mainCamera.transform.position;
+                _cam.transform.rotation = _mainCamera.transform.rotation;
             }
             else
             {
@@ -399,8 +393,8 @@ namespace CameraPlus.Behaviours
                     ThirdPerson = !ThirdPerson;
                     if (!ThirdPerson)
                     {
-                        transform.position = _mainCamera.transform.position;
-                        transform.rotation = _mainCamera.transform.rotation;
+                        _cam.transform.position = _mainCamera.transform.position;
+                        _cam.transform.rotation = _mainCamera.transform.rotation;
                     }
                     else
                     {
