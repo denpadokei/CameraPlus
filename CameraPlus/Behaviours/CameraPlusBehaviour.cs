@@ -263,7 +263,7 @@ namespace CameraPlus.Behaviours
 
         protected virtual void ReadConfig()
         {
-            if (!ThirdPerson)
+            if (!ThirdPerson && _cam != null && _mainCamera != null)
             {
                 _cam.transform.position = _mainCamera.transform.position;
                 _cam.transform.rotation = _mainCamera.transform.rotation;

@@ -22,7 +22,7 @@ namespace CameraPlus.HarmonyPatches
 		}
 	}
 
-    [HarmonyPatch(typeof(SmoothCameraController), nameof(SmoothCameraController.Start))]
+    [HarmonyPatch(typeof(SmoothCameraController), "Start")]
     static class InitOnMainAvailable
     {
         static void Postfix(MainSettingsModelSO ____mainSettingsModel)
