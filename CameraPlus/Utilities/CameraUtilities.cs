@@ -31,7 +31,8 @@ namespace CameraPlus.Utilities
 
         private static bool CameraExists(string cameraName)
         {
-            return Plugin.cameraController.Cameras.Keys.Where(c => c == $"{cameraName}.json").Count() > 0;
+            string dictKey = (Plugin.cameraController.CurrentProfile == string.Empty ? $"{Plugin.Name}" : $"{Plugin.cameraController.CurrentProfile}");
+            return Plugin.cameraController.Cameras.Keys.Where(c => c == $"{dictKey}_{cameraName}.json").Count() > 0;
         }
 
         internal static void AddNewCamera(string cameraName, CameraConfig CopyConfig = null)
@@ -50,10 +51,10 @@ namespace CameraPlus.Utilities
                 config = new CameraConfig(path);
                 foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.OrderBy(i => i.Config.layer))
                 {
-                    if (c.Config.layer > config.layer)
-                        config.layer += (c.Config.layer - config.layer);
-                    else if (c.Config.layer == config.layer)
-                        config.layer++;
+                    if (c.Config.rawLayer > config.rawLayer)
+                        config.rawLayer += (c.Config.rawLayer - config.rawLayer);
+                    else if (c.Config.rawLayer == config.rawLayer)
+                        config.rawLayer++;
                 }
 
                 if (cameraName == Plugin.MainCamera)
