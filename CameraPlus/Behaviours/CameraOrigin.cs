@@ -9,6 +9,7 @@ using UnityEngine.XR;
 using UnityEngine.SceneManagement;
 using CameraPlus.Configuration;
 using CameraPlus.Utilities;
+using CameraPlus.HarmonyPatches;
 
 namespace CameraPlus.Behaviours
 {
@@ -22,8 +23,8 @@ namespace CameraPlus.Behaviours
         {
             if (_cameraPlus.Config.cameraExtensions.followNoodlePlayerTrack && Plugin.cameraController.origin)
             {
-                _position = Plugin.cameraController.origin.position;
-                _rotation = Plugin.cameraController.origin.rotation;
+                _position = Plugin.cameraController.origin.position - RoomAdjustPatch.position;
+                _rotation = Plugin.cameraController.origin.rotation * Quaternion.Inverse(RoomAdjustPatch.rotation);
             }
             else
             {
