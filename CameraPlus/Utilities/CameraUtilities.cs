@@ -211,6 +211,12 @@ namespace CameraPlus.Utilities
             }
         }
 
+        public static void TurnOffCameras()
+        {
+            foreach(var obj in Plugin.cameraController.LoadedProfile.Values)
+                obj.SetActive(false);
+        }
+
         internal static string[] MovementScriptList()
         {
             string[] spath = Directory.GetFiles(Path.Combine(UnityGame.UserDataPath, Plugin.Name, "Scripts"), "*.json");
@@ -241,15 +247,6 @@ namespace CameraPlus.Utilities
             Plugin.cameraController.LoadedProfile[currentprofile].SetActive(false);
             Plugin.cameraController.LoadedProfile[profile].SetActive(true);
             Plugin.cameraController.CurrentProfile = ProfileName;
-        }
-
-        internal static void ClearCameras()
-        {
-            var cs = Resources.FindObjectsOfTypeAll<CameraPlusBehaviour>();
-
-            foreach (var csi in Plugin.cameraController.Cameras.Values)
-                GameObject.Destroy(csi.gameObject);
-            Plugin.cameraController.Cameras.Clear();
         }
 
         public static void CreateExampleScript()

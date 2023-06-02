@@ -131,7 +131,7 @@ namespace CameraPlus
                         CameraUtilities.ProfileChange(PluginConfig.Instance.MenuProfile);
                     else if (to.name == "BeatmapEditor3D" || to.name == "BeatmapLevelEditorWorldUi")
                     {
-                        CameraUtilities.ClearCameras();
+                        CameraUtilities.TurnOffCameras();
                         isLevelEditor = true;
                     }
                 }

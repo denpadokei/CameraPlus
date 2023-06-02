@@ -435,30 +435,6 @@ namespace CameraPlus.Behaviours
                     HandleMultiPlayerGame();
                     HandleThirdPerson360();
 
-                    /*
-                    if (Config.cameraExtensions.followNoodlePlayerTrack && Plugin.cameraController.origin)
-                    {
-                        if (adjustOffset == null)
-                        {
-                            adjustOffset = new GameObject("OriginTarget");
-                            adjustParent = new GameObject("OriginParent");
-                            adjustOffset.transform.SetParent(adjustParent.transform);
-                        }
-                        adjustParent.transform.position = Plugin.cameraController.origin.position;
-                        adjustParent.transform.rotation = Plugin.cameraController.origin.rotation * Quaternion.Inverse(RoomAdjustPatch.rotation);
-
-                        adjustOffset.transform.localPosition = ThirdPersonPos - RoomAdjustPatch.position;
-                        adjustOffset.transform.localEulerAngles = ThirdPersonRot;
-
-                        transform.position = adjustOffset.transform.position;
-                        transform.eulerAngles = adjustOffset.transform.eulerAngles;
-                    }
-                    else
-                    {
-                        transform.position = ThirdPersonPos;
-                        transform.eulerAngles = ThirdPersonRot;
-                    }
-                    */
                     _cam.transform.localPosition = ThirdPersonPos;
                     _cam.transform.localEulerAngles = ThirdPersonRot;
 

@@ -1,14 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Collections;
-using System.Collections.Generic;
-using IPA.Utilities;
-using UnityEngine;
-using UnityEngine.XR;
-using UnityEngine.SceneManagement;
-using CameraPlus.Configuration;
-using CameraPlus.Utilities;
+﻿using UnityEngine;
 using CameraPlus.HarmonyPatches;
 
 namespace CameraPlus.Behaviours
