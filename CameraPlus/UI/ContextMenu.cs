@@ -26,8 +26,8 @@ namespace CameraPlus.UI
             get
             {
                 return new Vector2(
-                   Mathf.Min(mousePosition.x / (Screen.width / 1600f), (Screen.width * ( 0.806249998f / (Screen.width / 1600f)))),
-                   Mathf.Min((Screen.height - mousePosition.y) / (Screen.height / 900f), (Screen.height * (0.555555556f / (Screen.height / 900f))))
+                   Mathf.Min(mousePosition.x / (Screen.width / 1600f), (Screen.width * (0.806249998f / (Screen.width / 1600f)))),
+                   Mathf.Min((Screen.height - mousePosition.y) / (Screen.height / 900f), (Screen.height * (0.475555556f / (Screen.height / 900f)))) //Magic number to min 428
                     );
             }
         }
@@ -85,7 +85,7 @@ namespace CameraPlus.UI
 
         void OnGUI()
         {
-
+            if (!MenuUI.UIInitialize) MenuUI.Initialize();
             if (showMenu)
             {
                 Vector3 scale;

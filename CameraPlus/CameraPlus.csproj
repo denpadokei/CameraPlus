@@ -248,5 +248,9 @@
     <EmbeddedResource Include="Resources\UnLock.png" />
     <EmbeddedResource Include="Resources\Xross.png" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\sw_off.png" />
+    <EmbeddedResource Include="Resources\sw_on.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
