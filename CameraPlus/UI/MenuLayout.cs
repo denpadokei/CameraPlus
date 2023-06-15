@@ -25,12 +25,12 @@ namespace CameraPlus.UI
 
             //orthographic Mode
             GUI.Box(new Rect(menuPos.x, menuPos.y + 50, 120, 45), "Orthographic");
-            if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 70, 55, 25), new GUIContent("Enable"), parentBehaviour.Config.cameraExtensions.orthographicMode ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 70, 55, 25), new GUIContent("Enable"), parentBehaviour.Config.cameraExtensions.orthographicMode ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.cameraExtensions.orthographicMode = true;
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 60, menuPos.y + 70, 55, 25), new GUIContent("Disbale"), !parentBehaviour.Config.cameraExtensions.orthographicMode ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 60, menuPos.y + 70, 55, 25), new GUIContent("Disbale"), !parentBehaviour.Config.cameraExtensions.orthographicMode ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.cameraExtensions.orthographicMode = false;
                 parentBehaviour.Config.Save();
@@ -84,13 +84,13 @@ namespace CameraPlus.UI
             }
             //Fit Canvas
             GUI.Box(new Rect(menuPos.x + 180, menuPos.y + 50, 120, 45), "Fit to Canvas");
-            if (GUI.Button(new Rect(menuPos.x + 185, menuPos.y + 70, 55, 25), new GUIContent("Enable"), parentBehaviour.Config.fitToCanvas ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 185, menuPos.y + 70, 55, 25), new GUIContent("Enable"), parentBehaviour.Config.fitToCanvas ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.fitToCanvas = true;
                 parentBehaviour.CreateScreenRenderTexture();
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 240, menuPos.y + 70, 55, 25), new GUIContent("Disable"), !parentBehaviour.Config.fitToCanvas ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 240, menuPos.y + 70, 55, 25), new GUIContent("Disable"), !parentBehaviour.Config.fitToCanvas ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.fitToCanvas = false;
                 parentBehaviour.CreateScreenRenderTexture();
@@ -114,36 +114,36 @@ namespace CameraPlus.UI
 
             //Mouse Drag
             GUI.Box(new Rect(menuPos.x + 180, menuPos.y + 95, 120, 45), "Mouse Drag");
-            if (GUI.Button(new Rect(menuPos.x + 185, menuPos.y + 115, 55, 25), new GUIContent("Enable"), parentBehaviour.mouseMoveCamera ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 185, menuPos.y + 115, 55, 25), new GUIContent("Enable"), parentBehaviour.mouseMoveCamera ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.mouseMoveCamera = true;
                 parentBehaviour.mouseMoveCameraSave = true;
             }
-            if (GUI.Button(new Rect(menuPos.x + 240, menuPos.y + 115, 55, 25), new GUIContent("Disable"), !parentBehaviour.mouseMoveCamera ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 240, menuPos.y + 115, 55, 25), new GUIContent("Disable"), !parentBehaviour.mouseMoveCamera ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.mouseMoveCamera = false;
                 parentBehaviour.mouseMoveCameraSave = false;
             }
             //Turn to Head
             GUI.Box(new Rect(menuPos.x + 180, menuPos.y + 140, 120, 45), "Turn to Head");
-            if (GUI.Button(new Rect(menuPos.x + 185, menuPos.y + 160, 55, 25), new GUIContent("Enable"), parentBehaviour.Config.cameraExtensions.turnToHead ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 185, menuPos.y + 160, 55, 25), new GUIContent("Enable"), parentBehaviour.Config.cameraExtensions.turnToHead ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.cameraExtensions.turnToHead = true;
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 240, menuPos.y + 160, 55, 25), new GUIContent("Disable"), !parentBehaviour.Config.cameraExtensions.turnToHead ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 240, menuPos.y + 160, 55, 25), new GUIContent("Disable"), !parentBehaviour.Config.cameraExtensions.turnToHead ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.cameraExtensions.turnToHead = false;
                 parentBehaviour.Config.Save();
             }
             //Turn to Head Horizontal
             GUI.Box(new Rect(menuPos.x + 180, menuPos.y + 185, 120, 45), "Horizontal Only");
-            if (GUI.Button(new Rect(menuPos.x + 185, menuPos.y + 205, 55, 25), new GUIContent("Enable"), parentBehaviour.Config.cameraExtensions.turnToHeadHorizontal ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 185, menuPos.y + 205, 55, 25), new GUIContent("Enable"), parentBehaviour.Config.cameraExtensions.turnToHeadHorizontal ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.cameraExtensions.turnToHeadHorizontal = true;
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 240, menuPos.y + 205, 55, 25), new GUIContent("Disable"), !parentBehaviour.Config.cameraExtensions.turnToHeadHorizontal ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 240, menuPos.y + 205, 55, 25), new GUIContent("Disable"), !parentBehaviour.Config.cameraExtensions.turnToHeadHorizontal ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.cameraExtensions.turnToHeadHorizontal = false;
                 parentBehaviour.Config.Save();
@@ -406,7 +406,7 @@ namespace CameraPlus.UI
             //Close
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close Layout Menu")))
             {
-                contextMenu.MenuMode = ContextMenu.MenuState.MenuTop;
+                contextMenu._menuMode = ContextMenu.MenuState.MenuTop;
             }
 
         }

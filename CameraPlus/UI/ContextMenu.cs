@@ -8,9 +8,11 @@ namespace CameraPlus.UI
 {
     public class ContextMenu : MonoBehaviour
     {
-        internal enum MenuState
+        public enum MenuState
         {
             MenuTop,
+            CameraSetting,
+            PreviewQuad,
             DisplayObject,
             Layout,
             Multiplayer,
@@ -21,29 +23,14 @@ namespace CameraPlus.UI
             ExternalLink,
             ChromaKey
         }
-        internal Vector2 menuPos
-        {
-            get
-            {
-                return new Vector2(
-                   Mathf.Min(mousePosition.x / (Screen.width / 1600f), (Screen.width * (0.806249998f / (Screen.width / 1600f)))),
-                   Mathf.Min((Screen.height - mousePosition.y) / (Screen.height / 900f), (Screen.height * (0.475555556f / (Screen.height / 900f)))) //Magic number to min 428
-                    );
-            }
-        }
-        internal Vector2 mousePosition;
+
         internal bool showMenu;
-        internal MenuState MenuMode = MenuState.MenuTop;
-        internal CameraPlusBehaviour parentBehaviour;
+        internal MenuState _menuMode = MenuState.MenuTop;
+        internal CameraPlusBehaviour _cameraPlus;
         internal string[] scriptName;
         internal int scriptPage = 0;
         internal string[] webCameraName;
         internal int webCameraPage = 0;
-        internal Texture2D texture = null;
-        internal Texture2D Cameratexture = null;
-        internal GUIStyle CustomEnableStyle = null;
-        internal GUIStyle CustomDisableStyle = null;
-        internal GUIStyle ProfileStyle = null;
 
         private MenuDisplayObject _menuDisplayObject = new MenuDisplayObject();
         private MenuLayout _menuLayout = new MenuLayout();
@@ -55,26 +42,14 @@ namespace CameraPlus.UI
         private MenuExternalLink _menuExternalLink = new MenuExternalLink();
         private MenuChromakey _menuChromakey = new MenuChromakey();
 
-        private float _menuWidth = 300;
-        private float _menuHeight = 440;
-
         public void EnableMenu(Vector2 mousePos, CameraPlusBehaviour parentBehaviour)
         {
             this.enabled = true;
-            mousePosition = mousePos;
+            MenuUI.MousePosition = mousePos;
             showMenu = true;
-            this.parentBehaviour = parentBehaviour;
+            this._cameraPlus = parentBehaviour;
             scriptName = CameraUtilities.MovementScriptList();
             webCameraName = Plugin.cameraController.WebCameraList();
-
-            if (this.parentBehaviour.Config.cameraLock.lockScreen)
-                texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Lock.png");
-            else
-                texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.UnLock.png");
-            if (this.parentBehaviour.Config.cameraLock.lockCamera || this.parentBehaviour.Config.cameraLock.dontSaveDrag)
-                Cameratexture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.CameraLock.png");
-            else
-                Cameratexture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.CameraUnlock.png");
         }
         public void DisableMenu()
         {
@@ -86,6 +61,7 @@ namespace CameraPlus.UI
         void OnGUI()
         {
             if (!MenuUI.UIInitialize) MenuUI.Initialize();
+
             if (showMenu)
             {
                 Vector3 scale;
@@ -98,89 +74,99 @@ namespace CameraPlus.UI
                 Matrix4x4 originalMatrix = GUI.matrix;
                 GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, scale);
                 //Layer boxes for Opacity
-                GUI.Box(new Rect(menuPos.x - 5, menuPos.y, 310, 470), $"CameraPlus {parentBehaviour.name}");
-                GUI.Box(new Rect(menuPos.x - 5, menuPos.y, 310, 470), $"CameraPlus {parentBehaviour.name}");
-                GUI.Box(new Rect(menuPos.x - 5, menuPos.y, 310, 470), $"CameraPlus {parentBehaviour.name}");
+                for (int i = 0; i < 3; i++)
+                    GUI.Box(new Rect(MenuUI.MenuPos.x - 5, MenuUI.MenuPos.y, 310, 470), $"CameraPlus {_cameraPlus.name}");
 
-                CustomEnableStyle = new GUIStyle(GUI.skin.button);
-                CustomEnableStyle.normal.background = CustomEnableStyle.active.background;
-                CustomEnableStyle.hover.background = CustomEnableStyle.active.background;
-                CustomDisableStyle = new GUIStyle(GUI.skin.button);
-                ProfileStyle = new GUIStyle(GUI.skin.box);
-                ProfileStyle.alignment = UnityEngine.TextAnchor.MiddleLeft;
-
-                if (MenuMode == MenuState.MenuTop)
+                switch (_menuMode)
                 {
-                    if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 25, 30, 30), texture))
-                    {
-                        parentBehaviour.Config.cameraLock.lockScreen = !parentBehaviour.Config.cameraLock.lockScreen;
-                        parentBehaviour.Config.Save();
-                        if (this.parentBehaviour.Config.cameraLock.lockScreen)
-                            texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Lock.png");
-                        else
-                            texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.UnLock.png");
-                    }
-                    GUI.Box(new Rect(menuPos.x + 35, menuPos.y + 25, 115, 30), new GUIContent(parentBehaviour.Config.cameraLock.lockScreen ? "Locked Screen" : "Unlocked Screen"), ProfileStyle);
+                    /////////////////////////////////////////////////////////////////////////////////////
+                    case MenuState.MenuTop:
+                        MenuUI.SetGrid(6, 32);
 
-                    if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 25, 30, 30), Cameratexture))
-                    {
-                        if (!parentBehaviour.Config.cameraLock.lockCamera && !parentBehaviour.Config.cameraLock.dontSaveDrag)
+                        if (MenuUI.ToggleSwitch(0, 0, "Lock\nWindow", !_cameraPlus.Config.cameraLock.lockScreen, 2, 3, 1.5f))
                         {
-                            parentBehaviour.Config.cameraLock.lockCamera = true;
-                            parentBehaviour.Config.cameraLock.dontSaveDrag = false;
-                            Cameratexture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.CameraLock.png");
+                            _cameraPlus.Config.cameraLock.lockScreen = !_cameraPlus.Config.cameraLock.lockScreen;
+                            _cameraPlus.Config.Save();
                         }
-                        else if (parentBehaviour.Config.cameraLock.lockCamera && !parentBehaviour.Config.cameraLock.dontSaveDrag)
+                        if (MenuUI.ToggleSwitch(2, 0, "Grab\nCamera", !_cameraPlus.Config.cameraLock.lockCamera, 2, 3, 1.5f))
                         {
-                            parentBehaviour.Config.cameraLock.lockCamera = false;
-                            parentBehaviour.Config.cameraLock.dontSaveDrag = true;
-                            Cameratexture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.CameraLock.png");
+                            _cameraPlus.Config.cameraLock.lockCamera = !_cameraPlus.Config.cameraLock.lockCamera;
+                            _cameraPlus.Config.Save();
                         }
-                        else
+                        if (MenuUI.ToggleSwitch(4, 0, "Save\nGrabPos", !_cameraPlus.Config.cameraLock.dontSaveDrag, 2, 3, 1.5f))
                         {
-                            parentBehaviour.Config.cameraLock.lockCamera = false;
-                            parentBehaviour.Config.cameraLock.dontSaveDrag = false;
-                            Cameratexture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.CameraUnlock.png");
+                            _cameraPlus.Config.cameraLock.dontSaveDrag = !_cameraPlus.Config.cameraLock.dontSaveDrag;
+                            _cameraPlus.Config.Save();
                         }
-                        parentBehaviour.Config.Save();
-                    }
-                    GUI.Box(new Rect(menuPos.x + 185, menuPos.y + 25, 115, 30), new GUIContent(parentBehaviour.Config.cameraLock.dontSaveDrag ? "ResetDrag Camera" : (parentBehaviour.Config.cameraLock.lockCamera ? "Locked Camera" : "Unlocked Camera")), ProfileStyle);
 
-                    if (GUI.Button(new Rect(menuPos.x + 5, menuPos.y + 60, 145, 60), new GUIContent("Add New Camera")))
-                    {
-                        lock (Plugin.cameraController.Cameras)
+                        if (MenuUI.Button(0, 4, "Add New Camera", 3, 4))
                         {
-                            string cameraName = CameraUtilities.GetNextCameraName();
-                            Plugin.Log.Notice($"Adding new config with name {cameraName}.json");
-                            CameraUtilities.AddNewCamera(cameraName);
-                            CameraUtilities.LoadProfile(Plugin.cameraController.CurrentProfile);
-                            parentBehaviour.CloseContextMenu();
-                        }
-                    }
-                    if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 60, 145, 60), new GUIContent("Duplicate\nSelected Camera")))
-                    {
-                        lock (Plugin.cameraController.Cameras)
-                        {
-                            string cameraName = CameraUtilities.GetNextCameraName();
-                            Plugin.Log.Notice($"Adding {cameraName}");
-                            CameraUtilities.AddNewCamera(cameraName, parentBehaviour.Config);
-                            CameraUtilities.LoadProfile(Plugin.cameraController.CurrentProfile);
-                            parentBehaviour.CloseContextMenu();
-                        }
-                    }
-                    if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 130, 145, 50), new GUIContent("Remove\nSelected Camera")))
-                    {
-                        lock (Plugin.cameraController.Cameras)
-                        {
-                            if (CameraUtilities.RemoveCamera(parentBehaviour))
+                            lock (Plugin.cameraController.Cameras)
                             {
-                                parentBehaviour._isCameraDestroyed = true;
-                                parentBehaviour.CreateScreenRenderTexture();
-                                parentBehaviour.CloseContextMenu();
+                                string cameraName = CameraUtilities.GetNextCameraName();
+                                Plugin.Log.Notice($"Adding new config with name {cameraName}.json");
+                                CameraUtilities.AddNewCamera(cameraName);
+                                CameraUtilities.LoadProfile(Plugin.cameraController.CurrentProfile);
+                                _cameraPlus.CloseContextMenu();
+                            }
+                        }
+                        if (MenuUI.Button(3, 4, "Duplicate\nSelected Camera", 3, 4))
+                        {
+                            lock (Plugin.cameraController.Cameras)
+                            {
+                                string cameraName = CameraUtilities.GetNextCameraName();
+                                Plugin.Log.Notice($"Adding {cameraName}");
+                                CameraUtilities.AddNewCamera(cameraName, _cameraPlus.Config);
+                                CameraUtilities.LoadProfile(Plugin.cameraController.CurrentProfile);
+                                _cameraPlus.CloseContextMenu();
+                            }
+                        }
+                        if (MenuUI.Button(3, 8, "Remove\nSelected Camera", 3, 4))
+                        {
+                            lock (Plugin.cameraController.Cameras)
+                            {
+                                _cameraPlus._isCameraDestroyed = true;
+                                _cameraPlus.CreateScreenRenderTexture();
+                                _cameraPlus.CloseContextMenu();
                                 Plugin.Log.Notice("Camera removed!");
                             }
                         }
-                    }
+
+                        if (MenuUI.Button(0, 13, "Camera Setting", 3, 3))
+                            _menuMode = MenuState.CameraSetting;
+
+                        if (MenuUI.Button(3, 13, "Preview Camera", 3, 3))
+                            _menuMode = MenuState.PreviewQuad;
+                        if (MenuUI.Button(0, 16, "Display Object", 3, 3))
+                            _menuMode = MenuState.DisplayObject;
+                        if (MenuUI.Button(3, 16, "Layout", 3, 3))
+                            _menuMode = MenuState.Layout;
+                        if (MenuUI.Button(0, 19, "Multiplayer", 3, 3))
+                            _menuMode = MenuState.Multiplayer;
+                        if (MenuUI.Button(3, 19, "Effect", 3, 3))
+                            _menuMode = MenuState.Effect;
+                        if (MenuUI.Button(0, 22, "Profile", 3, 3))
+                            _menuMode = MenuState.Profile;
+                        if (MenuUI.Button(3, 22, "MovementScript", 3, 3))
+                            _menuMode = MenuState.MovementScript;
+                        if (MenuUI.Button(0, 25, "Setting Converter", 3, 3))
+                            _menuMode = MenuState.SettingConverter;
+                        if (MenuUI.Button(3, 25, "External linkage", 3, 3))
+                            _menuMode = MenuState.ExternalLink;
+                        
+                        if (MenuUI.Button(0, 30, "Camera Setting", 6, 2))
+                            _cameraPlus.CloseContextMenu();
+                        break;
+                    /////////////////////////////////////////////////////////////////////////////////////
+                    case MenuState.CameraSetting:
+                        break;
+                        /////////////////////////////////////////////////////////////////////////////////////
+                }
+
+                /*
+                if (MenuMode == MenuState.MenuTop)
+                {
+
 
                     //First Person, Third Person, 360degree
                     GUI.Box(new Rect(menuPos.x, menuPos.y + 190, 300, 55), "Camera Mode");
@@ -257,12 +243,14 @@ namespace CameraPlus.UI
                     _menuExternalLink.DiplayMenu(parentBehaviour, this, menuPos);
                 else if (MenuMode == MenuState.ChromaKey)
                     _menuChromakey.DiplayMenu(parentBehaviour, this, menuPos);
+                */
                 GUI.matrix = originalMatrix;
             }
         }
 
-        private void UI_SelectionList(float top, float left,ref string[] contentList, ref int currentPageNo)
+        private void UI_SelectionList(float top, float left, ref string[] contentList, ref int currentPageNo)
         {
+            /*
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 140, 80, 30), new GUIContent("<")))
             {
                 if (currentPageNo > 0) currentPageNo--;
@@ -284,6 +272,7 @@ namespace CameraPlus.UI
                     }
                 }
             }
+            */
         }
     }
 }

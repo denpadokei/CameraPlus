@@ -14,7 +14,28 @@ namespace CameraPlus.UI
         public static GUIStyle[] CustomToggleButtonStyle;
         public static bool UIInitialize = false;
 
+        private static Rect _uiRect;
         private static Rect _swRect;
+
+        private static float _menuWidth = 300;
+        private static float _menuHeight = 440;
+
+        public static int MenuGridCol = 8;
+        public static int MenuGridRow = 16;
+
+        private static float _gridCellWidth { get { return _menuWidth / (MenuGridCol >= 1 ? MenuGridCol : 1); } }
+        private static float _gridCellHeight { get { return _menuHeight / (MenuGridRow >= 1 ? MenuGridRow : 1); } }
+        public static Vector2 MenuPos
+        {
+            get
+            {
+                return new Vector2(
+                   Mathf.Min(MousePosition.x / (Screen.width / 1600f), (Screen.width * (0.806249998f / (Screen.width / 1600f)))),
+                   Mathf.Min((Screen.height - MousePosition.y) / (Screen.height / 900f), (Screen.height * (0.475555556f / (Screen.height / 900f))))
+                    );
+            }
+        }
+        public static Vector2 MousePosition;
         public static void Initialize()
         {
             IconTexture = new Texture2D[6]
@@ -40,29 +61,65 @@ namespace CameraPlus.UI
                 new GUIStyle(GUI.skin.label)
             };
             _swRect = new Rect(0, 0, IconTexture[4].width, IconTexture[4].height);
+            _uiRect = new Rect();
             UIInitialize = true;
         }
 
-        public static bool CustomButton(Rect screenRect, string content, bool value = false)
+        public static bool ToggleSwitch(int col, int row, string content, bool value = false, int colSpan = 0, int rowSpan = 0, float swScale = 0)
         {
-            return GUI.Button(screenRect, content, value ? CustomStyle[0] : CustomStyle[1]);
-        }
-        public static bool CustomButton(Rect screenRect, Texture2D content)
-        {
-            return GUI.Button(screenRect, content);
-        }
-
-        public static bool CustomToggleButton(Rect screenRect, string content, bool value = false)
-        {
+            var screenRect = GridRect(col, row, colSpan, rowSpan);
             bool result;
-            float scale = screenRect.height / IconTexture[4].height;
+            float scale = (swScale == 0 ? screenRect.height : _gridCellHeight * swScale) / IconTexture[4].height;
             _swRect.width = IconTexture[4].width * scale;
             _swRect.height = IconTexture[4].height * scale;
             _swRect.x = screenRect.x + screenRect.width - _swRect.width + 10;
-            _swRect.y = screenRect.y;
+            _swRect.y = screenRect.y + (swScale == 0 ?  0 : (screenRect.height - _swRect.height) / 2);
             result = GUI.Button(screenRect, content, CustomToggleButtonStyle[0]);
             GUI.Box(_swRect, value ? IconTexture[4] : IconTexture[5], CustomToggleButtonStyle[1]);
             return result;
+        }
+
+        public static void SetGrid(int col, int row)
+        {
+            MenuGridCol = col;
+            MenuGridRow = row;
+        }
+
+        public static Rect GridRect(int col, int row, int colSpan = 1, int rowSpan = 1)
+        {
+            _uiRect.width = _gridCellWidth * (colSpan >= 1 ? colSpan : 1);
+            _uiRect.height = _gridCellHeight * (rowSpan >= 1 ? rowSpan : 1);
+            _uiRect.x = MenuPos.x + _gridCellWidth * col;
+            _uiRect.y = MenuPos.y + _gridCellHeight * row + 25;
+
+            return _uiRect;
+        }
+
+        public static int SelectionGrid(int col, int row, int selected, string[] texts, int colSpan = 0, int rowSpan = 0)
+        {
+            return GUI.SelectionGrid(GridRect(col, row, colSpan, rowSpan), selected, texts, 1);
+        }
+
+        public static bool Button(int col, int row, GUIContent content, int colSpan = 0, int rowSpan = 0)
+        {
+            return GUI.Button(GridRect(col, row, colSpan, rowSpan), content);
+        }
+        public static bool Button(int col, int row, Texture2D content, int colSpan = 0, int rowSpan = 0)
+        {
+            return GUI.Button(GridRect(col, row, colSpan, rowSpan), content);
+        }
+        public static bool Button(int col, int row, string content, int colSpan = 0, int rowSpan = 0)
+        {
+            return GUI.Button(GridRect(col, row, colSpan, rowSpan), content);
+        }
+
+        public static void Box(int col, int row, string content, int colSpan = 0, int rowSpan = 0)
+        {
+            GUI.Box(GridRect(col, row, colSpan, rowSpan), content);
+        }
+        public static void Box(int col, int row, string content, GUIStyle style, int colSpan = 0, int rowSpan = 0)
+        {
+            GUI.Box(GridRect(col, row, colSpan, rowSpan), content, style);
         }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using CameraPlus.Configuration;
-using UniGLTF;
 
 namespace CameraPlus.Behaviours
 {

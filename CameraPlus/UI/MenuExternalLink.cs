@@ -10,7 +10,7 @@ namespace CameraPlus.UI
         private string ipNum = @"(25[0-5]|2[0-4]\d|[0-1]\d{2}|[1-9]?\d)";
         internal void DiplayMenu(CameraPlusBehaviour parentBehaviour, ContextMenu contextMenu, Vector2 menuPos)
         {
-            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 45, 100, 40), new GUIContent("Sender"), parentBehaviour.Config.vmcProtocol.mode == Configuration.VMCProtocolMode.Sender ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 45, 100, 40), new GUIContent("Sender"), parentBehaviour.Config.vmcProtocol.mode == Configuration.VMCProtocolMode.Sender ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.vmcProtocol.mode = Configuration.VMCProtocolMode.Sender;
                 parentBehaviour.Config.Save();
@@ -19,7 +19,7 @@ namespace CameraPlus.UI
             }
             if (Plugin.cameraController.existsVMCAvatar)
             {
-                if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 45, 100, 40), new GUIContent("Receiver"), parentBehaviour.Config.vmcProtocol.mode == Configuration.VMCProtocolMode.Receiver ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 45, 100, 40), new GUIContent("Receiver"), parentBehaviour.Config.vmcProtocol.mode == Configuration.VMCProtocolMode.Receiver ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
                 {
                     parentBehaviour.Config.vmcProtocol.mode = Configuration.VMCProtocolMode.Receiver;
                     parentBehaviour.Config.Save();
@@ -30,7 +30,7 @@ namespace CameraPlus.UI
             else
                 GUI.Box(new Rect(menuPos.x + 100, menuPos.y + 45, 100, 40), new GUIContent("Require\nVMCAvatar Mod"));
 
-            if (GUI.Button(new Rect(menuPos.x + 200, menuPos.y + 45, 100, 40), new GUIContent("Disable"), parentBehaviour.Config.vmcProtocol.mode == Configuration.VMCProtocolMode.Disable ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 200, menuPos.y + 45, 100, 40), new GUIContent("Disable"), parentBehaviour.Config.vmcProtocol.mode == Configuration.VMCProtocolMode.Disable ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.vmcProtocol.mode = Configuration.VMCProtocolMode.Disable;
                 parentBehaviour.Config.Save();
@@ -70,7 +70,7 @@ namespace CameraPlus.UI
                         if (!parentBehaviour.webCamScreen && !Plugin.cameraController.inProgressCalibration())
                         {
                             if (GUI.Button(new Rect(menuPos.x, menuPos.y + (i - contextMenu.webCameraPage * 5) * 25 + 195, 300, 25), new GUIContent(Plugin.cameraController.webCamDevices[i].name),
-                                    Plugin.cameraController.webCamDevices[i].name == parentBehaviour.Config.webCamera.name ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                                    Plugin.cameraController.webCamDevices[i].name == parentBehaviour.Config.webCamera.name ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
                                 parentBehaviour.Config.webCamera.name = Plugin.cameraController.webCamDevices[i].name;
                         }else
                         {
@@ -108,15 +108,15 @@ namespace CameraPlus.UI
                 }
                 if (parentBehaviour.webCamScreen)
                     if (GUI.Button(new Rect(menuPos.x , menuPos.y + 355, 300, 30), "Chroma Key"))
-                        contextMenu.MenuMode = ContextMenu.MenuState.ChromaKey;
+                        contextMenu._menuMode = ContextMenu.MenuState.ChromaKey;
                 /*
                 GUI.Box(new Rect(menuPos.x, menuPos.y + 385, 300, 45), new GUIContent("Auto Connect"));
-                if (GUI.Button(new Rect(menuPos.x, menuPos.y + 405, 150, 25), new GUIContent("Enable"), parentBehaviour.Config.webCamera.autoConnect ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                if (GUI.Button(new Rect(menuPos.x, menuPos.y + 405, 150, 25), new GUIContent("Enable"), parentBehaviour.Config.webCamera.autoConnect ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
                 {
                     parentBehaviour.Config.webCamera.autoConnect = true;
                     parentBehaviour.Config.Save();
                 }
-                if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 405, 150, 25), new GUIContent("Disable"), !parentBehaviour.Config.webCamera.autoConnect ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+                if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 405, 150, 25), new GUIContent("Disable"), !parentBehaviour.Config.webCamera.autoConnect ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
                 {
                     parentBehaviour.Config.webCamera.autoConnect = false;
                     parentBehaviour.Config.Save();
@@ -125,7 +125,7 @@ namespace CameraPlus.UI
             }
 
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close External linkage Menu")))
-                contextMenu.MenuMode = ContextMenu.MenuState.MenuTop;
+                contextMenu._menuMode = ContextMenu.MenuState.MenuTop;
 
         }
     }

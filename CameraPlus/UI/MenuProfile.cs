@@ -25,22 +25,22 @@ namespace CameraPlus.UI
             }
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 125, 300, 30), new GUIContent("Load Selected")))
                 CameraUtilities.ProfileChange(CameraUtilities.CurrentlySelected);
-            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 160, 145, 30), new GUIContent("SceneProfile On"), PluginConfig.Instance.ProfileSceneChange ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 160, 145, 30), new GUIContent("SceneProfile On"), PluginConfig.Instance.ProfileSceneChange ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 PluginConfig.Instance.ProfileSceneChange = true;
             }
-            if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 160, 145, 30), new GUIContent("SceneProfile Off"), !PluginConfig.Instance.ProfileSceneChange ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 160, 145, 30), new GUIContent("SceneProfile Off"), !PluginConfig.Instance.ProfileSceneChange ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 PluginConfig.Instance.ProfileSceneChange = false;
             }
 
             if (PluginConfig.Instance.ProfileSceneChange)
             {
-                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 195, 270, 30), "Menu Scene  : " + (PluginConfig.Instance.MenuProfile), contextMenu.ProfileStyle);
-                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 225, 270, 30), "Game Scene  : " + (PluginConfig.Instance.GameProfile), contextMenu.ProfileStyle);
-                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 255, 270, 30), "Game 90/360 : " + (PluginConfig.Instance.RotateProfile), contextMenu.ProfileStyle);
-                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 285, 270, 30), "Multiplayer : " + (PluginConfig.Instance.MultiplayerProfile), contextMenu.ProfileStyle);
-                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 315, 270, 30), "with SongScript : " + (PluginConfig.Instance.SongSpecificScriptProfile), contextMenu.ProfileStyle);
+                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 195, 270, 30), "Menu Scene  : " + (PluginConfig.Instance.MenuProfile), MenuUI.CustomStyle[2]);
+                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 225, 270, 30), "Game Scene  : " + (PluginConfig.Instance.GameProfile), MenuUI.CustomStyle[2]);
+                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 255, 270, 30), "Game 90/360 : " + (PluginConfig.Instance.RotateProfile), MenuUI.CustomStyle[2]);
+                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 285, 270, 30), "Multiplayer : " + (PluginConfig.Instance.MultiplayerProfile), MenuUI.CustomStyle[2]);
+                GUI.Box(new Rect(menuPos.x + 30, menuPos.y + 315, 270, 30), "with SongScript : " + (PluginConfig.Instance.SongSpecificScriptProfile), MenuUI.CustomStyle[2]);
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 195, 30, 30), "X"))
                 {
                     if (PluginConfig.Instance.MenuProfile != string.Empty)
@@ -88,7 +88,7 @@ namespace CameraPlus.UI
                 }
             }
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close Profile Menu")))
-                contextMenu.MenuMode = ContextMenu.MenuState.MenuTop;
+                contextMenu._menuMode = ContextMenu.MenuState.MenuTop;
 
         }
 

@@ -36,7 +36,7 @@ namespace CameraPlus.UI
 
 
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close Chroma Key Menu")))
-                contextMenu.MenuMode = ContextMenu.MenuState.ExternalLink;
+                contextMenu._menuMode = ContextMenu.MenuState.ExternalLink;
         }
     }
 }

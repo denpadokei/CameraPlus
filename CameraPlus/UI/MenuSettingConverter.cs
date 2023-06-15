@@ -34,7 +34,7 @@ namespace CameraPlus.UI
             //if (GUI.Button(new Rect(menuPos.x + 10, menuPos.y + 360, 280, 40), new GUIContent("Import Setting\nLIV externalcamera.cfg")))
 
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close Setting Convert Menu")))
-                contextMenu.MenuMode = ContextMenu.MenuState.MenuTop;
+                contextMenu._menuMode = ContextMenu.MenuState.MenuTop;
 
         }
 

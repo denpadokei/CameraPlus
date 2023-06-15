@@ -12,31 +12,31 @@ namespace CameraPlus.UI
         internal void DiplayMenu(CameraPlusBehaviour parentBehaviour, ContextMenu contextMenu, Vector2 menuPos)
         {
             GUI.Box(new Rect(menuPos.x, menuPos.y + 25, 300, 140), "Depth Of Field");
-            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 65, 55, 20), new GUIContent("Enable"), parentBehaviour.Config.DoFEnable ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 65, 55, 20), new GUIContent("Enable"), parentBehaviour.Config.DoFEnable ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.DoFEnable = true;
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 55, menuPos.y + 65, 55, 20), new GUIContent("Disbale"), !parentBehaviour.Config.DoFEnable ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 55, menuPos.y + 65, 55, 20), new GUIContent("Disbale"), !parentBehaviour.Config.DoFEnable ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.DoFEnable = false;
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 105, 55, 20), new GUIContent("Button"), !_dofSlider ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 105, 55, 20), new GUIContent("Button"), !_dofSlider ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 _dofSlider = false;
             }
-            if (GUI.Button(new Rect(menuPos.x + 55, menuPos.y + 105, 55, 20), new GUIContent("Slider"), _dofSlider ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 55, menuPos.y + 105, 55, 20), new GUIContent("Slider"), _dofSlider ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 _dofSlider = true;
             }
             GUI.Box(new Rect(menuPos.x, menuPos.y + 125, 110, 40), "AutoDistance");
-            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 145, 55, 20), new GUIContent("Enable"), parentBehaviour.Config.DoFAutoDistance ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 145, 55, 20), new GUIContent("Enable"), parentBehaviour.Config.DoFAutoDistance ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.DoFAutoDistance = true;
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 55, menuPos.y + 145, 55, 20), new GUIContent("Disable"), !parentBehaviour.Config.DoFAutoDistance ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 55, menuPos.y + 145, 55, 20), new GUIContent("Disable"), !parentBehaviour.Config.DoFAutoDistance ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.DoFAutoDistance = false;
                 parentBehaviour.Config.Save();
@@ -172,12 +172,12 @@ namespace CameraPlus.UI
 
             //OutlineEffect
             GUI.Box(new Rect(menuPos.x, menuPos.y + 165, 300, 100), "Outline Effect");
-            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 185, 55, 20), new GUIContent("Enable"), parentBehaviour.Config.OutlineEnable ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 185, 55, 20), new GUIContent("Enable"), parentBehaviour.Config.OutlineEnable ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.OutlineEnable = true;
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 55, menuPos.y + 185, 55, 20), new GUIContent("Disbale"), !parentBehaviour.Config.OutlineEnable ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 55, menuPos.y + 185, 55, 20), new GUIContent("Disbale"), !parentBehaviour.Config.OutlineEnable ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.OutlineEnable = false;
                 parentBehaviour.Config.Save();
@@ -208,27 +208,27 @@ namespace CameraPlus.UI
 
             //Wipe
             GUI.Box(new Rect(menuPos.x, menuPos.y + 265, 300, 120), "Wipe Effect (Check the notes in the manual)");
-            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 285, 90, 40), new GUIContent("Circle"), parentBehaviour.Config.WipeType == "Circle" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 285, 90, 40), new GUIContent("Circle"), parentBehaviour.Config.WipeType == "Circle" ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.WipeType = "Circle";
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 150 , menuPos.y + 285, 100, 20), new GUIContent("Top to Bottom"), parentBehaviour.Config.WipeType == "Top" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 150 , menuPos.y + 285, 100, 20), new GUIContent("Top to Bottom"), parentBehaviour.Config.WipeType == "Top" ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.WipeType = "Top";
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 305, 100, 20), new GUIContent("Left to Right"), parentBehaviour.Config.WipeType == "Left" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 100, menuPos.y + 305, 100, 20), new GUIContent("Left to Right"), parentBehaviour.Config.WipeType == "Left" ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.WipeType = "Left";
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 200, menuPos.y + 305, 100, 20), new GUIContent("Right to Left"), parentBehaviour.Config.WipeType == "Right" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 200, menuPos.y + 305, 100, 20), new GUIContent("Right to Left"), parentBehaviour.Config.WipeType == "Right" ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.WipeType = "Right";
                 parentBehaviour.Config.Save();
             }
-            if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 325, 100, 20), new GUIContent("Bottom to Top"), parentBehaviour.Config.WipeType == "Bottom" ? contextMenu.CustomEnableStyle : contextMenu.CustomDisableStyle))
+            if (GUI.Button(new Rect(menuPos.x + 150, menuPos.y + 325, 100, 20), new GUIContent("Bottom to Top"), parentBehaviour.Config.WipeType == "Bottom" ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
             {
                 parentBehaviour.Config.WipeType = "Bottom";
                 parentBehaviour.Config.Save();
@@ -274,7 +274,7 @@ namespace CameraPlus.UI
             //Close
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close Layout Menu")))
             {
-                contextMenu.MenuMode = ContextMenu.MenuState.MenuTop;
+                contextMenu._menuMode = ContextMenu.MenuState.MenuTop;
                 parentBehaviour.Config.Save();
             }
 
