@@ -3,7 +3,6 @@ using System;
 using CameraPlus.Camera2Utils;
 using CameraPlus.Behaviours;
 using CameraPlus.Utilities;
-using IPA.Loader.Features;
 
 namespace CameraPlus.UI
 {
@@ -47,11 +46,12 @@ namespace CameraPlus.UI
                 CustomUtils.LoadTextureFromResources("CameraPlus.Resources.sw_off.png"),
                 CustomUtils.LoadTextureFromResources("CameraPlus.Resources.sw_on.png")
             };
-            CustomStyle = new GUIStyle[3]
+            CustomStyle = new GUIStyle[4]
             {
                 new GUIStyle(GUI.skin.button),
                 new GUIStyle(GUI.skin.button),
-                new GUIStyle(GUI.skin.box) {alignment = TextAnchor.MiddleLeft}
+                new GUIStyle(GUI.skin.box) {alignment = TextAnchor.MiddleLeft},
+                new GUIStyle(GUI.skin.button) {normal = new GUIStyleState() {textColor = Color.black } },
             };
             CustomStyle[0].normal.background = CustomStyle[0].active.background;
             CustomStyle[0].hover.background = CustomStyle[0].active.background;
@@ -95,9 +95,32 @@ namespace CameraPlus.UI
             return _uiRect;
         }
 
-        public static int SelectionGrid(int col, int row, int selected, string[] texts, int colSpan = 0, int rowSpan = 0)
+        public static int SelectionGrid(int col, int row, int selected, ref int currentPage, string[] texts, int colSpan = 0, int rowSpan = 0)
         {
-            return GUI.SelectionGrid(GridRect(col, row, colSpan, rowSpan), selected, texts, 1);
+            int selection = selected;
+            _uiRect = GridRect(col, row, colSpan, rowSpan);
+
+            if (GUI.Button(new Rect(_uiRect.x, _uiRect.y, _uiRect.width / 3, _uiRect.height / 6), "<"))
+                if (currentPage > 0) currentPage--;
+            
+            GUI.Box(new Rect(_uiRect.x + _uiRect.width / 3, _uiRect.y, _uiRect.width / 3, _uiRect.height / 6), $"{currentPage + 1} / {Math.Ceiling(Decimal.Parse(texts.Length.ToString()) / 5)}");
+            
+            if (GUI.Button(new Rect(_uiRect.x + _uiRect.width / 3 * 2, _uiRect.y, _uiRect.width / 3, _uiRect.height / 6), ">"))
+                if (currentPage < Math.Ceiling(Decimal.Parse(texts.Length.ToString()) / 5) - 1) currentPage++;
+            
+            for (int i = currentPage * 5; i < currentPage * 5 + 5; i++)
+            {
+                if (i < texts.Length)
+                {
+                    if (GUI.Button(new Rect(_uiRect.x, _uiRect.y + _uiRect.height / 6 * (i - currentPage * 5 + 1), _uiRect.width, _uiRect.height / 6), new GUIContent(texts[i]), selection == i ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
+                        selection = i;
+                }
+            }
+            return selection;
+        }
+        public static int Toolbar(int col, int row, int selected, string[] texts, int colSpan = 0, int rowSpan = 0)
+        {
+            return GUI.Toolbar(GridRect(col, row, colSpan, rowSpan), selected, texts);
         }
 
         public static bool Button(int col, int row, GUIContent content, int colSpan = 0, int rowSpan = 0)

@@ -35,10 +35,12 @@ namespace CameraPlus.Utilities
             return Plugin.cameraController.Cameras.Keys.Where(c => c == $"{dictKey}_{cameraName}.json").Count() > 0;
         }
 
-        internal static void AddNewCamera(string cameraName, CameraConfig CopyConfig = null)
+        internal static void AddNewCamera(string cameraName, CameraConfig CopyConfig = null, string cameraPath = "")
         {
             string path = Path.Combine(UnityGame.UserDataPath, Plugin.Name, $"{cameraName}.json");
-            if (Plugin.cameraController.CurrentProfile !=  string.Empty)
+            if (cameraPath != string.Empty)
+                path = Path.Combine(cameraPath, $"{cameraName}.json");
+            else if (Plugin.cameraController.CurrentProfile !=  string.Empty)
                 path = Path.Combine(ProfilePath, Plugin.cameraController.CurrentProfile, $"{cameraName}.json");
 
             Plugin.Log.Notice($"Add New Camera : {path}");
@@ -217,7 +219,7 @@ namespace CameraPlus.Utilities
                 obj.SetActive(false);
         }
 
-        internal static string[] MovementScriptList()
+        public static string[] MovementScriptList()
         {
             string[] spath = Directory.GetFiles(Path.Combine(UnityGame.UserDataPath, Plugin.Name, "Scripts"), "*.json");
             string[] scriptList = new string[spath.Length];
@@ -225,14 +227,21 @@ namespace CameraPlus.Utilities
                 scriptList[i] = Path.GetFileName(spath[i]);
             return scriptList;
         }
+
         internal static string CurrentMovementScript(string scriptPath)
         {
             return Path.GetFileName(scriptPath);
         }
 
-        internal static string[] ProfileList()
+        public static string[] ProfileList()
         {
-            return Directory.GetDirectories(ProfilePath);
+            List<string> profileList = new List<string>();
+            profileList.Add("Default");
+            DirectoryInfo di = new DirectoryInfo(ProfilePath);
+            DirectoryInfo[] profileDirs = di.GetDirectories();
+            foreach(DirectoryInfo dir in profileDirs)
+                profileList.Add(dir.Name);
+            return profileList.ToArray();
         }
 
         internal static void ProfileChange(String ProfileName)
@@ -268,7 +277,17 @@ namespace CameraPlus.Utilities
                 CurrentlySelected = a.First().Name;
         }
 
-        internal static void SaveNewProfile()
+        public static void SaveNewProfile()
+        {
+            string path = Path.Combine(ProfilePath, GetNextProfileName());
+            if (!Directory.Exists(path))
+            {
+                var di = Directory.CreateDirectory(path);
+                CameraUtilities.AddNewCamera(Plugin.MainCamera, null, path);
+            }
+        }
+
+        internal static void SaveAsCurrentProfile()
         {
             string cPath = ConfigPath;
             if (Plugin.cameraController.CurrentProfile != null)
@@ -358,6 +377,7 @@ namespace CameraPlus.Utilities
                 folName = $"{bname}{index.ToString()}";
                 index++;
             }
+            Plugin.Log.Notice($"Next ProfileName : {folName}");
             return folName;
         }
 

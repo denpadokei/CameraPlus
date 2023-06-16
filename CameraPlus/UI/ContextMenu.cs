@@ -29,8 +29,13 @@ namespace CameraPlus.UI
         internal CameraPlusBehaviour _cameraPlus;
         internal string[] scriptName;
         internal int scriptPage = 0;
+        internal int currentPage = 0;
         internal string[] webCameraName;
         internal int webCameraPage = 0;
+
+        private int _selectedProfile = 0;
+        private string[] _profileNameList;
+        private int _currentProfilePage = 0;
 
         private MenuDisplayObject _menuDisplayObject = new MenuDisplayObject();
         private MenuLayout _menuLayout = new MenuLayout();
@@ -49,6 +54,8 @@ namespace CameraPlus.UI
             showMenu = true;
             this._cameraPlus = parentBehaviour;
             scriptName = CameraUtilities.MovementScriptList();
+            _profileNameList = CameraUtilities.ProfileList();
+            _currentProfilePage = 0;
             webCameraName = Plugin.cameraController.WebCameraList();
         }
         public void DisableMenu()
@@ -75,7 +82,7 @@ namespace CameraPlus.UI
                 GUI.matrix = Matrix4x4.TRS(new Vector3(0, 0, 0), Quaternion.identity, scale);
                 //Layer boxes for Opacity
                 for (int i = 0; i < 3; i++)
-                    GUI.Box(new Rect(MenuUI.MenuPos.x - 5, MenuUI.MenuPos.y, 310, 470), $"CameraPlus {_cameraPlus.name}");
+                    GUI.Box(new Rect(MenuUI.MenuPos.x - 5, MenuUI.MenuPos.y, 310, 470), _cameraPlus.name);
 
                 switch (_menuMode)
                 {
@@ -134,7 +141,16 @@ namespace CameraPlus.UI
 
                         if (MenuUI.Button(0, 13, "Camera Setting", 3, 3))
                             _menuMode = MenuState.CameraSetting;
+                        if (MenuUI.Button(3, 13, "Profile", 3, 3))
+                            _menuMode = MenuState.Profile;
 
+                        string[] test = new string[18];
+                        for (int i = 0; i < test.Length; i++)
+                        {
+                            test[i] = i.ToString();
+                        }
+                        scriptPage = MenuUI.SelectionGrid(0, 19, scriptPage, ref currentPage, test, 6, 10);
+                        /*
                         if (MenuUI.Button(3, 13, "Preview Camera", 3, 3))
                             _menuMode = MenuState.PreviewQuad;
                         if (MenuUI.Button(0, 16, "Display Object", 3, 3))
@@ -145,20 +161,42 @@ namespace CameraPlus.UI
                             _menuMode = MenuState.Multiplayer;
                         if (MenuUI.Button(3, 19, "Effect", 3, 3))
                             _menuMode = MenuState.Effect;
-                        if (MenuUI.Button(0, 22, "Profile", 3, 3))
-                            _menuMode = MenuState.Profile;
                         if (MenuUI.Button(3, 22, "MovementScript", 3, 3))
                             _menuMode = MenuState.MovementScript;
                         if (MenuUI.Button(0, 25, "Setting Converter", 3, 3))
                             _menuMode = MenuState.SettingConverter;
                         if (MenuUI.Button(3, 25, "External linkage", 3, 3))
                             _menuMode = MenuState.ExternalLink;
-                        
-                        if (MenuUI.Button(0, 30, "Camera Setting", 6, 2))
+                        */
+                        if (MenuUI.Button(0, 30, "Close Menu", 6, 2))
                             _cameraPlus.CloseContextMenu();
                         break;
                     /////////////////////////////////////////////////////////////////////////////////////
                     case MenuState.CameraSetting:
+                        break;
+                    case MenuState.Profile:
+                        MenuUI.SetGrid(6, 32);
+
+                        if(MenuUI.Button(0, 0, "Create\nnew profile", 2, 4))
+                        {
+                            CameraUtilities.SaveNewProfile();
+                            _profileNameList = CameraUtilities.ProfileList();
+                        }
+                        if(MenuUI.Button(2, 0, "Save as\ncurrent profile", 2, 4))
+                        {
+                            CameraUtilities.SaveAsCurrentProfile();
+                            _profileNameList = CameraUtilities.ProfileList();
+                        }
+                        if (MenuUI.Button(4, 0, "Delete\nselected profile", 2, 4))
+                        {
+                            CameraUtilities.DeleteProfile(_profileNameList[_selectedProfile]);
+                            _profileNameList = CameraUtilities.ProfileList();
+                        }
+
+                        _selectedProfile = MenuUI.SelectionGrid(0, 5, _selectedProfile, ref _currentProfilePage, _profileNameList, 6, 10);
+
+                        if (MenuUI.Button(0, 30, "Back top menu", 6, 2))
+                            _cameraPlus.CloseContextMenu();
                         break;
                         /////////////////////////////////////////////////////////////////////////////////////
                 }

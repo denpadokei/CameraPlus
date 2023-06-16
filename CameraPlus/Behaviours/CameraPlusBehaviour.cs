@@ -73,8 +73,6 @@ namespace CameraPlus.Behaviours
         public static bool wasWithinBorder = false;
         public static bool anyInstanceBusy = false;
         private static bool _contextMenuEnabled = true;
-        private GameObject adjustOffset;
-        private GameObject adjustParent;
         private GUIStyle _multiplayerGUIStyle = null;
         private Vector3 prevMousePos = Vector3.zero;
         private Vector3 mouseRightDownPos = Vector3.zero;
@@ -242,9 +240,6 @@ namespace CameraPlus.Behaviours
             if (marionette)
                 Destroy(marionette);
 #endif
-            if (adjustParent)
-                Destroy(adjustParent);
-
             Plugin.cameraController.externalSender.RemoveTask(this);
 
             if (webCamScreen)
