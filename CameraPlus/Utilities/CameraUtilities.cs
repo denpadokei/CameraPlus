@@ -10,12 +10,12 @@ using Random = UnityEngine.Random;
 using CameraPlus.Configuration;
 using CameraPlus.Behaviours;
 using CameraPlus.HarmonyPatches;
+using static CameraPlus.Behaviours.CameraMovement;
 
 namespace CameraPlus.Utilities
 {
     public static class CameraUtilities
     {
-        #region ** DefineStatic **
         public static string ProfilePath = Path.Combine(UnityGame.UserDataPath, Plugin.Name, "Profiles");
         public static string ConfigPath = Path.Combine(UnityGame.UserDataPath, Plugin.Name);
         public static string ScriptPath = Path.Combine(UnityGame.UserDataPath, Plugin.Name, "Scripts");
@@ -27,7 +27,6 @@ namespace CameraPlus.Utilities
         internal static float[] mouseRotateSpeed = { -0.05f, 0.05f, 1f };//x, y, z
 
         public static int BaseCullingMask = 0;
-        #endregion
 
         private static bool CameraExists(string cameraName)
         {
@@ -233,10 +232,19 @@ namespace CameraPlus.Utilities
             return Path.GetFileName(scriptPath);
         }
 
+        public static string[] CameraSettingList(string profileName)
+        {
+            string[] files = (profileName != string.Empty ? Directory.GetFiles(Path.Combine(ProfilePath, profileName)) : Directory.GetFiles(ConfigPath));
+            List<string> configList = new List<string>();
+            foreach (string filePath in files)
+                configList.Add(Path.GetFileName(filePath));
+            return configList.ToArray();
+        }
+
         public static string[] ProfileList()
         {
             List<string> profileList = new List<string>();
-            profileList.Add("Default");
+            profileList.Add(string.Empty);
             DirectoryInfo di = new DirectoryInfo(ProfilePath);
             DirectoryInfo[] profileDirs = di.GetDirectories();
             foreach(DirectoryInfo dir in profileDirs)
@@ -376,6 +384,8 @@ namespace CameraPlus.Utilities
             {
                 folName = $"{bname}{index.ToString()}";
                 index++;
+                if (!Directory.Exists(Path.Combine(ProfilePath,folName)))
+                    break;
             }
             Plugin.Log.Notice($"Next ProfileName : {folName}");
             return folName;

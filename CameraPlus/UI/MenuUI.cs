@@ -75,7 +75,7 @@ namespace CameraPlus.UI
             _swRect.x = screenRect.x + screenRect.width - _swRect.width + 10;
             _swRect.y = screenRect.y + (swScale == 0 ?  0 : (screenRect.height - _swRect.height) / 2);
             result = GUI.Button(screenRect, content, CustomToggleButtonStyle[0]);
-            GUI.Box(_swRect, value ? IconTexture[4] : IconTexture[5], CustomToggleButtonStyle[1]);
+            GUI.Box(_swRect, value ? IconTexture[5] : IconTexture[4], CustomToggleButtonStyle[1]);
             return result;
         }
 
@@ -112,7 +112,8 @@ namespace CameraPlus.UI
             {
                 if (i < texts.Length)
                 {
-                    if (GUI.Button(new Rect(_uiRect.x, _uiRect.y + _uiRect.height / 6 * (i - currentPage * 5 + 1), _uiRect.width, _uiRect.height / 6), new GUIContent(texts[i]), selection == i ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
+                    if (GUI.Button(new Rect(_uiRect.x, _uiRect.y + _uiRect.height / 6 * (i - currentPage * 5 + 1), _uiRect.width, _uiRect.height / 6), 
+                        $"{(texts[i] == Plugin.cameraController.CurrentProfile ? "* " : string.Empty)}{(texts[i] == string.Empty ? "Default" : texts[i])}", selection == i ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
                         selection = i;
                 }
             }
