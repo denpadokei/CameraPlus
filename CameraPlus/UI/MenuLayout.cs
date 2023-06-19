@@ -20,7 +20,6 @@ namespace CameraPlus.UI
                 parentBehaviour.ThirdPersonPos = parentBehaviour.Config.DefaultPosition;
                 parentBehaviour.ThirdPersonRot = parentBehaviour.Config.DefaultRotation;
                 parentBehaviour.Config.Save();
-                parentBehaviour.CloseContextMenu();
             }
 
             //orthographic Mode
@@ -406,7 +405,7 @@ namespace CameraPlus.UI
             //Close
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close Layout Menu")))
             {
-                contextMenu._menuMode = ContextMenu.MenuState.MenuTop;
+                //contextMenu._menuMode = ContextMenu.MenuState.MenuTop;
             }
 
         }

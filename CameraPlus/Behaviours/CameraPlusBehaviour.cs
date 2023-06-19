@@ -58,21 +58,18 @@ namespace CameraPlus.Behaviours
         protected bool _isMoving = false;
         protected bool _xAxisLocked = false;
         protected bool _yAxisLocked = false;
-        protected bool _contextMenuOpen = false;
         internal bool _isCameraDestroyed = false;
         protected bool _isMainCamera = false;
-        protected bool _isTopmostAtCursorPos = false;
+        internal bool _isTopmostAtCursorPos = false;
         protected DateTime _lastRenderUpdate;
         protected Vector2 _initialOffset = new Vector2(0, 0);
         protected Vector2 _lastGrabPos = new Vector2(0, 0);
         protected Vector2 _lastScreenPos;
         protected bool _isBottom = false, _isLeft = false;
         protected static GameObject MenuObj = null;
-        protected static UI.ContextMenu _contextMenu = null;
         public static CursorType currentCursor = CursorType.None;
         public static bool wasWithinBorder = false;
         public static bool anyInstanceBusy = false;
-        private static bool _contextMenuEnabled = true;
         private GUIStyle _multiplayerGUIStyle = null;
         private Vector3 prevMousePos = Vector3.zero;
         private Vector3 mouseRightDownPos = Vector3.zero;
@@ -95,11 +92,6 @@ namespace CameraPlus.Behaviours
             Config.cam = this;
             _isMainCamera = Path.GetFileName(Config.FilePath) == $"{Plugin.MainCamera}.json";
 
-            if (_contextMenu == null)
-            {
-                MenuObj = new GameObject("CameraPlusMenu");
-                _contextMenu = MenuObj.AddComponent<UI.ContextMenu>();
-            }
             XRSettings.showDeviceView = false;
 
             Config.ConfigChangedEvent += PluginOnConfigChangedEvent;
@@ -231,8 +223,6 @@ namespace CameraPlus.Behaviours
             Plugin.cameraController.ActiveSceneChanged -= SceneManager_activeSceneChanged;
 
             _cameraMovement?.Shutdown();
-            // Close our context menu if its open, and destroy all associated controls, otherwise the game will lock up
-            CloseContextMenu();
 
             _camRenderTexture?.Release();
 
@@ -338,7 +328,6 @@ namespace CameraPlus.Behaviours
         
         public virtual void SceneManager_activeSceneChanged(Scene from, Scene to)
         {
-            CloseContextMenu();
             OnFPFCToglleEvent();
             if (this.gameObject.activeInHierarchy)
             {
@@ -633,44 +622,20 @@ namespace CameraPlus.Behaviours
         public bool IsTopmostRenderAreaAtPos(Vector2 mousePos)
         {
             if (!IsWithinRenderArea(mousePos, Config)) return false;
-            foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.ToArray())
+            foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values)
             {
-                if (c == this)
+                if (c != this && c.gameObject.activeInHierarchy)
                 {
-                    if (!IsWithinRenderArea(mousePos, c.Config) && !c._mouseHeld)
+                    if (IsWithinRenderArea(mousePos, c.Config) && !c._mouseHeld)
                     {
                         if (c.Config.layer > Config.layer)
-                        {
                             return false;
-                        }
-
-                        if (c._mouseHeld && (c._isMoving ||
-                            c._isResizing || c._contextMenuOpen))
-                        {
+                        if (c._mouseHeld && (c._isMoving || c._isResizing))
                             return false;
-                        }
                     }
                 }
             }
             return true;
-        }
-
-        public static CameraPlusBehaviour GetTopmostInstanceAtCursorPos()
-        {
-            foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.ToArray())
-            {
-                if (c._isTopmostAtCursorPos)
-                    return c;
-            }
-            return null;
-        }
-
-        internal void CloseContextMenu()
-        {
-            if (_contextMenu != null)
-                _contextMenu.DisableMenu();
-            Destroy(MenuObj);
-            _contextMenuOpen = false;
         }
 
         public static void SetCursor(CursorType type)
@@ -717,7 +682,7 @@ namespace CameraPlus.Behaviours
                 {
                     float scroll = Input.mouseScrollDelta.y;
                     if (scroll != 0)
-                        ThirdPersonRot.z += scroll * CameraUtilities.mouseRotateSpeed[2];
+                        ThirdPersonRot.z += scroll * CameraUtilities.s_mouseRotateSpeed[2];
                 }
 
                 if (holdingMiddleClick)
@@ -726,20 +691,20 @@ namespace CameraPlus.Behaviours
                         Vector3 up = transform.TransformDirection(Vector3.up);
                         Vector3 right = transform.TransformDirection(Vector3.right);
 
-                        ThirdPersonPos += right * (mousePos.x - prevMousePos.x) * CameraUtilities.mouseMoveSpeed[0] +
-                                            up * (mousePos.y - prevMousePos.y) * CameraUtilities.mouseMoveSpeed[1];
+                        ThirdPersonPos += right * (mousePos.x - prevMousePos.x) * CameraUtilities.s_mouseMoveSpeed[0] +
+                                            up * (mousePos.y - prevMousePos.y) * CameraUtilities.s_mouseMoveSpeed[1];
                     }
 
                 if (holdingRightClick)
                 {
                     float scroll = Input.mouseScrollDelta.y;
                     if (scroll != 0)
-                        ThirdPersonPos += transform.forward * scroll * CameraUtilities.mouseScrollSpeed;
+                        ThirdPersonPos += transform.forward * scroll * CameraUtilities.s_mouseScrollSpeed;
 
                     if (mousePos != prevMousePos)
                     {
-                        ThirdPersonRot.x += (mousePos.y - prevMousePos.y) * CameraUtilities.mouseRotateSpeed[0];
-                        ThirdPersonRot.y += (mousePos.x - prevMousePos.x) * CameraUtilities.mouseRotateSpeed[1];
+                        ThirdPersonRot.x += (mousePos.y - prevMousePos.y) * CameraUtilities.s_mouseRotateSpeed[0];
+                        ThirdPersonRot.y += (mousePos.x - prevMousePos.x) * CameraUtilities.s_mouseRotateSpeed[1];
                     }
                 }
 
@@ -856,23 +821,15 @@ namespace CameraPlus.Behaviours
 
                 CreateScreenRenderTexture();
             }
-            else if (holdingRightClick && _contextMenuEnabled)
-            {
-                if (_mouseHeld) return;
-                DisplayContextMenu();
-                _contextMenuOpen = true;
-                anyInstanceBusy = true;
-                _mouseHeld = true;
-            }
             else if (_isResizing || _isMoving || _mouseHeld)
             {
-                if (!_contextMenuOpen)
-                {
+                //if (!_contextMenuOpen)
+                //{
                     if (!_isCameraDestroyed)
                     {
                         Config.Save();
                     }
-                }
+                //}
                 _isResizing = false;
                 _isMoving = false;
                 _mouseHeld = false;
@@ -882,7 +839,9 @@ namespace CameraPlus.Behaviours
         void OnGUI()
         {
             if (MultiplayerSession.connectedPlayers != null && Config.multiplayer.displayPlayerInfo)
+            {
                 foreach (IConnectedPlayer connectedPlayer in MultiplayerSession.connectedPlayers)
+                {
                     if (Config.multiplayer.targetPlayerNumber - 1 == connectedPlayer.sortIndex)
                     {
                         int size = 0;
@@ -915,16 +874,9 @@ namespace CameraPlus.Behaviours
                             }
                         }
                     }
-        }
-        void DisplayContextMenu()
-        {
-            if (scriptEditMode) return;
-            if (_contextMenu == null)
-            {
-                MenuObj = new GameObject("CameraPlusMenu");
-                _contextMenu = MenuObj.AddComponent<UI.ContextMenu>();
+
+                }
             }
-            _contextMenu.EnableMenu(Input.mousePosition, this);
         }
     }
 }

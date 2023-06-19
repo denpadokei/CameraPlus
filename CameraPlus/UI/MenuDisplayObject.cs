@@ -292,7 +292,7 @@ namespace CameraPlus.UI
             }
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close CameraMode Menu")))
             {
-                contextMenu._menuMode = ContextMenu.MenuState.MenuTop;
+                //._menuMode = ContextMenu.MenuState.MenuTop;
             }
         }
     }

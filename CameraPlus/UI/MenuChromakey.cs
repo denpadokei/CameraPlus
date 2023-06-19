@@ -35,8 +35,8 @@ namespace CameraPlus.UI
             parentBehaviour.webCamScreen.ChromakeyBrightness = GUI.HorizontalSlider(new Rect(menuPos.x, menuPos.y + 310, 300, 20), parentBehaviour.webCamScreen.ChromakeyBrightness, 0, 1);
 
 
-            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close Chroma Key Menu")))
-                contextMenu._menuMode = ContextMenu.MenuState.ExternalLink;
+            //if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close Chroma Key Menu")))
+            //    contextMenu._menuMode = ContextMenu.MenuState.ExternalLink;
         }
     }
 }

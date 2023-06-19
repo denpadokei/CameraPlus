@@ -78,7 +78,7 @@ namespace CameraPlus.UI
             //Close
             if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close Multiplayer Menu")))
             {
-                contextMenu._menuMode = ContextMenu.MenuState.MenuTop;
+                //contextMenu._menuMode = ContextMenu.MenuState.MenuTop;
             }
 
         }

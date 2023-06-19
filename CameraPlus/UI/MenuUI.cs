@@ -13,17 +13,17 @@ namespace CameraPlus.UI
         public static GUIStyle[] CustomToggleButtonStyle;
         public static bool UIInitialize = false;
 
-        private static Rect _uiRect;
-        private static Rect _swRect;
+        private static Rect s_uiRect;
+        private static Rect s_swRect;
 
-        private static float _menuWidth = 300;
-        private static float _menuHeight = 440;
+        private static float s_menuWidth = 300;
+        private static float s_menuHeight = 440;
 
         public static int MenuGridCol = 8;
         public static int MenuGridRow = 16;
 
-        private static float _gridCellWidth { get { return _menuWidth / (MenuGridCol >= 1 ? MenuGridCol : 1); } }
-        private static float _gridCellHeight { get { return _menuHeight / (MenuGridRow >= 1 ? MenuGridRow : 1); } }
+        private static float _gridCellWidth { get { return s_menuWidth / (MenuGridCol >= 1 ? MenuGridCol : 1); } }
+        private static float _gridCellHeight { get { return s_menuHeight / (MenuGridRow >= 1 ? MenuGridRow : 1); } }
         public static Vector2 MenuPos
         {
             get
@@ -60,8 +60,8 @@ namespace CameraPlus.UI
                 new GUIStyle(GUI.skin.button) {alignment = TextAnchor.MiddleLeft },
                 new GUIStyle(GUI.skin.label)
             };
-            _swRect = new Rect(0, 0, IconTexture[4].width, IconTexture[4].height);
-            _uiRect = new Rect();
+            s_swRect = new Rect(0, 0, IconTexture[4].width, IconTexture[4].height);
+            s_uiRect = new Rect();
             UIInitialize = true;
         }
 
@@ -70,12 +70,12 @@ namespace CameraPlus.UI
             var screenRect = GridRect(col, row, colSpan, rowSpan);
             bool result;
             float scale = (swScale == 0 ? screenRect.height : _gridCellHeight * swScale) / IconTexture[4].height;
-            _swRect.width = IconTexture[4].width * scale;
-            _swRect.height = IconTexture[4].height * scale;
-            _swRect.x = screenRect.x + screenRect.width - _swRect.width + 10;
-            _swRect.y = screenRect.y + (swScale == 0 ?  0 : (screenRect.height - _swRect.height) / 2);
+            s_swRect.width = IconTexture[4].width * scale;
+            s_swRect.height = IconTexture[4].height * scale;
+            s_swRect.x = screenRect.x + screenRect.width - s_swRect.width + 10;
+            s_swRect.y = screenRect.y + (swScale == 0 ?  0 : (screenRect.height - s_swRect.height) / 2);
             result = GUI.Button(screenRect, content, CustomToggleButtonStyle[0]);
-            GUI.Box(_swRect, value ? IconTexture[5] : IconTexture[4], CustomToggleButtonStyle[1]);
+            GUI.Box(s_swRect, value ? IconTexture[5] : IconTexture[4], CustomToggleButtonStyle[1]);
             return result;
         }
 
@@ -87,33 +87,33 @@ namespace CameraPlus.UI
 
         public static Rect GridRect(int col, int row, int colSpan = 1, int rowSpan = 1)
         {
-            _uiRect.width = _gridCellWidth * (colSpan >= 1 ? colSpan : 1);
-            _uiRect.height = _gridCellHeight * (rowSpan >= 1 ? rowSpan : 1);
-            _uiRect.x = MenuPos.x + _gridCellWidth * col;
-            _uiRect.y = MenuPos.y + _gridCellHeight * row + 25;
+            s_uiRect.width = _gridCellWidth * (colSpan >= 1 ? colSpan : 1);
+            s_uiRect.height = _gridCellHeight * (rowSpan >= 1 ? rowSpan : 1);
+            s_uiRect.x = MenuPos.x + _gridCellWidth * col;
+            s_uiRect.y = MenuPos.y + _gridCellHeight * row + 25;
 
-            return _uiRect;
+            return s_uiRect;
         }
 
-        public static int SelectionGrid(int col, int row, int selected, ref int currentPage, string[] texts, int colSpan = 0, int rowSpan = 0)
+        public static int SelectionGrid(int col, int row, int selected, ref int currentPage, string[] texts, string currentSelected = "", int colSpan = 0, int rowSpan = 0)
         {
             int selection = selected;
-            _uiRect = GridRect(col, row, colSpan, rowSpan);
+            s_uiRect = GridRect(col, row, colSpan, rowSpan);
 
-            if (GUI.Button(new Rect(_uiRect.x, _uiRect.y, _uiRect.width / 3, _uiRect.height / 6), "<"))
+            if (GUI.Button(new Rect(s_uiRect.x, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height / 6), "<"))
                 if (currentPage > 0) currentPage--;
             
-            GUI.Box(new Rect(_uiRect.x + _uiRect.width / 3, _uiRect.y, _uiRect.width / 3, _uiRect.height / 6), $"{currentPage + 1} / {Math.Ceiling(Decimal.Parse(texts.Length.ToString()) / 5)}");
+            GUI.Box(new Rect(s_uiRect.x + s_uiRect.width / 3, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height / 6), $"{currentPage + 1} / {Math.Ceiling(Decimal.Parse(texts.Length.ToString()) / 5)}");
             
-            if (GUI.Button(new Rect(_uiRect.x + _uiRect.width / 3 * 2, _uiRect.y, _uiRect.width / 3, _uiRect.height / 6), ">"))
+            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 3 * 2, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height / 6), ">"))
                 if (currentPage < Math.Ceiling(Decimal.Parse(texts.Length.ToString()) / 5) - 1) currentPage++;
             
             for (int i = currentPage * 5; i < currentPage * 5 + 5; i++)
             {
                 if (i < texts.Length)
                 {
-                    if (GUI.Button(new Rect(_uiRect.x, _uiRect.y + _uiRect.height / 6 * (i - currentPage * 5 + 1), _uiRect.width, _uiRect.height / 6), 
-                        $"{(texts[i] == Plugin.cameraController.CurrentProfile ? "* " : string.Empty)}{(texts[i] == string.Empty ? "Default" : texts[i])}", selection == i ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
+                    if (GUI.Button(new Rect(s_uiRect.x, s_uiRect.y + s_uiRect.height / 6 * (i - currentPage * 5 + 1), s_uiRect.width, s_uiRect.height / 6), 
+                        $"{(texts[i] == Plugin.cameraController.CurrentProfile ||(currentSelected != string.Empty && currentSelected == texts[i]) ? "* " : string.Empty)}{(texts[i] == string.Empty ? "Default" : texts[i])}", selection == i ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
                         selection = i;
                 }
             }

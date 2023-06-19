@@ -11,6 +11,7 @@ using CameraPlus.Configuration;
 using CameraPlus.Behaviours;
 using CameraPlus.HarmonyPatches;
 using static CameraPlus.Behaviours.CameraMovement;
+using System.Text.RegularExpressions;
 
 namespace CameraPlus.Utilities
 {
@@ -22,9 +23,9 @@ namespace CameraPlus.Utilities
         public static string CurrentlySelected = "None";
         public static string RootProfile = "__Root__";
 
-        internal static float[] mouseMoveSpeed = { -0.01f, -0.01f };//x, y
-        internal static float mouseScrollSpeed = 0.5f;
-        internal static float[] mouseRotateSpeed = { -0.05f, 0.05f, 1f };//x, y, z
+        internal static float[] s_mouseMoveSpeed = { -0.01f, -0.01f };//x, y
+        internal static float s_mouseScrollSpeed = 0.5f;
+        internal static float[] s_mouseRotateSpeed = { -0.05f, 0.05f, 1f };//x, y, z
 
         public static int BaseCullingMask = 0;
 
@@ -132,6 +133,30 @@ namespace CameraPlus.Utilities
             return false;
         }
 
+        internal static bool RemoveProfileCameras(string profile)
+        {
+            try
+            {
+                string dictKey = (profile == string.Empty ? $"{Plugin.Name}_" : $"{profile}_");
+                CameraPlusBehaviour _cameraPlus;
+                foreach (var cam in Plugin.cameraController.Cameras)
+                {
+                    if (cam.Key.StartsWith(dictKey))
+                    {
+                        Plugin.cameraController.Cameras.TryRemove(cam.Key, out _cameraPlus);
+                        if (File.Exists(_cameraPlus.Config.FilePath))
+                            File.Delete(_cameraPlus.Config.FilePath);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Plugin.Log.Error($"CameraUtilities.RemoveProfileCameras() threw an exception:" +
+                    $" {ex.Message}\n{ex.StackTrace}");
+            }
+            return false;
+        }
+
         internal static void SetAllCameraCulling()
         {
             try
@@ -163,6 +188,7 @@ namespace CameraPlus.Utilities
 
             workProfile = (profileName != string.Empty ? profileName : RootProfile);
 
+            Plugin.Log.Notice($"Loading profile : {workProfile}");
             if (!Plugin.cameraController.LoadedProfile.ContainsKey(workProfile))
             {
                 profileObject = new GameObject(workProfile);
@@ -186,6 +212,8 @@ namespace CameraPlus.Utilities
                 string fileName, dictKey;
                 foreach (string filePath in files)
                 {
+                    Plugin.Log.Notice($"Loading profile cameras : {Path.GetFileName(filePath)}");
+
                     fileName = Path.GetFileName(filePath);
                     dictKey = (profileName == string.Empty ? $"{Plugin.Name}_{fileName}" : $"{profileName}_{fileName}");
                     if (fileName.EndsWith(".json") && !Plugin.cameraController.Cameras.ContainsKey(dictKey))
@@ -221,10 +249,11 @@ namespace CameraPlus.Utilities
         public static string[] MovementScriptList()
         {
             string[] spath = Directory.GetFiles(Path.Combine(UnityGame.UserDataPath, Plugin.Name, "Scripts"), "*.json");
-            string[] scriptList = new string[spath.Length];
+            List<string> list = new List<string>();
+            list.Add("[ MovementScript Off ]");
             for (int i = 0; i < spath.Length; i++)
-                scriptList[i] = Path.GetFileName(spath[i]);
-            return scriptList;
+                list.Add(Path.GetFileName(spath[i]));
+            return list.ToArray();
         }
 
         internal static string CurrentMovementScript(string scriptPath)
@@ -298,7 +327,7 @@ namespace CameraPlus.Utilities
         internal static void SaveAsCurrentProfile()
         {
             string cPath = ConfigPath;
-            if (Plugin.cameraController.CurrentProfile != null)
+            if (Plugin.cameraController.CurrentProfile != string.Empty)
             {
                 cPath = Path.Combine(ProfilePath, Plugin.cameraController.CurrentProfile);
             }
@@ -365,13 +394,24 @@ namespace CameraPlus.Utilities
 
         internal static void DeleteProfile(string name)
         {
+            if(name == string.Empty)
+            {
+                Plugin.Log.Notice("The default profile cannot be deleted.");
+                return;
+            }
+            if (name == Plugin.cameraController.CurrentProfile)
+                ProfileChange(string.Empty);
             if (Directory.Exists(Path.Combine(ProfilePath, name)))
+            {
+                RemoveProfileCameras(name);
+                Plugin.cameraController.RemoveProfile(name);
                 Directory.Delete(Path.Combine(ProfilePath, name), true);
+            }
         }
 
         internal static string GetNextProfileName(string BaseName = "")
         {
-            int index = 1;
+            int max = 1;
             string folName = "CameraPlusProfile";
             string bname;
             if (BaseName == "")
@@ -382,24 +422,17 @@ namespace CameraPlus.Utilities
             DirectoryInfo[] dirs = dir.GetDirectories($"{bname}*");
             foreach (var dire in dirs)
             {
-                folName = $"{bname}{index.ToString()}";
-                index++;
-                if (!Directory.Exists(Path.Combine(ProfilePath,folName)))
-                    break;
+                var regex = Regex.Match(dire.Name, "([0-9]*$)");
+                if (regex.Success)
+                {
+                    var no = int.Parse(regex.Groups[1].Value);
+                    if (no >= max)
+                        max = no + 1;
+                }
             }
+            folName = $"{folName}{max.ToString()}";
             Plugin.Log.Notice($"Next ProfileName : {folName}");
             return folName;
-        }
-
-        internal static void SetProfile(string name)
-        {
-            DirectoryInfo dir = new DirectoryInfo(Path.Combine(ProfilePath, name));
-            if (!dir.Exists)
-                return;
-            DirectoryInfo di = new DirectoryInfo(ConfigPath);
-            foreach (FileInfo file in di.GetFiles())
-                file.Delete();
-            DirectoryCopy(dir.FullName, ConfigPath, false);
         }
 
         internal static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
@@ -433,6 +466,16 @@ namespace CameraPlus.Utilities
         {
             if (!Directory.Exists(sourceDirName))
                 Directory.CreateDirectory(sourceDirName);
+        }
+
+        public static CameraPlusBehaviour GetTopmostInstanceAtCursorPos(Vector2 mousePos)
+        {
+            foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.ToArray())
+            {
+                if (c.IsTopmostRenderAreaAtPos(mousePos))
+                    return c;
+            }
+            return null;
         }
 
         public static string GetFullPath(this GameObject obj)

@@ -55,14 +55,15 @@ namespace CameraPlus.UI
                 GUI.Box(new Rect(menuPos.x, menuPos.y + 145, 300, 150), "WebCamera");
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 170, 80, 25), new GUIContent("<")))
                 {
-                    if (contextMenu.webCameraPage > 0) contextMenu.webCameraPage--;
+                    //if (contextMenu.webCameraPage > 0) contextMenu.webCameraPage--;
                 }
-                GUI.Box(new Rect(menuPos.x + 80, menuPos.y + 170, 140, 25), new GUIContent($"{contextMenu.webCameraPage + 1} / {Math.Ceiling(Decimal.Parse(contextMenu.webCameraName.Length.ToString()) / 5)}"));
+               // GUI.Box(new Rect(menuPos.x + 80, menuPos.y + 170, 140, 25), new GUIContent($"{contextMenu.webCameraPage + 1} / {Math.Ceiling(Decimal.Parse(contextMenu.webCameraName.Length.ToString()) / 5)}"));
                 if (GUI.Button(new Rect(menuPos.x + 220, menuPos.y + 170, 80, 25), new GUIContent(">")))
                 {
-                    if (contextMenu.webCameraPage < Math.Ceiling(Decimal.Parse(contextMenu.webCameraName.Length.ToString()) / 5) - 1) contextMenu.webCameraPage++;
+                    //if (contextMenu.webCameraPage < Math.Ceiling(Decimal.Parse(contextMenu.webCameraName.Length.ToString()) / 5) - 1) contextMenu.webCameraPage++;
                 }
 
+                /*
                 for (int i = contextMenu.webCameraPage * 5; i < contextMenu.webCameraPage * 5 + 5; i++)
                 {
                     if (i < contextMenu.webCameraName.Length)
@@ -79,6 +80,7 @@ namespace CameraPlus.UI
                     }
 
                 }
+                */
                 if (!Plugin.cameraController.inProgressCalibration())
                 {
                     if (!parentBehaviour.webCamScreen)
@@ -106,9 +108,11 @@ namespace CameraPlus.UI
                             Plugin.cameraController.DestroyCalScreen();
                     }
                 }
+                /*
                 if (parentBehaviour.webCamScreen)
                     if (GUI.Button(new Rect(menuPos.x , menuPos.y + 355, 300, 30), "Chroma Key"))
                         contextMenu._menuMode = ContextMenu.MenuState.ChromaKey;
+                */
                 /*
                 GUI.Box(new Rect(menuPos.x, menuPos.y + 385, 300, 45), new GUIContent("Auto Connect"));
                 if (GUI.Button(new Rect(menuPos.x, menuPos.y + 405, 150, 25), new GUIContent("Enable"), parentBehaviour.Config.webCamera.autoConnect ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
@@ -124,8 +128,8 @@ namespace CameraPlus.UI
                 */
             }
 
-            if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close External linkage Menu")))
-                contextMenu._menuMode = ContextMenu.MenuState.MenuTop;
+            //if (GUI.Button(new Rect(menuPos.x, menuPos.y + 430, 300, 30), new GUIContent("Close External linkage Menu")))
+            //    contextMenu._menuMode = ContextMenu.MenuState.MenuTop;
 
         }
     }

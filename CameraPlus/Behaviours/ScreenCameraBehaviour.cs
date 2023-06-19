@@ -13,10 +13,10 @@ namespace CameraPlus.Behaviours
         private CameraPlusBehaviour _cameraPlus;
         private RenderTexture _renderTexture;
 
-        private Material _dofMaterial;
-        private Material _wipeMaterial;
-        private Material _outlineMaterial;
-        private Material _glitchMaterial;
+        private Material _dofMaterial = null;
+        private Material _wipeMaterial = null;
+        private Material _outlineMaterial = null;
+        private Material _glitchMaterial = null;
         public void SetRenderTexture(RenderTexture renderTexture,CameraPlusBehaviour cameraPlus = null)
         {
             _renderTexture = renderTexture;

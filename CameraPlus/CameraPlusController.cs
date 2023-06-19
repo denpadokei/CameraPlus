@@ -14,7 +14,6 @@ using CameraPlus.Configuration;
 using CameraPlus.Behaviours;
 using CameraPlus.Utilities;
 using CameraPlus.VMCProtocol;
-using CameraPlus.UI;
 
 namespace CameraPlus
 {
@@ -48,6 +47,10 @@ namespace CameraPlus
         internal WebCamDevice[] webCamDevices;
         private WebCamCalibrator _webCamCal;
 
+        protected UI.ContextMenu _contextMenu = null;
+        protected bool _contextMenuOpen = false;
+
+
         private void Awake()
         {
             if (instance != null)
@@ -79,7 +82,7 @@ namespace CameraPlus
             externalSender = new GameObject("ExternalSender").AddComponent<ExternalSender>();
             externalSender.transform.SetParent(transform);
 
-            //MenuUI.Initialize();
+            _contextMenu = this.gameObject.AddComponent<UI.ContextMenu>();
 
             OnFPFCToggleEvent.AddListener(OnFPFCToglleEvent);
 
@@ -87,6 +90,15 @@ namespace CameraPlus
                 existsVMCAvatar = true;
             _webCamTexture = new WebCamTexture();
             webCamDevices = WebCamTexture.devices;
+        }
+
+        private void Update()
+        {
+            if (Input.GetMouseButton(1))
+            {
+                DisplayContextMenu();
+                _contextMenuOpen = true;
+            }
         }
 
         private void ShaderLoad()
@@ -166,6 +178,8 @@ namespace CameraPlus
                         chat.layer = Layer.UI;
                 }
             }
+            CloseContextMenu();
+
         }
 
         internal IEnumerator waitMainCamera()
@@ -220,6 +234,29 @@ namespace CameraPlus
         {
             if (_webCamCal)
                 Destroy(_webCamCal.gameObject);
+        }
+
+        internal void RemoveProfile(string profile)
+        {
+            GameObject obj;
+            if (LoadedProfile.ContainsKey(profile))
+            {
+                LoadedProfile.TryRemove(profile, out obj);
+                Destroy(obj);
+            }
+        }
+
+        internal void DisplayContextMenu()
+        {
+            var c = CameraUtilities.GetTopmostInstanceAtCursorPos(Input.mousePosition);
+            if (c != null)
+                _contextMenu.EnableMenu(Input.mousePosition, c);
+        }
+
+        internal void CloseContextMenu()
+        {
+            _contextMenu?.DisableMenu();
+            _contextMenuOpen = false;
         }
     }
 }

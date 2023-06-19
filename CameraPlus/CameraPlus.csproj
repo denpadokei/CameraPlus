@@ -197,7 +197,6 @@
     <Compile Include="UI\MenuExternalLink.cs" />
     <Compile Include="UI\MenuUI.cs" />
     <Compile Include="UI\MenuLayout.cs" />
-    <Compile Include="UI\MenuMovementScript.cs" />
     <Compile Include="UI\MenuMultiplayer.cs" />
     <Compile Include="UI\MenuSettingConverter.cs" />
     <Compile Include="Utilities\CameraUtilities.cs" />
