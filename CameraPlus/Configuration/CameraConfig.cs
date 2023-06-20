@@ -197,6 +197,15 @@ namespace CameraPlus.Configuration
                 cam?._quad.CubeDisplay(!value);
             }
         }
+        public bool DontDrawDesktop
+        {
+            get => _cameraExtensions.dontDrawDesktop;
+            set
+            {
+                _cameraExtensions.dontDrawDesktop = value;
+                cam._screenCamera.enabled = !value;
+            }
+        }
         public bool Avatar { get => _visibleObject.avatar; set { _visibleObject.avatar = value;SetCullingMask(); } }
         public bool UI { get => _visibleObject.ui; set { _visibleObject.ui = value; SetCullingMask(); } }
         public bool Wall { get => _visibleObject.wall; set { _visibleObject.wall = value; SetCullingMask(); } }

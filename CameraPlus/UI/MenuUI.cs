@@ -22,8 +22,8 @@ namespace CameraPlus.UI
         public static int MenuGridCol = 8;
         public static int MenuGridRow = 16;
 
-        private static float _gridCellWidth { get { return s_menuWidth / (MenuGridCol >= 1 ? MenuGridCol : 1); } }
-        private static float _gridCellHeight { get { return s_menuHeight / (MenuGridRow >= 1 ? MenuGridRow : 1); } }
+        private static float s_gridCellWidth { get { return s_menuWidth / (MenuGridCol >= 1 ? MenuGridCol : 1); } }
+        private static float s_gridCellHeight { get { return s_menuHeight / (MenuGridRow >= 1 ? MenuGridRow : 1); } }
         public static Vector2 MenuPos
         {
             get
@@ -46,12 +46,14 @@ namespace CameraPlus.UI
                 CustomUtils.LoadTextureFromResources("CameraPlus.Resources.sw_off.png"),
                 CustomUtils.LoadTextureFromResources("CameraPlus.Resources.sw_on.png")
             };
-            CustomStyle = new GUIStyle[4]
+            CustomStyle = new GUIStyle[6]
             {
                 new GUIStyle(GUI.skin.button),
                 new GUIStyle(GUI.skin.button),
                 new GUIStyle(GUI.skin.box) {alignment = TextAnchor.MiddleLeft},
                 new GUIStyle(GUI.skin.button) {normal = new GUIStyleState() {textColor = Color.black } },
+                new GUIStyle(GUI.skin.label) {alignment = TextAnchor.MiddleLeft},
+                new GUIStyle(GUI.skin.box) {alignment = TextAnchor.MiddleCenter}
             };
             CustomStyle[0].normal.background = CustomStyle[0].active.background;
             CustomStyle[0].hover.background = CustomStyle[0].active.background;
@@ -69,7 +71,7 @@ namespace CameraPlus.UI
         {
             var screenRect = GridRect(col, row, colSpan, rowSpan);
             bool result;
-            float scale = (swScale == 0 ? screenRect.height : _gridCellHeight * swScale) / IconTexture[4].height;
+            float scale = (swScale == 0 ? screenRect.height : s_gridCellHeight * swScale) / IconTexture[4].height;
             s_swRect.width = IconTexture[4].width * scale;
             s_swRect.height = IconTexture[4].height * scale;
             s_swRect.x = screenRect.x + screenRect.width - s_swRect.width + 10;
@@ -87,10 +89,10 @@ namespace CameraPlus.UI
 
         public static Rect GridRect(int col, int row, int colSpan = 1, int rowSpan = 1)
         {
-            s_uiRect.width = _gridCellWidth * (colSpan >= 1 ? colSpan : 1);
-            s_uiRect.height = _gridCellHeight * (rowSpan >= 1 ? rowSpan : 1);
-            s_uiRect.x = MenuPos.x + _gridCellWidth * col;
-            s_uiRect.y = MenuPos.y + _gridCellHeight * row + 25;
+            s_uiRect.width = s_gridCellWidth * (colSpan >= 1 ? colSpan : 1);
+            s_uiRect.height = s_gridCellHeight * (rowSpan >= 1 ? rowSpan : 1);
+            s_uiRect.x = MenuPos.x + s_gridCellWidth * col;
+            s_uiRect.y = MenuPos.y + s_gridCellHeight * row + 25;
 
             return s_uiRect;
         }
@@ -119,6 +121,123 @@ namespace CameraPlus.UI
             }
             return selection;
         }
+
+        public static bool SliderComponent(int col, int row, ref float value, string title, float min, float max, int colSpan = 0, int rowSpan = 0)
+        {
+            bool changed = false;
+            float tmpvalue = value;
+            s_uiRect = GridRect(col, row, colSpan, rowSpan);
+
+            return changed;
+        }
+
+        public static bool CrossSelection(int col, int row, ref string selected, int colSpan = 0, int rowSpan = 0)
+        {
+            bool pushButton = false;
+            s_uiRect = GridRect(col, row, colSpan, rowSpan);
+            if(GUI.Button(new Rect(s_uiRect.x +  (s_uiRect.width / 3), s_uiRect.y, s_uiRect.width /3, s_uiRect.height / 3), "Top", selected == "Top" ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
+            {
+                pushButton = true;
+                selected = "Top";
+            }
+            if (GUI.Button(new Rect(s_uiRect.x, s_uiRect.y + (s_uiRect.height / 3), s_uiRect.width / 3, s_uiRect.height / 3), "Left", selected == "Left" ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
+            {
+                pushButton = true;
+                selected = "Left";
+            }
+            if (GUI.Button(new Rect(s_uiRect.x + (s_uiRect.width / 3), s_uiRect.y + (s_uiRect.height / 3), s_uiRect.width / 3, s_uiRect.height / 3), "Center", selected == "Center" ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
+            {
+                pushButton = true;
+                selected = "Center";
+            }
+            if (GUI.Button(new Rect(s_uiRect.x + (s_uiRect.width / 3) * 2, s_uiRect.y + (s_uiRect.height / 3), s_uiRect.width / 3, s_uiRect.height / 3), "Right", selected == "Right" ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
+            {
+                pushButton = true;
+                selected = "Right";
+            }
+            if (GUI.Button(new Rect(s_uiRect.x + (s_uiRect.width / 3), s_uiRect.y + (s_uiRect.height / 3) * 2, s_uiRect.width / 3, s_uiRect.height / 3), "Bottom", selected == "Bottom" ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
+            {
+                pushButton = true;
+                selected = "Bottom";
+            }
+            return pushButton;
+        }
+        public static bool SpinBox(int col, int row, ref float value, float delta, float min, float max, int digit = 0, int colSpan = 0, int rowSpan = 0)
+        {
+            bool pushButton = false;
+            s_uiRect = GridRect(col, row, colSpan, rowSpan);
+            if(GUI.Button(new Rect(s_uiRect.x, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height), "-"))
+            {
+                if (value - delta >= min)
+                    value -= delta;
+                else
+                    value = min;
+                pushButton = true;
+            }
+            GUI.Box(new Rect(s_uiRect.x + s_uiRect.width / 3, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height), value.ToString($"F{digit}"), CustomStyle[5]);
+            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 3 * 2, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height), "+"))
+            {
+                if(value + delta <= max)
+                    value += delta;
+                else
+                    value = max;
+                pushButton = true;
+            }
+            return pushButton;
+        }
+        public static bool DoubleSpinBox(int col, int row, ref float value, float delta, float bigDelta, float min, float max, int digit = 0, int colSpan = 0, int rowSpan = 0)
+        {
+            bool pushButton = false;
+            s_uiRect = GridRect(col, row, colSpan, rowSpan);
+            if (GUI.Button(new Rect(s_uiRect.x, s_uiRect.y, s_uiRect.width / 6, s_uiRect.height), "<<"))
+            {
+                if (value - bigDelta >= min)
+                    value -= bigDelta;
+                else
+                    value = min;
+                pushButton = true;
+            }
+            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 6, s_uiRect.y, s_uiRect.width / 6, s_uiRect.height), "<"))
+            {
+                if (value - delta >= min)
+                    value -= delta;
+                else
+                    value = min;
+                pushButton = true;
+            }
+            GUI.Box(new Rect(s_uiRect.x + s_uiRect.width / 6 * 2, s_uiRect.y, s_uiRect.width / 6 * 2, s_uiRect.height), value.ToString($"F{digit}"), CustomStyle[5]);
+            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 6 * 4, s_uiRect.y, s_uiRect.width / 6, s_uiRect.height), ">"))
+            {
+                if (value + delta <= max)
+                    value += delta;
+                else
+                    value = max;
+                pushButton = true;
+            }
+            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 6 * 5, s_uiRect.y, s_uiRect.width / 6, s_uiRect.height), ">>"))
+            {
+                if (value + bigDelta <= max)
+                    value += bigDelta;
+                else
+                    value = max;
+                pushButton = true;
+            }
+            return pushButton;
+        }
+        public static bool HorizontalSelection(int col, int row, ref int selected, string[] texts, int colSpan = 0, int rowSpan = 0)
+        {
+            bool pushButton = false;
+            s_uiRect = GridRect(col, row, colSpan, rowSpan);
+            for(int i=0; i<texts.Length; i++)
+            {
+                if(GUI.Button(new Rect(s_uiRect.x + (s_uiRect.width / texts.Length * i),s_uiRect.y, s_uiRect.width / texts.Length, s_uiRect.height), texts[i], selected == i ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]))
+                {
+                    selected = i;
+                    pushButton = true;
+                }
+            }
+            return pushButton;
+        }
         public static int Toolbar(int col, int row, int selected, string[] texts, int colSpan = 0, int rowSpan = 0)
         {
             return GUI.Toolbar(GridRect(col, row, colSpan, rowSpan), selected, texts);
@@ -144,6 +263,10 @@ namespace CameraPlus.UI
         public static void Box(int col, int row, string content, GUIStyle style, int colSpan = 0, int rowSpan = 0)
         {
             GUI.Box(GridRect(col, row, colSpan, rowSpan), content, style);
+        }
+        public static void Label(int col, int row, string content, int colSpan = 0, int rowSpan = 0)
+        {
+            GUI.Label(GridRect(col, row, colSpan, rowSpan), content, CustomStyle[4]);
         }
     }
 }
