@@ -199,9 +199,13 @@ namespace CameraPlus
         private void OnFPFCToglleEvent()
         {
             if (isFPFC)
-                _fillBlackScreen.SetLayer(-2000);
+                _fillBlackScreen.enabled = false;
             else
-                _fillBlackScreen.SetLayer(1);
+                _fillBlackScreen.enabled = true;
+        }
+        internal void SetBackScreenLayer(int layer)
+        {
+            _fillBlackScreen.SetLayer(layer);
         }
 
         internal string[] WebCameraList()

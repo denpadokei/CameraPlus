@@ -192,12 +192,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UI\ContextMenu.cs" />
     <Compile Include="UI\MenuChromakey.cs" />
-    <Compile Include="UI\MenuDisplayObject.cs" />
     <Compile Include="UI\MenuEffect.cs" />
     <Compile Include="UI\MenuExternalLink.cs" />
     <Compile Include="UI\MenuUI.cs" />
-    <Compile Include="UI\MenuLayout.cs" />
-    <Compile Include="UI\MenuSettingConverter.cs" />
     <Compile Include="Utilities\CameraUtilities.cs" />
     <Compile Include="Utilities\ConfigConverter.cs" />
     <Compile Include="Utilities\Layer.cs" />
@@ -228,10 +225,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\CameraLock.png" />
-    <EmbeddedResource Include="Resources\CameraUnlock.png" />
     <EmbeddedResource Include="Resources\ColorPick.png" />
-    <EmbeddedResource Include="Resources\Lock.png" />
     <EmbeddedResource Include="Resources\Resize_DiagLeft.png" />
     <EmbeddedResource Include="Resources\Resize_DiagRight.png" />
     <EmbeddedResource Include="Resources\Resize_Horiz.png" />
@@ -242,7 +236,6 @@
     <EmbeddedResource Include="Resources\ScreenRightDock.png" />
     <EmbeddedResource Include="Resources\ScreenTopLeftDock.png" />
     <EmbeddedResource Include="Resources\ScreenTopRightDock.png" />
-    <EmbeddedResource Include="Resources\UnLock.png" />
     <EmbeddedResource Include="Resources\Xross.png" />
   </ItemGroup>
   <ItemGroup>

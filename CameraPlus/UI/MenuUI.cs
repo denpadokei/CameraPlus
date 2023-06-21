@@ -37,23 +37,26 @@ namespace CameraPlus.UI
         public static Vector2 MousePosition;
         public static void Initialize()
         {
-            IconTexture = new Texture2D[6]
+            IconTexture = new Texture2D[8]
             {
-                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Lock.png"),
-                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.UnLock.png"),
-                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.CameraLock.png"),
-                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.CameraUnlock.png"),
                 CustomUtils.LoadTextureFromResources("CameraPlus.Resources.sw_off.png"),
-                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.sw_on.png")
+                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.sw_on.png"),
+                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.ScreenLeftDock.png"),
+                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.ScreenTopLeftDock.png"),
+                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.ScreenBottomLeftDock.png"),
+                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.ScreenTopRightDock.png"),
+                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.ScreenBottomRightDock.png"),
+                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.ScreenRightDock.png")
             };
-            CustomStyle = new GUIStyle[6]
+            CustomStyle = new GUIStyle[7]
             {
                 new GUIStyle(GUI.skin.button),
                 new GUIStyle(GUI.skin.button),
                 new GUIStyle(GUI.skin.box) {alignment = TextAnchor.MiddleLeft},
                 new GUIStyle(GUI.skin.button) {normal = new GUIStyleState() {textColor = Color.black } },
                 new GUIStyle(GUI.skin.label) {alignment = TextAnchor.MiddleLeft},
-                new GUIStyle(GUI.skin.box) {alignment = TextAnchor.MiddleCenter}
+                new GUIStyle(GUI.skin.box) {alignment = TextAnchor.MiddleCenter},
+                new GUIStyle(GUI.skin.label) {alignment = TextAnchor.MiddleCenter}
             };
             CustomStyle[0].normal.background = CustomStyle[0].active.background;
             CustomStyle[0].hover.background = CustomStyle[0].active.background;
@@ -62,7 +65,7 @@ namespace CameraPlus.UI
                 new GUIStyle(GUI.skin.button) {alignment = TextAnchor.MiddleLeft },
                 new GUIStyle(GUI.skin.label)
             };
-            s_swRect = new Rect(0, 0, IconTexture[4].width, IconTexture[4].height);
+            s_swRect = new Rect(0, 0, IconTexture[0].width, IconTexture[0].height);
             s_uiRect = new Rect();
             UIInitialize = true;
         }
@@ -71,13 +74,13 @@ namespace CameraPlus.UI
         {
             var screenRect = GridRect(col, row, colSpan, rowSpan);
             bool result;
-            float scale = (swScale == 0 ? screenRect.height : s_gridCellHeight * swScale) / IconTexture[4].height;
-            s_swRect.width = IconTexture[4].width * scale;
-            s_swRect.height = IconTexture[4].height * scale;
+            float scale = (swScale == 0 ? screenRect.height : s_gridCellHeight * swScale) / IconTexture[0].height;
+            s_swRect.width = IconTexture[0].width * scale;
+            s_swRect.height = IconTexture[0].height * scale;
             s_swRect.x = screenRect.x + screenRect.width - s_swRect.width + 10;
             s_swRect.y = screenRect.y + (swScale == 0 ?  0 : (screenRect.height - s_swRect.height) / 2);
             result = GUI.Button(screenRect, content, CustomToggleButtonStyle[0]);
-            GUI.Box(s_swRect, value ? IconTexture[5] : IconTexture[4], CustomToggleButtonStyle[1]);
+            GUI.Box(s_swRect, value ? IconTexture[1] : IconTexture[0], CustomToggleButtonStyle[1]);
             return result;
         }
 
@@ -131,6 +134,58 @@ namespace CameraPlus.UI
             return changed;
         }
 
+        public static bool AxizEdit(int col, int row, ref float[] axiz, float delta, int colSpan = 0, int rowSpan = 0, bool isRotation = false)
+        {
+            bool pushButton = false;
+            s_uiRect = GridRect(col, row, colSpan, rowSpan);
+            GUI.Label(new Rect(s_uiRect.x, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height / 2), $"X {(isRotation ? "rot" : "pos")} : {axiz[0].ToString("F2")}", CustomStyle[6]);
+            GUI.Label(new Rect(s_uiRect.x + s_uiRect.width / 3, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height / 2), $"Y {(isRotation ? "rot" : "pos")} : {axiz[1].ToString("F2")}", CustomStyle[6]);
+            GUI.Label(new Rect(s_uiRect.x + s_uiRect.width / 3 * 2, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height / 2), $"Z {(isRotation ? "rot" : "pos")} : {axiz[2].ToString("F2")}", CustomStyle[6]);
+            if(GUI.Button(new Rect(s_uiRect.x + 2, s_uiRect.y + s_uiRect.height / 2, s_uiRect.width / 6 - 2, s_uiRect.height / 2), "-"))
+            {
+                axiz[0] -= delta;
+                if(isRotation && axiz[0] < 0)
+                    axiz[0] += 360;
+                pushButton = true;
+            }
+            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 6, s_uiRect.y + s_uiRect.height / 2, s_uiRect.width / 6 - 2, s_uiRect.height / 2), "+"))
+            {
+                axiz[0] += delta;
+                if (isRotation && axiz[0] >= 360)
+                    axiz[0] -= 360;
+                pushButton = true;
+            }
+            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 6 * 2 + 2, s_uiRect.y + s_uiRect.height / 2, s_uiRect.width / 6 - 2, s_uiRect.height / 2), "-"))
+            {
+                axiz[1] -= delta;
+                if (isRotation && axiz[1] < 0)
+                    axiz[1] += 360;
+                pushButton = true;
+            }
+            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 6 * 3, s_uiRect.y + s_uiRect.height / 2, s_uiRect.width / 6 - 2, s_uiRect.height / 2), "+"))
+            {
+                axiz[1] += delta;
+                if (isRotation && axiz[1] >= 360)
+                    axiz[1] -= 360;
+                pushButton = true;
+            }
+            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 6 * 4 + 2, s_uiRect.y + s_uiRect.height / 2, s_uiRect.width / 6 - 2, s_uiRect.height / 2), "-"))
+            {
+                axiz[2] -= delta;
+                if (isRotation && axiz[2] < 0)
+                    axiz[2] += 360;
+                pushButton = true;
+            }
+            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 6 * 5, s_uiRect.y + s_uiRect.height / 2, s_uiRect.width / 6 - 2, s_uiRect.height / 2), "+"))
+            {
+                axiz[2] += delta;
+                if (isRotation && axiz[2] >= 360)
+                    axiz[2] -= 360;
+                pushButton = true;
+            }
+            return pushButton;
+        }
+
         public static bool CrossSelection(int col, int row, ref string selected, int colSpan = 0, int rowSpan = 0)
         {
             bool pushButton = false;
@@ -166,7 +221,7 @@ namespace CameraPlus.UI
         {
             bool pushButton = false;
             s_uiRect = GridRect(col, row, colSpan, rowSpan);
-            if(GUI.Button(new Rect(s_uiRect.x, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height), "-"))
+            if(GUI.Button(new Rect(s_uiRect.x + 2, s_uiRect.y, s_uiRect.width / 3 - 2, s_uiRect.height), "-"))
             {
                 if (value - delta >= min)
                     value -= delta;
@@ -175,7 +230,7 @@ namespace CameraPlus.UI
                 pushButton = true;
             }
             GUI.Box(new Rect(s_uiRect.x + s_uiRect.width / 3, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height), value.ToString($"F{digit}"), CustomStyle[5]);
-            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 3 * 2, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height), "+"))
+            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 3 * 2, s_uiRect.y, s_uiRect.width / 3 - 2, s_uiRect.height), "+"))
             {
                 if(value + delta <= max)
                     value += delta;
@@ -189,7 +244,7 @@ namespace CameraPlus.UI
         {
             bool pushButton = false;
             s_uiRect = GridRect(col, row, colSpan, rowSpan);
-            if (GUI.Button(new Rect(s_uiRect.x, s_uiRect.y, s_uiRect.width / 6, s_uiRect.height), "<<"))
+            if (GUI.Button(new Rect(s_uiRect.x + 2, s_uiRect.y, s_uiRect.width / 6 - 2, s_uiRect.height), "<<"))
             {
                 if (value - bigDelta >= min)
                     value -= bigDelta;
@@ -214,7 +269,7 @@ namespace CameraPlus.UI
                     value = max;
                 pushButton = true;
             }
-            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 6 * 5, s_uiRect.y, s_uiRect.width / 6, s_uiRect.height), ">>"))
+            if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 6 * 5, s_uiRect.y, s_uiRect.width / 6 - 2, s_uiRect.height), ">>"))
             {
                 if (value + bigDelta <= max)
                     value += bigDelta;

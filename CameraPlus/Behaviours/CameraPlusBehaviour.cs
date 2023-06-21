@@ -126,10 +126,6 @@ namespace CameraPlus.Behaviours
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
 
-            //var camera = _mainCamera.transform;
-            //_cam.transform.position = camera.position;
-            //_cam.transform.rotation = camera.rotation;
-
             _quad = new GameObject("PreviewQuad").AddComponent<CameraPreviewQuad>();
             _quad.transform.SetParent(_cam.transform);
             _quad.transform.localPosition = Vector3.zero;
@@ -258,12 +254,7 @@ namespace CameraPlus.Behaviours
                 ThirdPersonPos = Config.Position;
                 ThirdPersonRot = Config.Rotation;
             }
-            /*
-            if(Config.cameraExtensions.dontDrawDesktop)
-                _screenCamera.enabled = false;
-            else
-                _screenCamera.enabled = true;
-            */
+
             turnToHead = Config.cameraExtensions.turnToHead;
             turnToHeadOffset = Config.TurnToHeadOffset;
             turnToHeadHorizontal = Config.cameraExtensions.turnToHeadHorizontal;
@@ -274,7 +265,6 @@ namespace CameraPlus.Behaviours
             _cam.orthographicSize = Config.cameraExtensions.orthographicSize;
             _cam.nearClipPlane = Config.cameraExtensions.nearClip;
             _cam.farClipPlane = Config.cameraExtensions.farClip;
-
 
             effectElements = Config.cameraEffect;
             CreateScreenRenderTexture();
@@ -356,15 +346,16 @@ namespace CameraPlus.Behaviours
 
         private void OnFPFCToglleEvent()
         {
+            _screenCamera.SetLayer(Config.layer);
             if (Plugin.cameraController.isFPFC)
             {
                 turnToHead = false;
-                _screenCamera.SetLayer(Config.layer);
+                _screenCamera.enabled = false;
             }
             else
             {
                 turnToHead = Config.cameraExtensions.turnToHead;
-                _screenCamera.SetLayer(Config.layer + 1001);
+                _screenCamera.enabled = true;
             }
         }
 

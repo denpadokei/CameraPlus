@@ -122,5 +122,12 @@ namespace CameraPlus.Behaviours
             _cameraQuad.transform.SetParent(transform);
             SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
         }
+
+		public void SetCameraQuadSeparatePosition()
+		{
+			_cameraQuad.transform.position = _cameraPlus.Config.PreviewQuadPosition;
+			_cameraQuad.transform.eulerAngles = _cameraPlus.Config.PreviewQuadRotation;
+
+        }
     }
 }

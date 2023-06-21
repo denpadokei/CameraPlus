@@ -124,8 +124,8 @@ namespace CameraPlus.Configuration
         public float fov { get => _fieldOfView; set { _fieldOfView = value; } }
         public int layer {
             get {
-                if (FPFCPatch.instance != null && !Plugin.cameraController.isFPFC)
-                    return _layer + 1001;
+                if (FPFCPatch.instance != null)
+                    return _layer + 1002;
                 else
                     return _layer;
             } 
@@ -239,6 +239,23 @@ namespace CameraPlus.Configuration
                 _thirdPersonPos.z = value.z;
             }
         }
+        public float[] ThirdPersonPositionFloat
+        {
+            get
+            {
+                float[] result = new float[3];
+                result[0] = _thirdPersonPos.x;
+                result[1] = _thirdPersonPos.y;
+                result[2] = _thirdPersonPos.z;
+                return result;
+            }
+            set
+            {
+                _thirdPersonPos.x = value[0];
+                _thirdPersonPos.y = value[1];
+                _thirdPersonPos.z = value[2];
+            }
+        }
         public Vector3 Rotation{
             get{
                 return new Vector3(_thirdPersonRot.x, _thirdPersonRot.y, _thirdPersonRot.z);
@@ -247,6 +264,23 @@ namespace CameraPlus.Configuration
                 _thirdPersonRot.x = value.x;
                 _thirdPersonRot.y = value.y;
                 _thirdPersonRot.z = value.z;
+            }
+        }
+        public float[] ThirdPersonRotationFloat
+        {
+            get
+            {
+                float[] result = new float[3];
+                result[0] = _thirdPersonRot.x;
+                result[1] = _thirdPersonRot.y;
+                result[2] = _thirdPersonRot.z;
+                return result;
+            }
+            set
+            {
+                _thirdPersonRot.x = value[0];
+                _thirdPersonRot.y = value[1];
+                _thirdPersonRot.z = value[2];
             }
         }
         public float RotationZ
@@ -282,6 +316,23 @@ namespace CameraPlus.Configuration
                 _firstPersonPos.z = value.z;
             }
         }
+        public float[] FirstPersonPositionOffsetFloat
+        {
+            get
+            {
+                float[] result = new float[3];
+                result[0] = _firstPersonPos.x;
+                result[1] = _firstPersonPos.y;
+                result[2] = _firstPersonPos.z;
+                return result;
+            }
+            set
+            {
+                _firstPersonPos.x = value[0];
+                _firstPersonPos.y = value[1];
+                _firstPersonPos.z = value[2];
+            }
+        }
         public Vector3 FirstPersonRotationOffset
         {
             get
@@ -293,6 +344,23 @@ namespace CameraPlus.Configuration
                 _firstPersonRot.x = value.x;
                 _firstPersonRot.y = value.y;
                 _firstPersonRot.z = value.z;
+            }
+        }
+        public float[] FirstPersonRotationOffsetFloat
+        {
+            get
+            {
+                float[] result = new float[3];
+                result[0] = _firstPersonRot.x;
+                result[1] = _firstPersonRot.y;
+                result[2] = _firstPersonRot.z;
+                return result;
+            }
+            set
+            {
+                _firstPersonRot.x = value[0];
+                _firstPersonRot.y = value[1];
+                _firstPersonRot.z = value[2];
             }
         }
         public Vector3 DefaultFirstPersonPositionOffset
@@ -323,6 +391,23 @@ namespace CameraPlus.Configuration
                 _previewQuadPos.z = value.z;
             }
         }
+        public float[] PreviewQuadPositionFloat
+        {
+            get
+            {
+                float[] result = new float[3];
+                result[0] = _previewQuadPos.x;
+                result[1] = _previewQuadPos.y;
+                result[2] = _previewQuadPos.z;
+                return result;
+            }
+            set
+            {
+                _previewQuadPos.x = value[0];
+                _previewQuadPos.y = value[1];
+                _previewQuadPos.z = value[2];
+            }
+        }
         public Vector3 PreviewQuadRotation
         {
             get
@@ -336,6 +421,23 @@ namespace CameraPlus.Configuration
                 _previewQuadRot.z = value.z;
             }
         }
+        public float[] PreviewQuadRotationFloat
+        {
+            get
+            {
+                float[] result = new float[3];
+                result[0] = _previewQuadRot.x;
+                result[1] = _previewQuadRot.y;
+                result[2] = _previewQuadRot.z;
+                return result;
+            }
+            set
+            {
+                _previewQuadRot.x = value[0];
+                _previewQuadRot.y = value[1];
+                _previewQuadRot.z = value[2];
+            }
+        }
 
         public Vector3 TurnToHeadOffset
         {
@@ -346,6 +448,23 @@ namespace CameraPlus.Configuration
                 _turnToHeadOffset.x = value.x;
                 _turnToHeadOffset.y = value.y;
                 _turnToHeadOffset.z = value.z;
+            }
+        }
+        public float[] TurnToHeadOffsetFloat
+        {
+            get
+            {
+                float[] result = new float[3];
+                result[0] = _turnToHeadOffset.x;
+                result[1] = _turnToHeadOffset.y;
+                result[2] = _turnToHeadOffset.z;
+                return result;
+            }
+            set
+            {
+                _turnToHeadOffset.x = value[0];
+                _turnToHeadOffset.y = value[1];
+                _turnToHeadOffset.z = value[2];
             }
         }
         public CameraConfig(string configPath)

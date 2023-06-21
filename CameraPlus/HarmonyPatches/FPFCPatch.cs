@@ -14,6 +14,7 @@ namespace CameraPlus.HarmonyPatches
         static void Postfix(FirstPersonFlyingController __instance)
         {
             instance = __instance;
+            Plugin.cameraController.SetBackScreenLayer(1);
 #if DEBUG
             Plugin.Log.Notice("Find FPFC");
 #endif
