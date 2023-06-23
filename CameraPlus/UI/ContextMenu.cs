@@ -34,6 +34,12 @@ namespace CameraPlus.UI
             Layout,
             Template
         }
+
+        public enum ExternalLinkState
+        {
+            VMCProtocol,
+            WebCamera
+        }
         public enum EffectSettingState
         {
             DoF,
@@ -46,6 +52,7 @@ namespace CameraPlus.UI
         private MenuState _menuMode = MenuState.MenuTop;
         private CameraSettingState _settingState = CameraSettingState.Setting;
         private LayoutState _layoutState = LayoutState.Layout;
+        private ExternalLinkState _externalLinkState = ExternalLinkState.VMCProtocol;
         private EffectSettingState _effectState = EffectSettingState.DoF;
 
         internal CameraPlusBehaviour _cameraPlus;
@@ -756,6 +763,9 @@ namespace CameraPlus.UI
                     /////////////////////////////////////////////////////////////////////////////////////
                     case MenuState.ExternalLink:
                         MenuUI.SetGrid(12, 34);
+                        _externalLinkState = (ExternalLinkState)Enum.ToObject(typeof(ExternalLinkState), MenuUI.Toolbar(0, 0, (int)_externalLinkState, Enum.GetNames(typeof(ExternalLinkState)), 12, 2));
+
+                        MenuUI.Label(0, 3, "Sender", 6, 2);
 
 
                         if (MenuUI.Button(0, 32, "Back top menu", 12, 2))
