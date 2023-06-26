@@ -16,6 +16,24 @@ namespace CameraPlus.Configuration
         public string y { get; set; }
         public string z { get; set; }
     }
+
+    public class RectElements
+    {
+        public string x { get; set; }
+        public string y { get; set; }
+        public string width { get; set; }
+        public string height { get; set; }
+    }
+
+    public class WindowControlElements
+    {
+        public string target { get; set; }
+        public bool? visible { get; set; }
+
+        public RectElements startRect { get; set; }
+        public RectElements endRect { get; set; }
+    }
+
     public class ColorElements
     {
         public string r { get; set; }
@@ -114,6 +132,9 @@ namespace CameraPlus.Configuration
         public string Duration { get; set; }
         public string Delay { get; set; }
         public string EaseTransition { get; set; }
+
+        [JsonProperty("WindowControl")]
+        public WindowControlElements[] windowControl { get; set; }
     }
 
     public class MovementScriptJson

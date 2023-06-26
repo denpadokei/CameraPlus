@@ -59,7 +59,7 @@ namespace CameraPlus.Behaviours
         protected bool _xAxisLocked = false;
         protected bool _yAxisLocked = false;
         internal bool _isCameraDestroyed = false;
-        protected bool _isMainCamera = false;
+        internal bool _isMainCamera = false;
         internal bool _isTopmostAtCursorPos = false;
         protected DateTime _lastRenderUpdate;
         protected Vector2 _initialOffset = new Vector2(0, 0);

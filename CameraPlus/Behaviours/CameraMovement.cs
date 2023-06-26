@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.Globalization;
 using CameraPlus.HarmonyPatches;
 using CameraPlus.Configuration;
+using CameraPlus.Utilities;
 
 namespace CameraPlus.Behaviours
 {
@@ -33,6 +34,7 @@ namespace CameraPlus.Behaviours
         protected bool _paused = false;
         protected DateTime _pauseTime;
         protected CameraEffectStruct[] CameraEffect = {new CameraEffectStruct(), new CameraEffectStruct()};
+        protected WindowControlElements[] WindowControl = null;
 
         private VisibleObject _visibleLayer = null;
         public class Movements
@@ -52,6 +54,7 @@ namespace CameraPlus.Behaviours
             public bool TurnToHeadHorizontal = false;
             public bool EaseTransition = true;
             public CameraEffectStruct[] CameraEffect;
+            public WindowControlElements[] WindowControl;
         }
         public class CameraData
         {
@@ -153,6 +156,8 @@ namespace CameraPlus.Behaviours
                         if (jsonmovement.EaseTransition != null)
                             newMovement.EaseTransition = System.Convert.ToBoolean(jsonmovement.EaseTransition);
 
+                        if(jsonmovement.windowControl != null)
+                            newMovement.WindowControl = jsonmovement.windowControl;
                         Movements.Add(newMovement);
                     }
                     return true;
@@ -309,7 +314,18 @@ namespace CameraPlus.Behaviours
             _cameraPlus.effectElements.glitchFrequency = Mathf.LerpAngle(CameraEffect[0].glitchFrequency, CameraEffect[1].glitchFrequency, Ease(movePerc));
             _cameraPlus.effectElements.glitchScale = Mathf.LerpAngle(CameraEffect[0].glitchScale, CameraEffect[1].glitchScale, Ease(movePerc));
 
-            //
+            // Window Control
+            if (_cameraPlus._isMainCamera)
+            {
+                foreach(WindowControlElements windowControl in WindowControl)
+                {
+                    var otherCameraPlus = CameraUtilities.TargetCameraPlus(windowControl.target, Plugin.cameraController.CurrentProfile);
+                    if (otherCameraPlus != null)
+                    {
+                        otherCameraPlus._screenCamera.enabled = windowControl.visible.Value;
+                    }
+                }
+            }
 
             _cameraPlus.ThirdPersonPos = LerpVector3(StartPos, EndPos, Ease(movePerc));
             _cameraPlus.ThirdPersonRot = LerpVector3(StartRot, EndRot, Ease(movePerc));
@@ -453,6 +469,8 @@ namespace CameraPlus.Behaviours
                 movementEndDateTime = movementStartDateTime.AddSeconds(data.Movements[eventID].Duration);
                 movementDelayEndDateTime = movementStartDateTime.AddSeconds(data.Movements[eventID].Duration + data.Movements[eventID].Delay);
             }
+
+            WindowControl = data.Movements[eventID].WindowControl;
 
             eventID++;
         }

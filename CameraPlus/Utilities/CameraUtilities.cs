@@ -240,6 +240,11 @@ namespace CameraPlus.Utilities
             }
         }
 
+        public static CameraPlusBehaviour TargetCameraPlus(string cameraName,string profileName = "")
+        {
+            string dictKey = (profileName == string.Empty ? $"{Plugin.Name}_{cameraName}" : $"{profileName}_{cameraName}");
+            return Plugin.cameraController.Cameras[dictKey] as CameraPlusBehaviour;
+        }
         public static void TurnOffCameras()
         {
             foreach(var obj in Plugin.cameraController.LoadedProfile.Values)
@@ -339,63 +344,6 @@ namespace CameraPlus.Utilities
             return profileName;
         }
 
-        internal static void SetNext(string now = null)
-        {
-            DirectoryInfo[] dis = new DirectoryInfo(ProfilePath).GetDirectories();
-            if (now == null)
-            {
-                CurrentlySelected = "None";
-                if (dis.Length > 0)
-                    CurrentlySelected = dis.First().Name;
-                return;
-            }
-            int index = 0;
-            var a = dis.Where(x => x.Name == now);
-            if (a.Count() > 0)
-            {
-                index = dis.ToList().IndexOf(a.First());
-                if (index < dis.Count() - 1)
-                    CurrentlySelected = dis.ElementAtOrDefault(index + 1).Name;
-                else
-                    CurrentlySelected = dis.ElementAtOrDefault(0).Name;
-            }
-            else
-            {
-                CurrentlySelected = "None";
-                if (dis.Length > 0)
-                    CurrentlySelected = dis.First().Name;
-            }
-        }
-
-        internal static void TrySetLast(string now = null)
-        {
-            DirectoryInfo[] dis = new DirectoryInfo(ProfilePath).GetDirectories();
-            if (now == null)
-            {
-                CurrentlySelected = "None";
-                if (dis.Length > 0)
-                    CurrentlySelected = dis.First().Name;
-                return;
-            }
-            int index = 0;
-            var a = dis.Where(x => x.Name == now);
-            if (a.Count() > 0)
-            {
-                index = dis.ToList().IndexOf(a.First());
-                if (index == 0 && dis.Length >= 2)
-                    CurrentlySelected = dis.ElementAtOrDefault(dis.Count() - 1).Name;
-                else if (index < dis.Count() && dis.Length >= 2)
-                    CurrentlySelected = dis.ElementAtOrDefault(index - 1).Name;
-                else
-                    CurrentlySelected = dis.ElementAtOrDefault(0).Name;
-            }
-            else
-            {
-                CurrentlySelected = "None";
-                if (dis.Length > 0)
-                    CurrentlySelected = dis.First().Name;
-            }
-        }
 
         internal static void DeleteProfile(string name)
         {
