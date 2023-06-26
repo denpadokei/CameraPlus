@@ -113,6 +113,7 @@ namespace CameraPlus.UI
             if (!this) return;
             this.enabled = false;
             _showMenu = false;
+            _cameraPlus.Config.Save();
         }
 
         private int SelectedListNumber(string[] list, string selectedName)
@@ -151,20 +152,11 @@ namespace CameraPlus.UI
                         MenuUI.SetGrid(6, 43);
 
                         if (MenuUI.ToggleSwitch(0, 0, "Lock\nWindow", _cameraPlus.Config.cameraLock.lockScreen, 2, 3, 2))
-                        {
                             _cameraPlus.Config.cameraLock.lockScreen = !_cameraPlus.Config.cameraLock.lockScreen;
-                            _cameraPlus.Config.Save();
-                        }
                         if (MenuUI.ToggleSwitch(2, 0, "Grab\nCamera", !_cameraPlus.Config.cameraLock.lockCamera, 2, 3, 2))
-                        {
                             _cameraPlus.Config.cameraLock.lockCamera = !_cameraPlus.Config.cameraLock.lockCamera;
-                            _cameraPlus.Config.Save();
-                        }
                         if (MenuUI.ToggleSwitch(4, 0, "Save\nGrabPos", !_cameraPlus.Config.cameraLock.dontSaveDrag, 2, 3, 2))
-                        {
                             _cameraPlus.Config.cameraLock.dontSaveDrag = !_cameraPlus.Config.cameraLock.dontSaveDrag;
-                            _cameraPlus.Config.Save();
-                        }
 
                         if (MenuUI.Button(0, 4, "Add New Camera", 3, 4))
                         {
@@ -228,7 +220,10 @@ namespace CameraPlus.UI
                             _menuMode = MenuState.SettingConverter;
 
                         if (MenuUI.Button(0, 40, "Close Menu", 6, 3))
+                        {
                             Plugin.cameraController.CloseContextMenu();
+                            _cameraPlus.Config.Save();
+                        }
                         break;
                     /////////////////////////////////////////////////////////////////////////////////////
                     case MenuState.CameraSetting:
@@ -238,111 +233,66 @@ namespace CameraPlus.UI
                         {
                             case CameraSettingState.Setting:
                                 if (MenuUI.ToggleSwitch(0, 3, "Third person", _cameraPlus.Config.thirdPerson, 6, 2, 1.5f))
-                                {
                                     _cameraPlus.Config.thirdPerson = !_cameraPlus.Config.thirdPerson;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.ToggleSwitch(6, 3, "Desktop screen", !_cameraPlus.Config.cameraExtensions.dontDrawDesktop, 6, 2, 1.5f))
-                                {
                                     _cameraPlus.Config.DontDrawDesktop = !_cameraPlus.Config.DontDrawDesktop;
-                                    _cameraPlus.Config.Save();
-                                }
 
                                 if (_cameraPlus.Config.thirdPerson)
                                 {
                                     if (MenuUI.ToggleSwitch(0, 5, "Follow Noodle", _cameraPlus.Config.cameraExtensions.followNoodlePlayerTrack, 6, 2, 1.5f))
-                                    {
                                         _cameraPlus.Config.cameraExtensions.followNoodlePlayerTrack = !_cameraPlus.Config.cameraExtensions.followNoodlePlayerTrack;
-                                        _cameraPlus.Config.Save();
-                                    }
                                     if (MenuUI.ToggleSwitch(6, 5, "Follow 90/360", _cameraPlus.Config.cameraExtensions.follow360map, 6, 2, 1.5f))
-                                    {
                                         _cameraPlus.Config.cameraExtensions.follow360map = !_cameraPlus.Config.cameraExtensions.follow360map;
-                                        _cameraPlus.Config.Save();
-                                    }
                                     MenuUI.Label(6, 7, "90/360 Rotation smooth", 6, 2);
                                     var rotationSmoothValue = _cameraPlus.Config.cameraExtensions.rotation360Smooth;
                                     if (MenuUI.DoubleSpinBox(6, 9, ref rotationSmoothValue, 0.1f, 1, 0.1f, 10, 1, 6, 2))
-                                    {
                                         _cameraPlus.Config.cameraExtensions.rotation360Smooth = rotationSmoothValue;
-                                        _cameraPlus.Config.Save();
-                                    }
                                 }
                                 else
                                 {
                                     if (MenuUI.ToggleSwitch(0, 5, "Force Upright", _cameraPlus.Config.cameraExtensions.firstPersonCameraForceUpRight, 6, 2, 1.5f))
-                                    {
                                         _cameraPlus.Config.cameraExtensions.firstPersonCameraForceUpRight = !_cameraPlus.Config.cameraExtensions.firstPersonCameraForceUpRight;
-                                        _cameraPlus.Config.Save();
-                                    }
                                     MenuUI.Label(0, 7, "Position smooth", 6, 2);
                                     MenuUI.Label(6, 7, "Rotation smooth", 6, 2);
                                     var positionSmoothValue = _cameraPlus.Config.cameraExtensions.positionSmooth;
                                     var rotationSmoothValue = _cameraPlus.Config.cameraExtensions.rotationSmooth;
                                     if (MenuUI.DoubleSpinBox(0, 9, ref positionSmoothValue, 0.1f, 1, 0.1f, 10, 1, 6, 2))
-                                    {
                                         _cameraPlus.Config.cameraExtensions.positionSmooth = positionSmoothValue;
-                                        _cameraPlus.Config.Save();
-                                    }
                                     if (MenuUI.DoubleSpinBox(6, 9, ref rotationSmoothValue, 0.1f, 1, 0.1f, 10, 1, 6, 2))
-                                    {
                                         _cameraPlus.Config.cameraExtensions.rotationSmooth = rotationSmoothValue;
-                                        _cameraPlus.Config.Save();
-                                    }
 
                                 }
                                 MenuUI.Label(0, 11, "Render scale", 6, 2);
                                 var renderScale = _cameraPlus.Config.renderScale;
                                 if (MenuUI.SpinBox(0, 13, ref renderScale, 0.1f, 0.1f, 2, 1, 6, 2))
-                                {
                                     _cameraPlus.Config.renderScale = renderScale;
-                                    _cameraPlus.Config.Save();
-                                }
                                 MenuUI.Label(6, 11, "FoV", 6, 2);
                                 var fov = _cameraPlus.Config.fov;
                                 if (MenuUI.DoubleSpinBox(6, 13, ref fov, 1, 10, 0.1f, 200, 1, 6, 2))
-                                {
                                     _cameraPlus.Config.fov = fov;
-                                    _cameraPlus.Config.Save();
-                                }
                                 MenuUI.Label(0, 15, "Layer", 6, 2);
                                 var screenLayer = (float)_cameraPlus.Config.rawLayer;
                                 if (MenuUI.DoubleSpinBox(0, 17, ref screenLayer, 1, 10, -1000, 1000, 0, 6, 2))
-                                {
                                     _cameraPlus.Config.rawLayer = (int)screenLayer;
-                                    _cameraPlus.Config.Save();
-                                }
 
                                 MenuUI.Label(0, 19, "Near clip plane", 6, 2);
                                 var nearClip = _cameraPlus.Config.cameraExtensions.nearClip;
                                 var neardellta = nearClip >= 100 ? 10 : 1;
                                 if (MenuUI.DoubleSpinBox(0, 21, ref nearClip, 0.1f, neardellta, 0.1f, 1000, 1, 6, 2))
-                                {
                                     _cameraPlus.Config.cameraExtensions.nearClip = nearClip;
-                                    _cameraPlus.Config.Save();
-                                }
                                 MenuUI.Label(6, 19, "Far clip plane", 6, 2);
                                 var farClip = _cameraPlus.Config.cameraExtensions.farClip;
                                 var fardelta = farClip >= 100 ? 10 : 1; 
                                 if (MenuUI.DoubleSpinBox(6, 21, ref farClip, 0.1f, fardelta, 0.1f, 1000, 1, 6, 2))
-                                {
                                     _cameraPlus.Config.cameraExtensions.farClip = farClip;
-                                    _cameraPlus.Config.Save();
-                                }
 
 
                                 if (MenuUI.ToggleSwitch(0, 24, "Orthographic", _cameraPlus.Config.cameraExtensions.orthographicMode, 6, 2, 1.5f))
-                                {
                                     _cameraPlus.Config.cameraExtensions.orthographicMode = !_cameraPlus.Config.cameraExtensions.orthographicMode;
-                                    _cameraPlus.Config.Save();
-                                }
                                 MenuUI.Label(6, 24, "Orthographic scale", 6, 2);
                                 var orthographicSize = _cameraPlus.Config.cameraExtensions.orthographicSize;
                                 if (MenuUI.DoubleSpinBox(6, 26, ref orthographicSize, 0.1f, 1, 0.1f, 100, 1, 6, 2))
-                                {
                                     _cameraPlus.Config.cameraExtensions.orthographicSize = orthographicSize;
-                                    _cameraPlus.Config.Save();
-                                }
 
                                 if (MenuUI.ToggleSwitch(0, 29, "Multiplayer", _cameraPlus.Config.multiplayer.targetPlayerNumber != 0, 6, 2, 1.5f))
                                 {
@@ -350,33 +300,24 @@ namespace CameraPlus.UI
                                         _cameraPlus.Config.multiplayer.targetPlayerNumber = 1;
                                     else
                                         _cameraPlus.Config.multiplayer.targetPlayerNumber = 0;
-                                    _cameraPlus.Config.Save();
                                 }
                                 if (MenuUI.ToggleSwitch(6, 29, "Display info", _cameraPlus.Config.multiplayer.displayPlayerInfo, 6, 2, 1.5f))
-                                {
                                     _cameraPlus.Config.multiplayer.displayPlayerInfo = !_cameraPlus.Config.multiplayer.displayPlayerInfo;
-                                    _cameraPlus.Config.Save();
-                                }
 
                                 _selectedMultiplayerNum = _cameraPlus.Config.multiplayer.targetPlayerNumber - 1;
                                 if (MenuUI.HorizontalSelection(0, 31, ref _selectedMultiplayerNum, _multiplayerList, 12, 2))
-                                {
                                     _cameraPlus.Config.multiplayer.targetPlayerNumber = _selectedMultiplayerNum + 1;
-                                    _cameraPlus.Config.Save();
-                                }
                                 MenuUI.Box(0, 33, "Number Extension", 6, 2);
                                 if(MenuUI.Button(6, 33, "<", 2, 2))
                                 {
                                     if(_cameraPlus.Config.multiplayer.targetPlayerNumber > 0)
                                         _cameraPlus.Config.multiplayer.targetPlayerNumber -= 1;
-                                    _cameraPlus.Config.Save();
                                 }
                                 MenuUI.Box(8, 33, _cameraPlus.Config.multiplayer.targetPlayerNumber > 0 ? _cameraPlus.Config.multiplayer.targetPlayerNumber.ToString() : "-", 2, 2);
                                 if (MenuUI.Button(10, 33, ">", 2, 2))
                                 {
                                     if (_cameraPlus.Config.multiplayer.targetPlayerNumber <= 100)
                                         _cameraPlus.Config.multiplayer.targetPlayerNumber += 1;
-                                    _cameraPlus.Config.Save();
                                 }
 
                                 break;
@@ -390,7 +331,6 @@ namespace CameraPlus.UI
                                     _cameraPlus.Config.FirstPersonRotationOffset = _cameraPlus.Config.DefaultFirstPersonRotationOffset;
                                     _cameraPlus.ThirdPersonPos = _cameraPlus.Config.DefaultPosition;
                                     _cameraPlus.ThirdPersonRot = _cameraPlus.Config.DefaultRotation;
-                                    _cameraPlus.Config.Save();
                                 }
 
                                 if (_cameraPlus.Config.thirdPerson)
@@ -401,15 +341,9 @@ namespace CameraPlus.UI
                                         _cameraPlus.mouseMoveCameraSave = !_cameraPlus.mouseMoveCameraSave;
                                     }
                                     if (MenuUI.ToggleSwitch(0, 8, "Turn to Head", _cameraPlus.Config.cameraExtensions.turnToHead, 6, 2, 1.5f))
-                                    {
                                         _cameraPlus.Config.cameraExtensions.turnToHead = !_cameraPlus.Config.cameraExtensions.turnToHead;
-                                        _cameraPlus.Config.Save();
-                                    }
                                     if (MenuUI.ToggleSwitch(6, 8, "Horizontal Only", _cameraPlus.Config.cameraExtensions.turnToHeadHorizontal, 6, 2, 1.5f))
-                                    {
                                         _cameraPlus.Config.cameraExtensions.turnToHeadHorizontal = !_cameraPlus.Config.cameraExtensions.turnToHeadHorizontal;
-                                        _cameraPlus.Config.Save();
-                                    }
 
                                     MenuUI.Box(0, 11, "Third person position", 12, 10);
                                     MenuUI.Label(0, 13, "Amount position", 12, 2);
@@ -418,10 +352,7 @@ namespace CameraPlus.UI
                                     _pos = _cameraPlus.Config.ThirdPersonPositionFloat;
 
                                     if (MenuUI.AxizEdit(0, 17, ref _pos, _amountPosition, 12, 4))
-                                    {
                                         _cameraPlus.Config.ThirdPersonPositionFloat = _pos;
-                                        _cameraPlus.Config.Save();
-                                    }
 
                                     if (!_cameraPlus.Config.cameraExtensions.turnToHead)
                                     {
@@ -432,10 +363,7 @@ namespace CameraPlus.UI
                                         _rot = _cameraPlus.Config.ThirdPersonRotationFloat;
 
                                         if (MenuUI.AxizEdit(0, 28, ref _rot, _amountRotation, 12, 4, true))
-                                        {
                                             _cameraPlus.Config.ThirdPersonRotationFloat = _rot;
-                                            _cameraPlus.Config.Save();
-                                        }
                                     }
                                     else
                                     {
@@ -443,10 +371,7 @@ namespace CameraPlus.UI
                                         _pos = _cameraPlus.Config.TurnToHeadOffsetFloat;
 
                                         if (MenuUI.AxizEdit(0, 24, ref _pos, _amountPosition, 12, 4))
-                                        {
                                             _cameraPlus.Config.TurnToHeadOffsetFloat = _pos;
-                                            _cameraPlus.Config.Save();
-                                        }
                                     }
                                 }
                                 else
@@ -458,10 +383,7 @@ namespace CameraPlus.UI
                                     _pos = _cameraPlus.Config.FirstPersonPositionOffsetFloat;
 
                                     if (MenuUI.AxizEdit(0, 12, ref _pos, _amountPosition, 12, 4))
-                                    {
                                         _cameraPlus.Config.FirstPersonPositionOffsetFloat = _pos;
-                                        _cameraPlus.Config.Save();
-                                    }
 
                                     MenuUI.Box(0, 17, "First person offset rotation", 12, 10);
                                     MenuUI.Label(0, 19, "Amount rotation", 12, 2);
@@ -470,35 +392,22 @@ namespace CameraPlus.UI
                                     _rot = _cameraPlus.Config.FirstPersonRotationOffsetFloat;
 
                                     if (MenuUI.AxizEdit(0, 23, ref _rot, _amountRotation, 12, 4, true))
-                                    {
                                         _cameraPlus.Config.FirstPersonRotationOffsetFloat = _rot;
-                                        _cameraPlus.Config.Save();
-                                    }
                                 }
                                 break;
                             case CameraSettingState.Visibility:
                                 if (MenuUI.ToggleSwitch(0, 3, "Avatar", _cameraPlus.Config.Avatar, 6, 3, 1.5f))
-                                {
                                     _cameraPlus.Config.Avatar = !_cameraPlus.Config.Avatar;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.ToggleSwitch(0, 6, "Saber", _cameraPlus.Config.Saber, 6, 3, 1.5f))
-                                {
                                     _cameraPlus.Config.Saber = !_cameraPlus.Config.Saber;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.ToggleSwitch(0, 9, "Notes", _cameraPlus.Config.Notes, 6, 3, 1.5f))
-                                {
                                     _cameraPlus.Config.Notes = !_cameraPlus.Config.Notes;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.ToggleSwitch(0, 12, "Debri - LinkGame", _cameraPlus.Config.Debris == DebriVisibility.Link, 6, 3, 1.5f))
                                 {
                                     if (_cameraPlus.Config.Debris == DebriVisibility.Link)
                                         _cameraPlus.Config.Debris = DebriVisibility.Visible;
                                     else
                                         _cameraPlus.Config.Debris = DebriVisibility.Link;
-                                    _cameraPlus.Config.Save();
                                 }
                                 if (MenuUI.ToggleSwitch(6, 12, "Debri - AlwaysOn", _cameraPlus.Config.Debris == DebriVisibility.Visible, 6, 3, 1.5f))
                                 {
@@ -506,47 +415,31 @@ namespace CameraPlus.UI
                                         _cameraPlus.Config.Debris = DebriVisibility.Hidden;
                                     else
                                         _cameraPlus.Config.Debris = DebriVisibility.Visible;
-                                    _cameraPlus.Config.Save();
                                 }
                                 if (MenuUI.ToggleSwitch(0, 15, "Wall inside", _cameraPlus.Config.Wall, 6, 3, 1.5f))
-                                {
                                     _cameraPlus.Config.Wall = !_cameraPlus.Config.Wall;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.ToggleSwitch(6, 15, "Wall inside", _cameraPlus.Config.WallFrame, 6, 3, 1.5f))
-                                {
                                     _cameraPlus.Config.WallFrame = !_cameraPlus.Config.WallFrame;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.ToggleSwitch(0, 18, "UI", _cameraPlus.Config.UI, 6, 3, 1.5f))
-                                {
                                     _cameraPlus.Config.UI = !_cameraPlus.Config.UI;
-                                    _cameraPlus.Config.Save();
-                                }
 
                                 if (MenuUI.ToggleSwitch(0, 22, "PreviewCamera", _cameraPlus.Config.PreviewCamera, 6, 3, 1.5f))
-                                {
                                     _cameraPlus.Config.PreviewCamera = !_cameraPlus.Config.PreviewCamera;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (_cameraPlus.Config.PreviewCamera)
                                 {
                                     if (MenuUI.ToggleSwitch(0, 25, "Hide Cube", _cameraPlus.Config.PreviewCameraQuadOnly, 6, 3, 1.5f))
-                                    {
                                         _cameraPlus.Config.PreviewCameraQuadOnly = !_cameraPlus.Config.PreviewCameraQuadOnly;
-                                        _cameraPlus.Config.Save();
-                                    }
                                     if (MenuUI.ToggleSwitch(6, 25, "Show VR only", _cameraPlus.Config.PreviewCameraVROnly, 6, 3, 1.5f))
-                                    {
                                         _cameraPlus.Config.PreviewCameraVROnly = !_cameraPlus.Config.PreviewCameraVROnly;
-                                        _cameraPlus.Config.Save();
-                                    }
                                 }
 
                                 break;
                         }
                         if (MenuUI.Button(0, 36, "Back top menu", 12, 2))
+                        {
                             _menuMode = MenuState.MenuTop;
+                            _cameraPlus.Config.Save();
+                        }
                         break;
                     /////////////////////////////////////////////////////////////////////////////////////
                     case MenuState.PreviewQuad:
@@ -584,31 +477,20 @@ namespace CameraPlus.UI
                         if (MenuUI.DoubleSpinBox(6, 11, ref quadScale, 0.1f, 1.0f, 0.1f, 100, 1, 6, 2))
                         {
                             _cameraPlus.Config.cameraExtensions.previewCameraQuadScale = quadScale;
-                            _cameraPlus.Config.Save();
                             _cameraPlus._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
                         }
 
                         if (MenuUI.ToggleSwitch(0, 14, "Preview camera", _cameraPlus.Config.PreviewCamera, 6, 2, 1.5f))
-                        {
                             _cameraPlus.Config.PreviewCamera = !_cameraPlus.Config.PreviewCamera;
-                            _cameraPlus.Config.Save();
-                        }
                         if (MenuUI.ToggleSwitch(6, 14, "Mirror mode", _cameraPlus.Config.cameraExtensions.previewCameraMirrorMode, 6, 2, 1.5f))
                         {
                             _cameraPlus.Config.cameraExtensions.previewCameraMirrorMode = !_cameraPlus.Config.cameraExtensions.previewCameraMirrorMode;
                             _cameraPlus._quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition, PluginConfig.Instance.CameraCubeSize);
-                            _cameraPlus.Config.Save();
                         }
                         if (MenuUI.ToggleSwitch(0, 16, "Hide Cube", _cameraPlus.Config.PreviewCameraQuadOnly, 6, 2, 1.5f))
-                        {
                             _cameraPlus.Config.PreviewCameraQuadOnly = !_cameraPlus.Config.PreviewCameraQuadOnly;
-                            _cameraPlus.Config.Save();
-                        }
                         if (MenuUI.ToggleSwitch(6, 16, "Show VR only", _cameraPlus.Config.PreviewCameraVROnly, 6, 2, 1.5f))
-                        {
                             _cameraPlus.Config.PreviewCameraVROnly = !_cameraPlus.Config.PreviewCameraVROnly;
-                            _cameraPlus.Config.Save();
-                        }
 
                         if (MenuUI.ToggleSwitch(0, 19, "Preview separate", _cameraPlus.Config.cameraExtensions.previewQuadSeparate, 6, 2, 1.5f))
                         {
@@ -617,8 +499,6 @@ namespace CameraPlus.UI
                                 _cameraPlus._quad.SeparateQuad();
                             else
                                 _cameraPlus._quad.CombineQuad();
-                            _cameraPlus.Config.Save();
-
                         }
                         if (_cameraPlus.Config.cameraExtensions.previewQuadSeparate)
                         {
@@ -631,7 +511,6 @@ namespace CameraPlus.UI
                             {
                                 _cameraPlus.Config.PreviewQuadPositionFloat = _pos;
                                 _cameraPlus._quad.SetCameraQuadSeparatePosition();
-                                _cameraPlus.Config.Save();
                             }
 
                             MenuUI.Label(0, 30, "Amount rotation", 12, 2);
@@ -643,12 +522,14 @@ namespace CameraPlus.UI
                             {
                                 _cameraPlus.Config.PreviewQuadRotationFloat = _rot;
                                 _cameraPlus._quad.SetCameraQuadSeparatePosition();
-                                _cameraPlus.Config.Save();
                             }
                         }
 
                         if (MenuUI.Button(0, 39, "Back top menu", 12, 2))
+                        {
                             _menuMode = MenuState.MenuTop;
+                            _cameraPlus.Config.Save();
+                        }
                         break;
                     /////////////////////////////////////////////////////////////////////////////////////
                     case MenuState.Layout:
@@ -662,7 +543,6 @@ namespace CameraPlus.UI
                                 {
                                     _cameraPlus.Config.fitToCanvas = !_cameraPlus.Config.fitToCanvas;
                                     _cameraPlus.CreateScreenRenderTexture();
-                                    _cameraPlus.Config.Save();
                                 }
 
                                 MenuUI.Box(0, 5, "Window size", 12, 6);
@@ -671,7 +551,6 @@ namespace CameraPlus.UI
                                 if (MenuUI.DoubleSpinBox(0, 9, ref screenWidth, 1, 20, 1, Screen.width, 0, 6, 2)){
                                     _cameraPlus.Config.screenWidth = (int)screenWidth;
                                     _cameraPlus.CreateScreenRenderTexture();
-                                    _cameraPlus.Config.Save();
                                 }
                                 MenuUI.Label(6, 7, "Height", 6, 2);
                                 var screenHeight = (float)_cameraPlus.Config.screenHeight;
@@ -679,7 +558,6 @@ namespace CameraPlus.UI
                                 {
                                     _cameraPlus.Config.screenHeight = (int)screenHeight;
                                     _cameraPlus.CreateScreenRenderTexture();
-                                    _cameraPlus.Config.Save();
                                 }
 
                                 MenuUI.Box(0, 12, "Screen position", 12, 6);
@@ -689,7 +567,6 @@ namespace CameraPlus.UI
                                 {
                                     _cameraPlus.Config.screenPosX = (int)screenX;
                                     _cameraPlus.CreateScreenRenderTexture();
-                                    _cameraPlus.Config.Save();
                                 }
                                 MenuUI.Label(6, 14, "Y", 6, 2);
                                 var screenY = (float)_cameraPlus.Config.screenPosY;
@@ -697,7 +574,6 @@ namespace CameraPlus.UI
                                 {
                                     _cameraPlus.Config.screenPosY =(int)screenY;
                                     _cameraPlus.CreateScreenRenderTexture();
-                                    _cameraPlus.Config.Save();
                                 }
 
 
@@ -708,7 +584,6 @@ namespace CameraPlus.UI
                                     _cameraPlus.Config.screenWidth = Screen.width / 3;
                                     _cameraPlus.Config.screenHeight = Screen.height;
                                     _cameraPlus.CreateScreenRenderTexture();
-                                    _cameraPlus.Config.Save();
                                 }
                                 if (MenuUI.Button(3, 20, MenuUI.IconTexture[3], 3, 3))
                                 {
@@ -717,7 +592,6 @@ namespace CameraPlus.UI
                                     _cameraPlus.Config.screenWidth = Screen.width / 3;
                                     _cameraPlus.Config.screenHeight = Screen.height / 2;
                                     _cameraPlus.CreateScreenRenderTexture();
-                                    _cameraPlus.Config.Save();
                                 }
                                 if (MenuUI.Button(3, 23, MenuUI.IconTexture[4], 3, 3))
                                 {
@@ -726,7 +600,6 @@ namespace CameraPlus.UI
                                     _cameraPlus.Config.screenWidth = Screen.width / 3;
                                     _cameraPlus.Config.screenHeight = Screen.height / 2;
                                     _cameraPlus.CreateScreenRenderTexture();
-                                    _cameraPlus.Config.Save();
                                 }
                                 if (MenuUI.Button(6, 20, MenuUI.IconTexture[5], 3, 3))
                                 {
@@ -735,7 +608,6 @@ namespace CameraPlus.UI
                                     _cameraPlus.Config.screenWidth = Screen.width / 3;
                                     _cameraPlus.Config.screenHeight = Screen.height / 2;
                                     _cameraPlus.CreateScreenRenderTexture();
-                                    _cameraPlus.Config.Save();
                                 }
                                 if (MenuUI.Button(6, 23, MenuUI.IconTexture[6], 3, 3))
                                 {
@@ -744,7 +616,6 @@ namespace CameraPlus.UI
                                     _cameraPlus.Config.screenWidth = Screen.width / 3;
                                     _cameraPlus.Config.screenHeight = Screen.height / 2;
                                     _cameraPlus.CreateScreenRenderTexture();
-                                    _cameraPlus.Config.Save();
                                 }
                                 if (MenuUI.Button(9, 20, MenuUI.IconTexture[7], 3, 6))
                                 {
@@ -753,7 +624,6 @@ namespace CameraPlus.UI
                                     _cameraPlus.Config.screenWidth = Screen.width / 3;
                                     _cameraPlus.Config.screenHeight = Screen.height;
                                     _cameraPlus.CreateScreenRenderTexture();
-                                    _cameraPlus.Config.Save();
                                 }
 
                                 break;
@@ -763,7 +633,10 @@ namespace CameraPlus.UI
                         }
 
                         if (MenuUI.Button(0, 32, "Back top menu", 12, 2))
+                        {
                             _menuMode = MenuState.MenuTop;
+                            _cameraPlus.Config.Save();
+                        }
                         break;
                     /////////////////////////////////////////////////////////////////////////////////////
                     case MenuState.ExternalLink:
@@ -777,7 +650,6 @@ namespace CameraPlus.UI
                                 if (MenuUI.HorizontalSelection(0, 3, ref _vmcProtocolState, Enum.GetNames(typeof(VMCProtocolMode)), 12, 2))
                                 {
                                     _cameraPlus.Config.vmcProtocol.mode = (VMCProtocolMode)Enum.ToObject(typeof(VMCProtocolMode), _vmcProtocolState);
-                                    _cameraPlus.Config.Save();
                                     _cameraPlus.DestoryVMCProtocolObject();
                                     if (_cameraPlus.Config.vmcProtocol.mode == VMCProtocolMode.Sender)
                                         _cameraPlus.InitExternalSender();
@@ -800,10 +672,7 @@ namespace CameraPlus.UI
                                 _selectedWebCam = MenuUI.SelectionGrid(0, 3, _selectedWebCam, ref _currentWebCamPage, _webCamList, _cameraPlus.Config.webCamera.name, 8, 10);
 
                                 if (MenuUI.ToggleSwitch(8, 3, "Auto\nConnect", _cameraPlus.Config.webCamera.autoConnect, 4, 3, 1.5f))
-                                {
                                     _cameraPlus.Config.webCamera.autoConnect = !_cameraPlus.Config.webCamera.autoConnect;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (!Plugin.cameraController.inProgressCalibration())
                                 {
                                     if (!_cameraPlus.webCamScreen)
@@ -868,21 +737,18 @@ namespace CameraPlus.UI
                         }
 
                         if (MenuUI.Button(0, 32, "Back top menu", 12, 2))
+                        {
                             _menuMode = MenuState.MenuTop;
+                            _cameraPlus.Config.Save();
+                        }
                         break;
                     /////////////////////////////////////////////////////////////////////////////////////
                     case MenuState.MovementScript:
                         MenuUI.SetGrid(6, 34);
                         if (MenuUI.ToggleSwitch(0, 0, "Use audio sync", _cameraPlus.Config.movementScript.useAudioSync, 6, 2, 1.5f))
-                        {
                             _cameraPlus.Config.movementScript.useAudioSync = !_cameraPlus.Config.movementScript.useAudioSync;
-                            _cameraPlus.Config.Save();
-                        }
                         if (MenuUI.ToggleSwitch(0, 2, "Song specific script", _cameraPlus.Config.movementScript.songSpecificScript, 6, 2, 1.5f))
-                        {
                             _cameraPlus.Config.movementScript.songSpecificScript = !_cameraPlus.Config.movementScript.songSpecificScript;
-                            _cameraPlus.Config.Save();
-                        }
 
                         _selectedScript = MenuUI.SelectionGrid(0, 5, _selectedScript, ref _currentScriptPage, _scriptList, 
                             (_cameraPlus.Config.movementScript.movementScript == string.Empty ? "[ MovementScript Off ]" : Path.GetFileName(_cameraPlus.Config.movementScript.movementScript)), 6, 12);
@@ -899,17 +765,16 @@ namespace CameraPlus.UI
                                 _cameraPlus.Config.movementScript.movementScript = _scriptList[_selectedScript];
                                 _cameraPlus.AddMovementScript();
                             }
-                            _cameraPlus.Config.Save();
                         }
                         MenuUI.Box(0, 21, "Ignore script visibility setting", 6, 10);
                         if (MenuUI.ToggleSwitch(0, 23, "UI", _cameraPlus.Config.movementScript.ignoreScriptUIDisplay, 3, 2, 1.5f))
-                        {
                             _cameraPlus.Config.movementScript.ignoreScriptUIDisplay = !_cameraPlus.Config.movementScript.ignoreScriptUIDisplay;
-                            _cameraPlus.Config.Save();
-                        }
 
                         if (MenuUI.Button(0, 32, "Back top menu", 6, 2))
+                        {
                             _menuMode = MenuState.MenuTop;
+                            _cameraPlus.Config.Save();
+                        }
                         break;
                     /////////////////////////////////////////////////////////////////////////////////////
                     case MenuState.Effect:
@@ -920,25 +785,18 @@ namespace CameraPlus.UI
                         {
                             case EffectSettingState.DoF:
                                 if(MenuUI.ToggleSwitch(0,3,"Depth of field", _cameraPlus.Config.DoFEnable, 6,2, 1.5f))
-                                {
                                     _cameraPlus.Config.DoFEnable = !_cameraPlus.Config.DoFEnable;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.ToggleSwitch(6, 3, "Use slider", _useSlider, 6, 2, 1.5f))
                                     _useSlider = !_useSlider;
 
                                 if (MenuUI.ToggleSwitch(0, 6, "Auto distance", _cameraPlus.Config.DoFAutoDistance, 6, 2, 1.5f))
-                                {
                                     _cameraPlus.Config.DoFAutoDistance = !_cameraPlus.Config.DoFAutoDistance;
-                                    _cameraPlus.Config.Save();
-                                }
 
                                 MenuUI.Box(0, 8, $"Focus distance : {_cameraPlus.effectElements.dofFocusDistance.ToString("F2")}", 12, 4);
                                 var dist = _cameraPlus.Config.DoFFocusDistance;
                                 if (MenuUI.SwitchableSlider(0, 10, ref dist, 0, 100, _useSlider, 12, 2)) 
                                 {
                                     _cameraPlus.Config.DoFFocusDistance = dist;
-                                    _cameraPlus.Config.Save();
                                     _cameraPlus.effectElements.dofFocusDistance = _cameraPlus.Config.DoFFocusDistance;
                                 }
 
@@ -947,7 +805,6 @@ namespace CameraPlus.UI
                                 if (MenuUI.SwitchableSlider(0, 14, ref rng, 0, 100, _useSlider, 12, 2))
                                 {
                                     _cameraPlus.Config.DoFFocusRange = rng;
-                                    _cameraPlus.Config.Save();
                                     _cameraPlus.effectElements.dofFocusRange = _cameraPlus.Config.DoFFocusRange;
                                 }
 
@@ -956,27 +813,20 @@ namespace CameraPlus.UI
                                 if (MenuUI.SwitchableSlider(0, 18, ref blur, 0, 50, _useSlider, 12, 2))
                                 {
                                     _cameraPlus.Config.DoFBlurRadius = blur;
-                                    _cameraPlus.Config.Save();
                                     _cameraPlus.effectElements.dofBlurRadius = _cameraPlus.Config.DoFBlurRadius;
                                 }
 
                                 break;
                             case EffectSettingState.Outline:
                                 if (MenuUI.ToggleSwitch(0, 3, "Outline effect", _cameraPlus.Config.OutlineEnable, 6, 2, 1.5f))
-                                {
                                     _cameraPlus.Config.OutlineEnable = !_cameraPlus.Config.OutlineEnable;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.ToggleSwitch(6, 3, "Use slider", _useSlider, 6, 2, 1.5f))
                                     _useSlider = !_useSlider;
 
                                 MenuUI.Label(0, 5, $"Outline Only : {_cameraPlus.Config.OutlineOnly.ToString("F2")}", 6, 2);
                                 var outlineState = _cameraPlus.Config.OutlineOnly;
                                 if (MenuUI.SwitchableSliderShort(0, 7, ref outlineState, 0, 1, _useSlider, 6, 2))
-                                {
                                     _cameraPlus.Config.OutlineOnly = outlineState;
-                                    _cameraPlus.Config.Save();
-                                }
 
                                 float[] lineColor = _cameraPlus.Config.OutlineColorValue;
                                 MenuUI.Label(0, 9, "Outline color", 12, 2);
@@ -984,20 +834,11 @@ namespace CameraPlus.UI
                                 MenuUI.Label(4, 11, $"G : {lineColor[1].ToString("F2")}", 4, 2);
                                 MenuUI.Label(8, 11, $"B : {lineColor[2].ToString("F2")}", 4, 2);
                                 if (MenuUI.SwitchableSliderShort(0, 13, ref lineColor[0], 0, 1, _useSlider, 4, 2))
-                                {
                                     _cameraPlus.Config.OutlineColorValue = lineColor;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.SwitchableSliderShort(4, 13, ref lineColor[1], 0, 1, _useSlider, 4, 2))
-                                {
                                     _cameraPlus.Config.OutlineColorValue = lineColor;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.SwitchableSliderShort(8, 13, ref lineColor[2], 0, 1, _useSlider, 4, 2))
-                                {
                                     _cameraPlus.Config.OutlineColorValue = lineColor;
-                                    _cameraPlus.Config.Save();
-                                }
 
                                 float[] lineBGColor = _cameraPlus.Config.OutlineBGColorValue;
                                 MenuUI.Label(0, 15, "Background color", 12, 2);
@@ -1005,20 +846,11 @@ namespace CameraPlus.UI
                                 MenuUI.Label(4, 17, $"G : {lineBGColor[1].ToString("F2")}", 4, 2);
                                 MenuUI.Label(8, 17, $"B : {lineBGColor[2].ToString("F2")}", 4, 2);
                                 if (MenuUI.SwitchableSliderShort(0, 19, ref lineBGColor[0], 0, 1, _useSlider, 4, 2))
-                                {
                                     _cameraPlus.Config.OutlineBGColorValue = lineBGColor;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.SwitchableSliderShort(4, 19, ref lineBGColor[1], 0, 1, _useSlider, 4, 2))
-                                {
                                     _cameraPlus.Config.OutlineBGColorValue = lineBGColor;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.SwitchableSliderShort(8, 19, ref lineBGColor[2], 0, 1, _useSlider, 4, 2))
-                                {
                                     _cameraPlus.Config.OutlineBGColorValue = lineBGColor;
-                                    _cameraPlus.Config.Save();
-                                }
                                 break;
                             case EffectSettingState.Wipe:
                                 if (MenuUI.ToggleSwitch(0, 3, "Wipe effect", _cameraPlus.Config.WipeProgress != 0, 6, 2, 1.5f))
@@ -1028,7 +860,6 @@ namespace CameraPlus.UI
                                     else
                                         _cameraPlus.Config.WipeProgress = 0.5f;
 
-                                    _cameraPlus.Config.Save();
                                 }
                                 if (MenuUI.ToggleSwitch(6, 3, "Use slider", _useSlider, 6, 2, 1.5f))
                                     _useSlider = !_useSlider;
@@ -1036,100 +867,58 @@ namespace CameraPlus.UI
                                 MenuUI.Label(0, 5, $"Wipe progress : {_cameraPlus.Config.WipeProgress.ToString("F2")}", 6, 2);
                                 var wipeProgress = _cameraPlus.Config.WipeProgress;
                                 if (MenuUI.SwitchableSliderShort(0, 7, ref wipeProgress, 0, 1, _useSlider, 6, 2))
-                                {
                                     _cameraPlus.Config.WipeProgress = wipeProgress;
-                                    _cameraPlus.Config.Save();
-                                }
 
                                 float[] wipeOffset = _cameraPlus.Config.WipeCircleCenterValue;
                                 MenuUI.Label(0, 9, $"Center offset", 12, 2);
                                 MenuUI.Label(0, 11, "x", 6, 2);
                                 MenuUI.Label(6, 11, "y", 6, 2);
                                 if(MenuUI.DoubleSpinBox(0,13, ref wipeOffset[0], 0.01f, 0.1f, -0.5f, 0.5f, 2, 6, 2))
-                                {
                                     _cameraPlus.Config.WipeCircleCenterValue = wipeOffset;
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.DoubleSpinBox(6, 13, ref wipeOffset[1], 0.01f, 0.1f, -0.5f, 0.5f, 2, 6, 2))
-                                {
                                     _cameraPlus.Config.WipeCircleCenterValue = wipeOffset;
-                                    _cameraPlus.Config.Save();
-                                }
 
                                 MenuUI.Label(0, 16, "Wipe type", 6, 2);
                                 if (MenuUI.ToggleButton(0,18, "Circle", _cameraPlus.Config.WipeType == "Circle", 4, 6))
-                                {
                                     _cameraPlus.Config.WipeType = "Circle";
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.ToggleButton(6, 18, "Top to Bottom", _cameraPlus.Config.WipeType == "Top", 4, 2))
-                                {
                                     _cameraPlus.Config.WipeType = "Top";
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.ToggleButton(4, 20, "Left to Right", _cameraPlus.Config.WipeType == "Left", 4, 2))
-                                {
                                     _cameraPlus.Config.WipeType = "Left";
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.ToggleButton(8, 20, "Right to Left", _cameraPlus.Config.WipeType == "Right", 4, 2))
-                                {
                                     _cameraPlus.Config.WipeType = "Right";
-                                    _cameraPlus.Config.Save();
-                                }
                                 if (MenuUI.ToggleButton(6, 22, "Bottom to Top", _cameraPlus.Config.WipeType == "Bottom", 4, 2))
-                                {
                                     _cameraPlus.Config.WipeType = "Bottom";
-                                    _cameraPlus.Config.Save();
-                                }
                                 break;
                             case EffectSettingState.Glitch:
                                 if (MenuUI.ToggleSwitch(0, 3, "Glitch", _cameraPlus.Config.GlitchEnable, 6, 2, 1.5f))
-                                {
                                     _cameraPlus.Config.GlitchEnable = !_cameraPlus.Config.GlitchEnable;
-                                    _cameraPlus.Config.Save();
-                                }
                                 float[] glitchValue = _cameraPlus.Config.GlitchValue;
                                 MenuUI.Label(0, 6, "Line speed", 6, 2);
                                 if (MenuUI.DoubleSpinBox(0, 8, ref glitchValue[0], 0.1f, 1, 0, 10, 1, 6, 2))
-                                {
                                     _cameraPlus.Config.GlitchLineSpeed = glitchValue[0];
-                                    _cameraPlus.Config.Save();
-                                }
                                 MenuUI.Label(6, 6, "Line size", 6, 2);
                                 if (MenuUI.DoubleSpinBox(6, 8, ref glitchValue[1], 0.01f, 0.1f, 0, 1, 2, 6, 2))
-                                {
                                     _cameraPlus.Config.GlitchLineSize = glitchValue[1];
-                                    _cameraPlus.Config.Save();
-                                }
                                 MenuUI.Label(0, 10, "Color gap", 6, 2);
                                 if (MenuUI.DoubleSpinBox(0, 12, ref glitchValue[2], 0.01f, 0.1f, 0, 1, 2, 6, 2))
-                                {
                                     _cameraPlus.Config.GlitchColorGap = glitchValue[2];
-                                    _cameraPlus.Config.Save();
-                                }
                                 MenuUI.Label(0, 14, "Frame rate", 6, 2);
                                 if (MenuUI.SpinBox(0, 16, ref glitchValue[3], 1, 0, 30, 0, 6, 2))
-                                {
                                     _cameraPlus.Config.GlitchFrameRate = glitchValue[3];
-                                    _cameraPlus.Config.Save();
-                                }
                                 MenuUI.Label(6, 14, "Frequency", 6, 2);
                                 if (MenuUI.DoubleSpinBox(6, 16, ref glitchValue[4], 0.01f, 0.1f, 0, 1, 2, 6, 2))
-                                {
                                     _cameraPlus.Config.GlitchFrequency = glitchValue[4];
-                                    _cameraPlus.Config.Save();
-                                }
                                 MenuUI.Label(0, 18, "Scale", 6, 2);
                                 if (MenuUI.SpinBox(0, 20, ref glitchValue[5], 1, 1, 10, 0, 6, 2))
-                                {
                                     _cameraPlus.Config.GlitchScale = glitchValue[5];
-                                    _cameraPlus.Config.Save();
-                                }
                                 break;
                         }
                         if (MenuUI.Button(0, 32, "Back top menu", 12, 2))
+                        {
                             _menuMode = MenuState.MenuTop;
+                            _cameraPlus.Config.Save();
+                        }
                         break;
                     /////////////////////////////////////////////////////////////////////////////////////
                     case MenuState.Profile:
@@ -1196,7 +985,10 @@ namespace CameraPlus.UI
                             PluginConfig.Instance.SongSpecificScriptProfile = string.Empty;
 
                         if (MenuUI.Button(0, 32, "Back top menu", 12, 2))
+                        {
                             _menuMode = MenuState.MenuTop;
+                            _cameraPlus.Config.Save();
+                        }
                         break;
                     /////////////////////////////////////////////////////////////////////////////////////
                     case MenuState.SettingConverter:
