@@ -315,15 +315,13 @@ namespace CameraPlus.Behaviours
             _cameraPlus.effectElements.glitchScale = Mathf.LerpAngle(CameraEffect[0].glitchScale, CameraEffect[1].glitchScale, Ease(movePerc));
 
             // Window Control
-            if (_cameraPlus._isMainCamera)
+            if (_cameraPlus._isMainCamera && WindowControl != null)
             {
                 foreach(WindowControlElements windowControl in WindowControl)
                 {
-                    var otherCameraPlus = CameraUtilities.TargetCameraPlus(windowControl.target, Plugin.cameraController.CurrentProfile);
+                    var otherCameraPlus = CameraUtilities.TargetCameraPlus(windowControl.Target, Plugin.cameraController.CurrentProfile);
                     if (otherCameraPlus != null)
-                    {
-                        otherCameraPlus._screenCamera.enabled = windowControl.visible.Value;
-                    }
+                        otherCameraPlus._screenCamera.enabled = windowControl.Visible.Value;
                 }
             }
 
@@ -334,6 +332,10 @@ namespace CameraPlus.Behaviours
 
         }
 
+        protected Vector2 LeapVector2(Vector2 from, Vector2 to, float percent)
+        {
+            return new Vector2(Mathf.LerpAngle(from.x, to.x, percent), Mathf.LerpAngle(from.y, to.y, percent));
+        }
         protected Vector3 LerpVector3(Vector3 from, Vector3 to, float percent)
         {
             return new Vector3(Mathf.LerpAngle(from.x, to.x, percent), Mathf.LerpAngle(from.y, to.y, percent), Mathf.LerpAngle(from.z, to.z, percent));
@@ -342,10 +344,12 @@ namespace CameraPlus.Behaviours
         {
             return new Vector4(Mathf.LerpAngle(from.x, to.x, percent), Mathf.LerpAngle(from.y, to.y, percent), Mathf.LerpAngle(from.z, to.z, percent), Mathf.LerpAngle(from.w, to.w, percent));
         }
+
         protected Color LerpColor(Color from, Color to, float percent)
         {
             return new Color(Mathf.Lerp(from.r, to.r, percent), Mathf.Lerp(from.g, to.g, percent), Mathf.Lerp(from.b, to.b, percent), Mathf.Lerp(from.a, to.a, percent));
         }
+
         public virtual bool Init(CameraPlusBehaviour cameraPlus, string scriptPath)
         {
             _cameraPlus = cameraPlus;

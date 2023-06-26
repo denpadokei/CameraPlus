@@ -243,7 +243,10 @@ namespace CameraPlus.Utilities
         public static CameraPlusBehaviour TargetCameraPlus(string cameraName,string profileName = "")
         {
             string dictKey = (profileName == string.Empty ? $"{Plugin.Name}_{cameraName}" : $"{profileName}_{cameraName}");
-            return Plugin.cameraController.Cameras[dictKey] as CameraPlusBehaviour;
+            if(Plugin.cameraController.Cameras.ContainsKey(dictKey))
+                return Plugin.cameraController.Cameras[dictKey] as CameraPlusBehaviour;
+            else
+                return null;
         }
         public static void TurnOffCameras()
         {

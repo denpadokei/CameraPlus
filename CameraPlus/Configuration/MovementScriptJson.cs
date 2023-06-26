@@ -17,21 +17,16 @@ namespace CameraPlus.Configuration
         public string z { get; set; }
     }
 
-    public class RectElements
+    public class PositionEelemnts
     {
         public string x { get; set; }
         public string y { get; set; }
-        public string width { get; set; }
-        public string height { get; set; }
     }
 
     public class WindowControlElements
     {
-        public string target { get; set; }
-        public bool? visible { get; set; }
-
-        public RectElements startRect { get; set; }
-        public RectElements endRect { get; set; }
+        public string Target { get; set; }
+        public bool? Visible { get; set; }
     }
 
     public class ColorElements
