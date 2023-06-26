@@ -5,6 +5,7 @@
 - There were too many items in the UI, so I added the layout and contents, and the settings that were not in the UI.  
 - Added sub camera control in movementscript.  
 - Temporarily monitor FPFCToggle of SiraUtil due to FPFC change in above 1.29.4.
+- Settings UI window no longer pops off screen.  
 - Changed the way the camera is rebuilt every time you switch scenes. Bugs may be less likely to occur in long-time play.
 - Stopped automatic conversion from old configuration file cfg.
 - I changed the target framework to .net framework 4.8.
