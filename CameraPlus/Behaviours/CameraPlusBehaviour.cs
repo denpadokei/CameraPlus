@@ -355,7 +355,8 @@ namespace CameraPlus.Behaviours
             else
             {
                 turnToHead = Config.cameraExtensions.turnToHead;
-                _screenCamera.enabled = true;
+                if(!Config.DontDrawDesktop)
+                    _screenCamera.enabled = true;
             }
         }
 

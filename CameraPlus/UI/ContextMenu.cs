@@ -613,11 +613,12 @@ namespace CameraPlus.UI
                         if (MenuUI.ToggleSwitch(0, 19, "Preview separate", _cameraPlus.Config.cameraExtensions.previewQuadSeparate, 6, 2, 1.5f))
                         {
                             _cameraPlus.Config.cameraExtensions.previewQuadSeparate = !_cameraPlus.Config.cameraExtensions.previewQuadSeparate;
-                            _cameraPlus.Config.Save();
                             if (_cameraPlus.Config.cameraExtensions.previewQuadSeparate)
                                 _cameraPlus._quad.SeparateQuad();
                             else
                                 _cameraPlus._quad.CombineQuad();
+                            _cameraPlus.Config.Save();
+
                         }
                         if (_cameraPlus.Config.cameraExtensions.previewQuadSeparate)
                         {
@@ -629,8 +630,8 @@ namespace CameraPlus.UI
                             if (MenuUI.AxizEdit(0, 26,ref _pos, _amountPosition, 12, 4))
                             {
                                 _cameraPlus.Config.PreviewQuadPositionFloat = _pos;
-                                _cameraPlus.Config.Save();
                                 _cameraPlus._quad.SetCameraQuadSeparatePosition();
+                                _cameraPlus.Config.Save();
                             }
 
                             MenuUI.Label(0, 30, "Amount rotation", 12, 2);
@@ -641,8 +642,8 @@ namespace CameraPlus.UI
                             if (MenuUI.AxizEdit(0, 34, ref _rot, _amountRotation, 12, 4, true))
                             {
                                 _cameraPlus.Config.PreviewQuadRotationFloat = _rot;
-                                _cameraPlus.Config.Save();
                                 _cameraPlus._quad.SetCameraQuadSeparatePosition();
+                                _cameraPlus.Config.Save();
                             }
                         }
 

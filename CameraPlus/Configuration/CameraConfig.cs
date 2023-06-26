@@ -572,7 +572,7 @@ namespace CameraPlus.Configuration
         {
             if (_saving)
             {
-                _saving = false;
+                //_saving = false;
                 return;
             }
 

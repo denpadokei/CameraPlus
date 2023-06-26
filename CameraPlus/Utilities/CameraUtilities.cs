@@ -428,7 +428,7 @@ namespace CameraPlus.Utilities
         {
             foreach (CameraPlusBehaviour c in Plugin.cameraController.Cameras.Values.ToArray())
             {
-                if (c.IsTopmostRenderAreaAtPos(mousePos))
+                if (c.IsTopmostRenderAreaAtPos(mousePos) && c.gameObject.activeInHierarchy)
                     return c;
             }
             return null;
