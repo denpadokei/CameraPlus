@@ -49,7 +49,7 @@ namespace CameraPlus
 
         protected UI.ContextMenu _contextMenu = null;
         protected bool _contextMenuOpen = false;
-
+        protected bool _mouseHeld = false;
 
         private void Awake()
         {
@@ -96,9 +96,15 @@ namespace CameraPlus
         {
             if (Input.GetMouseButton(1))
             {
-                DisplayContextMenu();
-                _contextMenuOpen = true;
+                if (!_mouseHeld)
+                {
+                    DisplayContextMenu();
+                    _contextMenuOpen = true;
+                }
+                _mouseHeld = true;
             }
+            else
+                _mouseHeld = false;
         }
 
         private void ShaderLoad()

@@ -67,7 +67,7 @@ namespace CameraPlus.Configuration
         [JsonProperty("TurnToHeadOffset")]
         private targetTransformElements _turnToHeadOffset = new targetTransformElements();
         [JsonProperty("MovementScript")]
-        private movementScriptElements _movementScript= new movementScriptElements();
+        private movementScriptElements _movementScript = new movementScriptElements();
         [JsonProperty("CameraLock")]
         private cameraLockElements _cameraLock = new cameraLockElements();
         [JsonProperty("CameraExtensions")]
@@ -88,7 +88,7 @@ namespace CameraPlus.Configuration
             dofAutoDistance = false,
 
             wipeType = "Circle",
-            wipeCircleCenter = new Vector4(0,0,0,0),
+            wipeCircleCenter = new Vector4(0, 0, 0, 0),
             wipeProgress = 0,
 
             enableOutline = false,
@@ -105,11 +105,14 @@ namespace CameraPlus.Configuration
             glitchScale = 1
         };
 
-        public bool thirdPerson { 
-            get { 
-                return _cameraType == CameraType.ThirdPerson; 
-            } 
-            set {
+        public bool thirdPerson
+        {
+            get
+            {
+                return _cameraType == CameraType.ThirdPerson;
+            }
+            set
+            {
                 if (value)
                     _cameraType = CameraType.ThirdPerson;
                 else
@@ -122,14 +125,16 @@ namespace CameraPlus.Configuration
             }
         }
         public float fov { get => _fieldOfView; set { _fieldOfView = value; } }
-        public int layer {
-            get {
+        public int layer
+        {
+            get
+            {
                 if (FPFCPatch.instance != null)
                     return _layer + 1002;
                 else
                     return _layer;
-            } 
-            set { _layer = value; } 
+            }
+            set { _layer = value; }
         }
         public int rawLayer { get => _layer; set { _layer = value; } }
         public int antiAliasing { get => _antiAliasing; set { _antiAliasing = value; } }
@@ -167,14 +172,28 @@ namespace CameraPlus.Configuration
         public float WipeProgress { get => _cameraEffect.wipeProgress; set { _cameraEffect.wipeProgress = value; } }
         public string WipeType { get => _cameraEffect.wipeType; set { _cameraEffect.wipeType = value; } }
         public Vector4 WipeCircleCenter { get => _cameraEffect.wipeCircleCenter; set { _cameraEffect.wipeCircleCenter = value; } }
+        public float[] WipeCircleCenterValue { get => _cameraEffect.wipeCircleCenterValue; set => _cameraEffect.wipeCircleCenterValue = value; }
 
         public bool OutlineEnable { get => _cameraEffect.enableOutline; set { _cameraEffect.enableOutline = value; } }
         public float OutlineOnly { get => _cameraEffect.outlineOnly; set { _cameraEffect.outlineOnly = value; } }
         public Color OutlineColor { get => _cameraEffect.outlineColor; set { _cameraEffect.outlineColor = value; } }
         public Color OutlineBackgroundColor { get => _cameraEffect.outlineBGColor; set { _cameraEffect.outlineBGColor = value; } }
+        public float[] OutlineColorValue { get => _cameraEffect.outlineColorValue; set { _cameraEffect.outlineColorValue = value; } }
+        public float[] OutlineBGColorValue { get => _cameraEffect.outlineBGColorValue; set { _cameraEffect.outlineBGColorValue = value; } }
 
-        public bool PreviewCamera { get => _cameraExtensions.previewCamera; 
-            set {
+        public bool GlitchEnable { get => _cameraEffect.enableGlitch; set { _cameraEffect.enableGlitch = value; } }
+        public float GlitchLineSpeed { get => _cameraEffect.glitchLineSpeed; set { _cameraEffect.glitchLineSpeed = value; } }
+        public float GlitchLineSize { get => _cameraEffect.glitchLineSize; set { _cameraEffect.glitchLineSize = value; } }
+        public float GlitchColorGap { get => _cameraEffect.glitchColorGap; set { _cameraEffect.glitchColorGap = value; } }
+        public float GlitchFrameRate { get => _cameraEffect.glitchFrameRate; set { _cameraEffect.glitchFrameRate = value; } }
+        public float GlitchFrequency { get => _cameraEffect.glitchFrequency; set { _cameraEffect.glitchFrequency = value; } }
+        public float GlitchScale { get => _cameraEffect.glitchScale; set { _cameraEffect.glitchScale = value; } }
+        public float[] GlitchValue { get => _cameraEffect.glitchValue; set { _cameraEffect.glitchValue = value; } }
+        public bool PreviewCamera
+        {
+            get => _cameraExtensions.previewCamera;
+            set
+            {
                 _cameraExtensions.previewCamera = value;
                 cam?._quad.gameObject.SetActive(thirdPerson && PreviewCamera);
             }
@@ -206,7 +225,7 @@ namespace CameraPlus.Configuration
                 cam._screenCamera.enabled = !value;
             }
         }
-        public bool Avatar { get => _visibleObject.avatar; set { _visibleObject.avatar = value;SetCullingMask(); } }
+        public bool Avatar { get => _visibleObject.avatar; set { _visibleObject.avatar = value; SetCullingMask(); } }
         public bool UI { get => _visibleObject.ui; set { _visibleObject.ui = value; SetCullingMask(); } }
         public bool Wall { get => _visibleObject.wall; set { _visibleObject.wall = value; SetCullingMask(); } }
         public bool WallFrame { get => _visibleObject.wallFrame; set { _visibleObject.wallFrame = value; SetCullingMask(); } }
@@ -219,21 +238,28 @@ namespace CameraPlus.Configuration
         public event Action<CameraConfig> ConfigChangedEvent;
         private readonly FileSystemWatcher _configWatcher;
         internal bool configLoaded = false;
-        public Vector2 ScreenPosition{
-            get{
+        public Vector2 ScreenPosition
+        {
+            get
+            {
                 return new Vector2(_windowRect.x, _windowRect.y);
             }
         }
-        public Vector2 ScreenSize{
-            get{
+        public Vector2 ScreenSize
+        {
+            get
+            {
                 return new Vector2(_windowRect.width, _windowRect.height);
             }
         }
-        public Vector3 Position{
-            get{
+        public Vector3 Position
+        {
+            get
+            {
                 return new Vector3(_thirdPersonPos.x, _thirdPersonPos.y, _thirdPersonPos.z);
             }
-            set{
+            set
+            {
                 _thirdPersonPos.x = value.x;
                 _thirdPersonPos.y = value.y;
                 _thirdPersonPos.z = value.z;
@@ -256,11 +282,14 @@ namespace CameraPlus.Configuration
                 _thirdPersonPos.z = value[2];
             }
         }
-        public Vector3 Rotation{
-            get{
+        public Vector3 Rotation
+        {
+            get
+            {
                 return new Vector3(_thirdPersonRot.x, _thirdPersonRot.y, _thirdPersonRot.z);
             }
-            set{
+            set
+            {
                 _thirdPersonRot.x = value.x;
                 _thirdPersonRot.y = value.y;
                 _thirdPersonRot.z = value.z;
@@ -441,10 +470,12 @@ namespace CameraPlus.Configuration
 
         public Vector3 TurnToHeadOffset
         {
-            get{
+            get
+            {
                 return new Vector3(_turnToHeadOffset.x, _turnToHeadOffset.y, _turnToHeadOffset.z);
             }
-            set{
+            set
+            {
                 _turnToHeadOffset.x = value.x;
                 _turnToHeadOffset.y = value.y;
                 _turnToHeadOffset.z = value.z;
@@ -507,11 +538,13 @@ namespace CameraPlus.Configuration
         {
             string json;
             _saving = true;
-            try{
+            try
+            {
                 json = JsonConvert.SerializeObject(this, Formatting.Indented);
                 File.WriteAllText(FilePath, json);
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 Plugin.Log.Error($"Failed to save {cam.name}\n{ex}");
             }
             _saving = false;
@@ -527,7 +560,7 @@ namespace CameraPlus.Configuration
                     JsonConvert.PopulateObject(jsondata, this);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Plugin.Log.Error($"Config json read error.\n{ex.Message}");
                 return false;
@@ -537,14 +570,16 @@ namespace CameraPlus.Configuration
 
         private void ConfigWatcherOnChanged(object sender, FileSystemEventArgs fileSystemEventArgs)
         {
-            if (_saving){
+            if (_saving)
+            {
                 _saving = false;
                 return;
             }
 
             Load();
 
-            if (ConfigChangedEvent != null){
+            if (ConfigChangedEvent != null)
+            {
                 ConfigChangedEvent(this);
             }
         }
@@ -658,7 +693,7 @@ namespace CameraPlus.Configuration
                 layerSetting.wall = false;
             else
                 layerSetting.wall = true;
-            layerSetting.avatar = config2.visibleObject.Avatar==Camera2Utils.AvatarVisibility.Hidden ? false : true;
+            layerSetting.avatar = config2.visibleObject.Avatar == Camera2Utils.AvatarVisibility.Hidden ? false : true;
             layerSetting.debris = config2.visibleObject.Debris ? DebriVisibility.Visible : DebriVisibility.Hidden;
             layerSetting.ui = config2.visibleObject.UI;
             cameraExtensions.firstPersonCameraForceUpRight = config2.Smoothfollow.forceUpright;
@@ -675,10 +710,10 @@ namespace CameraPlus.Configuration
             config2.targetPos = new targetPosElement();
             config2.targetRot = new targetRotElement();
             config2.visibleObject.Walls = layerSetting.wall ? Camera2Utils.WallVisiblity.Visible : Camera2Utils.WallVisiblity.Hidden;
-            config2.visibleObject.Debris = layerSetting.debris==DebriVisibility.Hidden ? false : true;
+            config2.visibleObject.Debris = layerSetting.debris == DebriVisibility.Hidden ? false : true;
             config2.visibleObject.UI = layerSetting.ui;
             config2.visibleObject.Avatar = layerSetting.avatar ? Camera2Utils.AvatarVisibility.Visible : Camera2Utils.AvatarVisibility.Hidden;
-            config2.type = thirdPerson? Camera2Utils.CameraType.Positionable : Camera2Utils.CameraType.FirstPerson;
+            config2.type = thirdPerson ? Camera2Utils.CameraType.Positionable : Camera2Utils.CameraType.FirstPerson;
             config2.FOV = fov;
             config2.layer = layer + 1000;
             config2.renderScale = (renderScale >= 0.99f) ? Math.Max(1.2f, renderScale) : renderScale;
@@ -913,6 +948,7 @@ namespace CameraPlus.Configuration
                 _wipeCircleCenter[1] = value.y;
             }
         }
+        public float[] wipeCircleCenterValue { get => _wipeCircleCenter; set => _wipeCircleCenter = value; }
         //OutlineEffect
         [JsonProperty("EnableOutline")]
         public bool enableOutline;
@@ -935,6 +971,8 @@ namespace CameraPlus.Configuration
                 _outlineColor[2] = value.b;
             }
         }
+        public float[] outlineColorValue { get { return _outlineColor; } set { _outlineColor = value; } }
+
         [JsonProperty("OutlineBGColor")]
         private float[] _outlineBGColor;
         public Color outlineBGColor
@@ -952,6 +990,7 @@ namespace CameraPlus.Configuration
                 _outlineBGColor[2] = value.b;
             }
         }
+        public float[] outlineBGColorValue { get { return _outlineBGColor; } set { _outlineBGColor = value; } }
 
         //GlitchEffect
         [JsonProperty("EnableGlitch")]
@@ -968,5 +1007,22 @@ namespace CameraPlus.Configuration
         public float glitchFrequency;
         [JsonProperty("GlitchScale")]
         public float glitchScale;
+
+        public float[] glitchValue
+        {
+            get
+            {
+                return new float[] { glitchLineSpeed, glitchLineSize, glitchColorGap, glitchFrameRate, glitchFrequency, glitchScale };
+            }
+            set
+            {
+                glitchLineSpeed = value[0];
+                glitchLineSize = value[1];
+                glitchColorGap = value[2];
+                glitchFrameRate = value[3];
+                glitchFrequency = value[4];
+                glitchScale = value[5];
+            }
+        }
     }
 }

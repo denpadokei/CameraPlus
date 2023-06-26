@@ -9,6 +9,7 @@ namespace CameraPlus.UI
     public static class MenuUI
     {
         public static Texture2D[] IconTexture;
+        public static Texture2D[] MouseCursorTexture;
         public static GUIStyle[] CustomStyle;
         public static GUIStyle[] CustomToggleButtonStyle;
         public static bool UIInitialize = false;
@@ -47,6 +48,14 @@ namespace CameraPlus.UI
                 CustomUtils.LoadTextureFromResources("CameraPlus.Resources.ScreenTopRightDock.png"),
                 CustomUtils.LoadTextureFromResources("CameraPlus.Resources.ScreenBottomRightDock.png"),
                 CustomUtils.LoadTextureFromResources("CameraPlus.Resources.ScreenRightDock.png")
+            };
+            MouseCursorTexture = new Texture2D[5]
+            {
+                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Resize_Horiz.png"),
+                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Resize_Vert.png"),
+                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Resize_DiagRight.png"),
+                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Resize_DiagLeft.png"),
+                CustomUtils.LoadTextureFromResources("CameraPlus.Resources.ColorPick.png")
             };
             CustomStyle = new GUIStyle[7]
             {
@@ -108,7 +117,7 @@ namespace CameraPlus.UI
             if (GUI.Button(new Rect(s_uiRect.x, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height / 6), "<"))
                 if (currentPage > 0) currentPage--;
             
-            GUI.Box(new Rect(s_uiRect.x + s_uiRect.width / 3, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height / 6), $"{currentPage + 1} / {Math.Ceiling(Decimal.Parse(texts.Length.ToString()) / 5)}");
+            GUI.Box(new Rect(s_uiRect.x + s_uiRect.width / 3, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height / 6), $"{currentPage + 1} / {Math.Ceiling(Decimal.Parse(texts.Length.ToString()) == 0 ? 1 : Decimal.Parse(texts.Length.ToString()) / 5)}");
             
             if (GUI.Button(new Rect(s_uiRect.x + s_uiRect.width / 3 * 2, s_uiRect.y, s_uiRect.width / 3, s_uiRect.height / 6), ">"))
                 if (currentPage < Math.Ceiling(Decimal.Parse(texts.Length.ToString()) / 5) - 1) currentPage++;
@@ -125,13 +134,99 @@ namespace CameraPlus.UI
             return selection;
         }
 
-        public static bool SliderComponent(int col, int row, ref float value, string title, float min, float max, int colSpan = 0, int rowSpan = 0)
+        public static float HorizontalSlider(int col, int row, float value, float min, float max, int colSpan = 0, int rowSpan = 0)
         {
-            bool changed = false;
-            float tmpvalue = value;
             s_uiRect = GridRect(col, row, colSpan, rowSpan);
+            return GUI.HorizontalSlider(new Rect(s_uiRect.x, s_uiRect.y + s_uiRect.height / 3, s_uiRect.width, s_uiRect.height / 3), value, min, max);
+        }
 
-            return changed;
+
+        public static bool SwitchableSlider(int col, int row, ref float value, float min, float max, bool isSlider ,int colSpan = 0, int rowSpan = 0)
+        {
+            bool useControl = false;
+            float val = value;
+            s_uiRect = GridRect(col, row, colSpan, rowSpan);
+            if (isSlider)
+            {
+                val = GUI.HorizontalSlider(new Rect(s_uiRect.x, s_uiRect.y + s_uiRect.height / 3, s_uiRect.width, s_uiRect.height /3), val, min, max);
+                if(val != value) 
+                    useControl = true;
+            }
+            else
+            {
+                if(GUI.Button(new Rect(s_uiRect.x, s_uiRect.y, (s_uiRect.width - 10) / 6, s_uiRect.height), "<<"))
+                {
+                    val -= 1;
+                    useControl = true;
+                }
+                if (GUI.Button(new Rect(s_uiRect.x + (s_uiRect.width - 10) / 6, s_uiRect.y, (s_uiRect.width - 10) / 6, s_uiRect.height), "<-"))
+                {
+                    val -= 0.1f;
+                    useControl = true;
+                }
+                if (GUI.Button(new Rect(s_uiRect.x + (s_uiRect.width - 10) / 6 * 2, s_uiRect.y, (s_uiRect.width - 10) / 6, s_uiRect.height), "<"))
+                {
+                    val -= 0.01f;
+                    useControl = true;
+                }
+                if (GUI.Button(new Rect(s_uiRect.x + (s_uiRect.width - 10) / 6 * 3 + 10, s_uiRect.y, (s_uiRect.width - 10) / 6, s_uiRect.height), ">"))
+                {
+                    val += 0.01f;
+                    useControl = true;
+                }
+                if (GUI.Button(new Rect(s_uiRect.x + (s_uiRect.width - 10) / 6 * 4 + 10, s_uiRect.y, (s_uiRect.width - 10) / 6, s_uiRect.height), "->"))
+                {
+                    val += 0.1f;
+                    useControl = true;
+                }
+                if (GUI.Button(new Rect(s_uiRect.x + (s_uiRect.width - 10) / 6 * 5 + 10, s_uiRect.y, (s_uiRect.width - 10) / 6, s_uiRect.height), ">>"))
+                {
+                    val += 1;
+                    useControl = true;
+                }
+                val = Mathf.Clamp(val,min,max);
+            }
+            value= val;
+            return useControl;
+        }
+
+        public static bool SwitchableSliderShort(int col, int row, ref float value, float min, float max, bool isSlider, int colSpan = 0, int rowSpan = 0)
+        {
+            bool useControl = false;
+            float val = value;
+            s_uiRect = GridRect(col, row, colSpan, rowSpan);
+            if (isSlider)
+            {
+                val = GUI.HorizontalSlider(new Rect(s_uiRect.x + 4, s_uiRect.y + s_uiRect.height / 3, s_uiRect.width - 8, s_uiRect.height / 3), val, min, max);
+                if (val != value)
+                    useControl = true;
+            }
+            else
+            {
+                if (GUI.Button(new Rect(s_uiRect.x + 2, s_uiRect.y, (s_uiRect.width - 6) / 4, s_uiRect.height), "<<"))
+                {
+                    val -= 0.1f;
+                    useControl = true;
+                }
+                if (GUI.Button(new Rect(s_uiRect.x + (s_uiRect.width - 6) / 4 + 2, s_uiRect.y, (s_uiRect.width - 6) / 4, s_uiRect.height), "<"))
+                {
+                    val -= 0.01f;
+                    useControl = true;
+                }
+                if (GUI.Button(new Rect(s_uiRect.x + (s_uiRect.width - 6) / 4 * 2 + 2, s_uiRect.y, (s_uiRect.width - 6) / 4, s_uiRect.height), ">"))
+                {
+                    val += 0.01f;
+                    useControl = true;
+                }
+                if (GUI.Button(new Rect(s_uiRect.x + (s_uiRect.width - 6) / 4 * 3 + 2, s_uiRect.y, (s_uiRect.width - 6) / 4, s_uiRect.height), ">>"))
+                {
+                    val += 0.1f;
+                    useControl = true;
+                }
+                val = Mathf.Clamp(val, min, max);
+            }
+            value = val;
+            return useControl;
         }
 
         public static bool AxizEdit(int col, int row, ref float[] axiz, float delta, int colSpan = 0, int rowSpan = 0, bool isRotation = false)
@@ -298,10 +393,16 @@ namespace CameraPlus.UI
             return GUI.Toolbar(GridRect(col, row, colSpan, rowSpan), selected, texts);
         }
 
-        public static bool Button(int col, int row, GUIContent content, int colSpan = 0, int rowSpan = 0)
+        public static string TextField(int col, int row, string text, int colSpan = 0, int rowSpan = 0)
         {
-            return GUI.Button(GridRect(col, row, colSpan, rowSpan), content);
+            return GUI.TextField(GridRect(col, row, colSpan, rowSpan), text);
         }
+
+        public static bool ToggleButton(int col, int row, string text, bool value, int colSpan = 0, int rowSpan = 0)
+        {
+            return GUI.Button(GridRect(col, row, colSpan, rowSpan), text, value ? MenuUI.CustomStyle[0] : MenuUI.CustomStyle[1]);
+        }
+
         public static bool Button(int col, int row, Texture2D content, int colSpan = 0, int rowSpan = 0)
         {
             return GUI.Button(GridRect(col, row, colSpan, rowSpan), content);

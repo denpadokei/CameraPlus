@@ -314,24 +314,29 @@ namespace CameraPlus.Utilities
                 CurrentlySelected = a.First().Name;
         }
 
-        public static void SaveNewProfile()
+        public static string SaveNewProfile()
         {
-            string path = Path.Combine(ProfilePath, GetNextProfileName());
+            string profileName = GetNextProfileName();
+            string path = Path.Combine(ProfilePath, profileName);
             if (!Directory.Exists(path))
             {
                 var di = Directory.CreateDirectory(path);
                 CameraUtilities.AddNewCamera(Plugin.MainCamera, null, path);
+                return profileName;
             }
+            return string.Empty;
         }
 
-        internal static void SaveAsCurrentProfile()
+        internal static string SaveAsCurrentProfile()
         {
             string cPath = ConfigPath;
+            string profileName = GetNextProfileName();
             if (Plugin.cameraController.CurrentProfile != string.Empty)
             {
                 cPath = Path.Combine(ProfilePath, Plugin.cameraController.CurrentProfile);
             }
-            DirectoryCopy(cPath, Path.Combine(ProfilePath, GetNextProfileName()), false);
+            DirectoryCopy(cPath, Path.Combine(ProfilePath, profileName), false);
+            return profileName;
         }
 
         internal static void SetNext(string now = null)

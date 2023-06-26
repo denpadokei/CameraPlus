@@ -618,13 +618,12 @@ namespace CameraPlus.Behaviours
             {
                 if (c != this && c.gameObject.activeInHierarchy)
                 {
-                    if (IsWithinRenderArea(mousePos, c.Config) && !c._mouseHeld)
-                    {
-                        if (c.Config.layer > Config.layer)
-                            return false;
-                        if (c._mouseHeld && (c._isMoving || c._isResizing))
-                            return false;
-                    }
+                    if (!IsWithinRenderArea(mousePos, c.Config) && !c._mouseHeld) continue;
+
+                    if (c.Config.rawLayer > Config.rawLayer)
+                        return false;
+                    if (c._mouseHeld && (c._isMoving || c._isResizing))
+                        return false;
                 }
             }
             return true;
@@ -638,16 +637,16 @@ namespace CameraPlus.Behaviours
                 switch (type)
                 {
                     case CursorType.Horizontal:
-                        texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Resize_Horiz.png");
+                        texture = MenuUI.MouseCursorTexture[0];
                         break;
                     case CursorType.Vertical:
-                        texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Resize_Vert.png");
+                        texture = MenuUI.MouseCursorTexture[1];
                         break;
                     case CursorType.DiagonalRight:
-                        texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Resize_DiagRight.png");
+                        texture = MenuUI.MouseCursorTexture[2];
                         break;
                     case CursorType.DiagonalLeft:
-                        texture = CustomUtils.LoadTextureFromResources("CameraPlus.Resources.Resize_DiagLeft.png");
+                        texture = MenuUI.MouseCursorTexture[3];
                         break;
 
                 }
@@ -815,13 +814,10 @@ namespace CameraPlus.Behaviours
             }
             else if (_isResizing || _isMoving || _mouseHeld)
             {
-                //if (!_contextMenuOpen)
-                //{
-                    if (!_isCameraDestroyed)
-                    {
-                        Config.Save();
-                    }
-                //}
+                if (!_isCameraDestroyed)
+                {
+                    Config.Save();
+                }
                 _isResizing = false;
                 _isMoving = false;
                 _mouseHeld = false;

@@ -12,88 +12,52 @@ namespace CameraPlus.Camera2Utils
 {
     public static class Camera2ConfigExporter
     {
-        public static string currentlyScenesSelected = "None";
         private static string cam2Path = Path.Combine(UnityGame.UserDataPath, "Camera2");
         private static List<SceneTypes> enumScenes = null;
 
-        public static void Init()
+        public static void ExportCamera2Scene(string selectedScene)
         {
-            enumScenes = Enum.GetValues(typeof(SceneTypes)).Cast<SceneTypes>().ToList();
-            if (enumScenes.Count > 0)
-                currentlyScenesSelected = enumScenes.First().ToString();
-        }
-        public static void ExportCamera2Scene()
-        {
-            Camera2Scenes camera2Scenes = JsonConvert.DeserializeObject<Camera2Scenes>(File.ReadAllText(Path.Combine(cam2Path, "Scenes.json")));
-
-            var cameraList = Camera2CameraExporter(CameraUtilities.CurrentlySelected);
-            SceneTypes selectedSceneType = enumScenes.Find(x => x.ToString() == currentlyScenesSelected);
-            camera2Scenes.scenes[selectedSceneType] = cameraList;
-
-            File.WriteAllText(Path.Combine(cam2Path, "Scenes.json"), JsonConvert.SerializeObject(camera2Scenes, Formatting.Indented));
-        }
-
-        public static void LoadCamera2Scene()
-        {
-            var a = enumScenes.Where(x => x.ToString() == currentlyScenesSelected);
-            SceneTypes s = enumScenes.ElementAtOrDefault(enumScenes.ToList().IndexOf(a.First()));
-            Camera2Scenes camera2Scenes = JsonConvert.DeserializeObject<Camera2Scenes>(File.ReadAllText(Path.Combine(cam2Path, "Scenes.json")));
-            List<string> cameraList = camera2Scenes.scenes[s];
-            if (cameraList.Count > 0)
+            if (File.Exists(Path.Combine(cam2Path, "Scenes.json")))
             {
-                string ProfileName = CameraUtilities.GetNextProfileName(s.ToString());
-                if (ProfileName == string.Empty)
+                Camera2Scenes camera2Scenes = JsonConvert.DeserializeObject<Camera2Scenes>(File.ReadAllText(Path.Combine(cam2Path, "Scenes.json")));
+
+                var cameraList = Camera2CameraExporter(CameraUtilities.CurrentlySelected);
+                SceneTypes selectedSceneType = enumScenes.Find(x => x.ToString() == selectedScene);
+                camera2Scenes.scenes[selectedSceneType] = cameraList;
+
+                File.WriteAllText(Path.Combine(cam2Path, "Scenes.json"), JsonConvert.SerializeObject(camera2Scenes, Formatting.Indented));
+            }
+            else
+                Plugin.Log.Error("No Camera Data from Camera2 Scenes.json");
+        }
+
+        public static void LoadCamera2Scene(string selectedScene)
+        {
+            if(File.Exists(Path.Combine(cam2Path, "Scenes.json")))
+            {
+                var a = enumScenes.Where(x => x.ToString() == selectedScene);
+                SceneTypes s = enumScenes.ElementAtOrDefault(enumScenes.ToList().IndexOf(a.First()));
+                Camera2Scenes camera2Scenes = JsonConvert.DeserializeObject<Camera2Scenes>(File.ReadAllText(Path.Combine(cam2Path, "Scenes.json")));
+                List<string> cameraList = camera2Scenes.scenes[s];
+                if (cameraList.Count > 0)
                 {
-                    Plugin.Log.Error("No ProfileName in LoadCamera2Scene");
-                    return;
+                    string ProfileName = CameraUtilities.GetNextProfileName(s.ToString());
+                    if (ProfileName == string.Empty)
+                    {
+                        Plugin.Log.Error("No ProfileName in LoadCamera2Scene");
+                        return;
+                    }
+                    CameraUtilities.DirectoryCreate(Path.Combine(CameraUtilities.ProfilePath, ProfileName));
+                    for (int i = 0; i < cameraList.Count; i++)
+                        Camera2ConfigLoader(Path.Combine(cam2Path, "Cameras", $"{cameraList[i]}.json"), ProfileName);
                 }
-                CameraUtilities.DirectoryCreate(Path.Combine(CameraUtilities.ProfilePath, ProfileName));
-                for (int i = 0; i < cameraList.Count; i++)
-                    Camera2ConfigLoader(Path.Combine(cam2Path,"Cameras", $"{cameraList[i]}.json"), ProfileName);
-            }
-            else
-                Plugin.Log.Error("No Camera Data from Camera2 Scene");
-        }
-        public static void SetSceneNext(string now = null)
-        {
-            int index = 0;
-            var a = enumScenes.Where(x => x.ToString() == now);
-            if (a.Count() > 0)
-            {
-                index = enumScenes.ToList().IndexOf(a.First());
-                if (index < enumScenes.Count() - 1)
-                    currentlyScenesSelected = enumScenes.ElementAtOrDefault(index + 1).ToString();
                 else
-                    currentlyScenesSelected = enumScenes.ElementAtOrDefault(0).ToString();
-            }
-            else
-            {
-                currentlyScenesSelected = "None";
-                if (enumScenes.Count > 0)
-                    currentlyScenesSelected = enumScenes.First().ToString();
-            }
+                    Plugin.Log.Error("No Camera Data from Camera2 Scene");
+            }else
+                Plugin.Log.Error("No Camera Data from Camera2 Scenes.json");
+
         }
-        public static void TrySceneSetLast(string now = null)
-        {
-            int index = 0;
-            var a = enumScenes.Where(x => x.ToString() == now);
-            if (a.Count() > 0)
-            {
-                index = enumScenes.ToList().IndexOf(a.First());
-                if (index == 0 && enumScenes.Count >= 2)
-                    currentlyScenesSelected = enumScenes.ElementAtOrDefault(enumScenes.Count() - 1).ToString();
-                else if (index < enumScenes.Count() && enumScenes.Count >= 2)
-                    currentlyScenesSelected = enumScenes.ElementAtOrDefault(index - 1).ToString();
-                else
-                    currentlyScenesSelected = enumScenes.ElementAtOrDefault(0).ToString();
-            }
-            else
-            {
-                currentlyScenesSelected = "None";
-                if (enumScenes.Count > 0)
-                    currentlyScenesSelected = enumScenes.First().ToString();
-            }
-        }
+
         private static string GetNextCameraName(string ProfileName="")
         {
             if (ProfileName == "") return string.Empty;
