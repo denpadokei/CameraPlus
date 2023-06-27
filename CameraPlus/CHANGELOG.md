@@ -1,14 +1,15 @@
 # v7.0.0 Changes
-- Support game version 1.30.2
-- The camera preview can now be detached from the cube and fixed in place.
-- Add camera effect (Glitch noise).
+- Support game version 1.30.2  
+- The camera preview can now be detached from the cube and fixed in place.  
+- Add camera effect (Glitch noise).  
 - There were too many items in the UI, so I added the layout and contents, and the settings that were not in the UI.  
 - Added sub camera control in movementscript.  
+- Added auto window alignment.  
 - Temporarily monitor FPFCToggle of SiraUtil due to FPFC change in above 1.29.4.
 - Settings UI window no longer pops off screen.  
-- Changed the way the camera is rebuilt every time you switch scenes. Bugs may be less likely to occur in long-time play.
-- Stopped automatic conversion from old configuration file cfg.
-- I changed the target framework to .net framework 4.8.
+- Changed the way the camera is rebuilt every time you switch scenes. Bugs may be less likely to occur in long-time play.  
+- Stopped automatic conversion from old configuration file cfg.  
+- I changed the target framework to .net framework 4.8.  
 
 # v6.11.0 Chanegs
 - Add near/far clip setting. (yet json only)
