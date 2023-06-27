@@ -104,14 +104,13 @@ namespace CameraPlus.Utilities
                 {
                     if (Plugin.cameraController.Cameras.TryRemove(Plugin.cameraController.Cameras.Where(c => c.Value == instance && c.Key != $"{Plugin.MainCamera}.json")?.First().Key, out var removedEntry))
                     {
+                        GL.Clear(false, true, Color.black, 0);
+                        GameObject.Destroy(removedEntry.gameObject);
                         if (delete)
                         {
                             if (File.Exists(removedEntry.Config.FilePath))
                                 File.Delete(removedEntry.Config.FilePath);
                         }
-
-                        GL.Clear(false, true, Color.black, 0);
-                        GameObject.Destroy(removedEntry.gameObject);
                         return true;
                     }
                 }

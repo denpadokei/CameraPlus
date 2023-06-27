@@ -6,6 +6,7 @@ using CameraPlus.Utilities;
 using CameraPlus.Configuration;
 using System.IO;
 using System.Text.RegularExpressions;
+using UniVRM10;
 
 namespace CameraPlus.UI
 {
@@ -130,7 +131,8 @@ namespace CameraPlus.UI
             if (!this) return;
             this.enabled = false;
             _showMenu = false;
-            _cameraPlus?.Config.Save();
+            if(_cameraPlus && !_cameraPlus._isCameraDestroyed)
+                _cameraPlus?.Config.Save();
         }
 
         private int SelectedListNumber(string[] list, string selectedName)
@@ -184,6 +186,7 @@ namespace CameraPlus.UI
                                 CameraUtilities.AddNewCamera(cameraName);
                                 CameraUtilities.LoadProfile(Plugin.cameraController.CurrentProfile);
                                 Plugin.cameraController.CloseContextMenu();
+                                _configList = CameraUtilities.CameraSettingList(Plugin.cameraController.CurrentProfile);
                             }
                         }
                         if (MenuUI.Button(3, 4, "Duplicate\nSelected Camera", 3, 4))
@@ -195,6 +198,7 @@ namespace CameraPlus.UI
                                 CameraUtilities.AddNewCamera(cameraName, _cameraPlus.Config);
                                 CameraUtilities.LoadProfile(Plugin.cameraController.CurrentProfile);
                                 Plugin.cameraController.CloseContextMenu();
+                                _configList = CameraUtilities.CameraSettingList(Plugin.cameraController.CurrentProfile);
                             }
                         }
                         if (MenuUI.Button(3, 8, "Remove\nSelected Camera", 3, 4))
@@ -204,6 +208,7 @@ namespace CameraPlus.UI
                                 _cameraPlus._isCameraDestroyed = true;
                                 Plugin.cameraController.CloseContextMenu();
                                 Plugin.Log.Notice("Camera removed!");
+                                _configList = CameraUtilities.CameraSettingList(Plugin.cameraController.CurrentProfile);
                             }
                         }
 
@@ -660,7 +665,47 @@ namespace CameraPlus.UI
 
                                 break;
                             case LayoutState.Template:
-
+                                if(MenuUI.Button(0,3,"Side by side\n\n for multiplayer\nlayout", 6, 6))
+                                {
+                                    int count = _configList.Length;
+                                    for(int i = 0; i < count; i++)
+                                    {
+                                        var cam = CameraUtilities.TargetCameraPlus(_configList[i], Plugin.cameraController.CurrentProfile);
+                                        if(cam != null)
+                                        {
+                                            cam.Config.fitToCanvas = false;
+                                            cam.Config.screenWidth = i==count-1 ? Screen.width - Mathf.CeilToInt(Screen.width / count) * (count-1) : Mathf.CeilToInt(Screen.width / count) ;
+                                            cam.Config.screenHeight = Screen.height;
+                                            cam.Config.screenPosX = Mathf.CeilToInt(Screen.width / count) * i;
+                                            cam.Config.screenPosY = 0;
+                                            cam.Config.cameraLock.lockScreen = true;
+                                            cam.Config.multiplayer.targetPlayerNumber = i;
+                                            cam.CreateScreenRenderTexture();
+                                            cam.Config.Save();
+                                        }
+                                    }
+                                }
+                                if (MenuUI.Button(6, 3, "side by side\nin two rows\n for multiplayer\nlayout", 6, 6))
+                                {
+                                    int count = _configList.Length;
+                                    int col = (count % 2 == 0) ? count / 2 : (count + 1) / 2;
+                                    for (int i = 0; i < count; i++)
+                                    {
+                                        var cam = CameraUtilities.TargetCameraPlus(_configList[i], Plugin.cameraController.CurrentProfile);
+                                        if (cam != null)
+                                        {
+                                            cam.Config.fitToCanvas = false;
+                                            cam.Config.screenWidth = i == col - 1 || i - col == col -1 ? Screen.width - Mathf.CeilToInt(Screen.width / col) * (col - 1) : Mathf.CeilToInt(Screen.width / col);
+                                            cam.Config.screenHeight = Screen.height / 2;
+                                            cam.Config.screenPosX = Mathf.CeilToInt(Screen.width / col) * (i < col ? i : i - col);
+                                            cam.Config.screenPosY = i < col ? Screen.height / 2 : 0 ;
+                                            cam.Config.cameraLock.lockScreen = true;
+                                            cam.Config.multiplayer.targetPlayerNumber = i;
+                                            cam.CreateScreenRenderTexture();
+                                            cam.Config.Save();
+                                        }
+                                    }
+                                }
                                 break;
                         }
 
@@ -967,12 +1012,16 @@ namespace CameraPlus.UI
                             CameraUtilities.DeleteProfile(_profileNameList[_selectedProfile]);
                             _selectedProfile = 0;
                             _profileNameList = CameraUtilities.ProfileList();
+                            _configList = CameraUtilities.CameraSettingList(Plugin.cameraController.CurrentProfile);
                         }
 
                         _selectedProfile = MenuUI.SelectionGrid(0, 4, _selectedProfile, ref _currentProfilePage, _profileNameList, string.Empty, 12, 10);
 
                         if(MenuUI.Button(1,15,"Load Profile", 10, 2))
+                        {
                             CameraUtilities.ProfileChange(_profileNameList[_selectedProfile]);
+                            _configList = CameraUtilities.CameraSettingList(Plugin.cameraController.CurrentProfile);
+                        }
 
                         if(MenuUI.ToggleSwitch(0, 18, "Load profile on scene change", PluginConfig.Instance.ProfileSceneChange, 12, 2, 1.5f))
                             PluginConfig.Instance.ProfileSceneChange = !PluginConfig.Instance.ProfileSceneChange;
