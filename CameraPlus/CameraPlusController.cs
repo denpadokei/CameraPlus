@@ -47,7 +47,7 @@ namespace CameraPlus
         internal WebCamDevice[] webCamDevices;
         private WebCamCalibrator _webCamCal;
 
-        protected UI.ContextMenu _contextMenu = null;
+        internal UI.ContextMenu _contextMenu = null;
         protected bool _contextMenuOpen = false;
         protected bool _mouseHeld = false;
 

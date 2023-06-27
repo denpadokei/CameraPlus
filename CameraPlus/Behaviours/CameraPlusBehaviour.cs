@@ -722,6 +722,7 @@ namespace CameraPlus.Behaviours
 
             // Only evaluate mouse events for the topmost render target at the mouse position
             if (!_mouseHeld && !_isTopmostAtCursorPos) return;
+            if (Plugin.cameraController._contextMenu.IsMenuEnter) return;
 
             int tolerance = 5;
             bool cursorWithinBorder = CustomUtils.WithinRange((int)mousePos.x, -tolerance, tolerance) || CustomUtils.WithinRange((int)mousePos.y, -tolerance, tolerance) ||

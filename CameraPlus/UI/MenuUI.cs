@@ -36,6 +36,15 @@ namespace CameraPlus.UI
             }
         }
         public static Vector2 MousePosition;
+        public static Vector2 ScaleMousePos
+        {
+            get
+            {
+                return new Vector2(
+                   Input.mousePosition.x / (Screen.width / 1600f),
+                   (Screen.height - Input.mousePosition.y) / (Screen.height / 900f));
+            }
+        }
         public static void Initialize()
         {
             IconTexture = new Texture2D[8]
