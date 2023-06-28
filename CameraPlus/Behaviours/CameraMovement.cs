@@ -307,12 +307,12 @@ namespace CameraPlus.Behaviours
             _cameraPlus.effectElements.outlineBGColor = LerpColor(CameraEffect[0].outlineBGColor, CameraEffect[1].outlineBGColor, Ease(movePerc));
 
             _cameraPlus.effectElements.enableGlitch = CameraEffect[0].enableGlitch;
-            _cameraPlus.effectElements.glitchLineSpeed = Mathf.LerpAngle(CameraEffect[0].glitchLineSpeed, CameraEffect[1].glitchLineSpeed, Ease(movePerc));
-            _cameraPlus.effectElements.glitchLineSize = Mathf.LerpAngle(CameraEffect[0].glitchLineSize, CameraEffect[1].glitchLineSize, Ease(movePerc));
-            _cameraPlus.effectElements.glitchColorGap = Mathf.LerpAngle(CameraEffect[0].glitchColorGap, CameraEffect[1].glitchColorGap, Ease(movePerc));
-            _cameraPlus.effectElements.glitchFrameRate = Mathf.LerpAngle(CameraEffect[0].glitchFrameRate, CameraEffect[1].glitchFrameRate, Ease(movePerc));
-            _cameraPlus.effectElements.glitchFrequency = Mathf.LerpAngle(CameraEffect[0].glitchFrequency, CameraEffect[1].glitchFrequency, Ease(movePerc));
-            _cameraPlus.effectElements.glitchScale = Mathf.LerpAngle(CameraEffect[0].glitchScale, CameraEffect[1].glitchScale, Ease(movePerc));
+            _cameraPlus.effectElements.glitchLineSpeed = Mathf.Lerp(CameraEffect[0].glitchLineSpeed, CameraEffect[1].glitchLineSpeed, Ease(movePerc));
+            _cameraPlus.effectElements.glitchLineSize = Mathf.Lerp(CameraEffect[0].glitchLineSize, CameraEffect[1].glitchLineSize, Ease(movePerc));
+            _cameraPlus.effectElements.glitchColorGap = Mathf.Lerp(CameraEffect[0].glitchColorGap, CameraEffect[1].glitchColorGap, Ease(movePerc));
+            _cameraPlus.effectElements.glitchFrameRate = Mathf.Lerp(CameraEffect[0].glitchFrameRate, CameraEffect[1].glitchFrameRate, Ease(movePerc));
+            _cameraPlus.effectElements.glitchFrequency = Mathf.Lerp(CameraEffect[0].glitchFrequency, CameraEffect[1].glitchFrequency, Ease(movePerc));
+            _cameraPlus.effectElements.glitchScale = Mathf.Lerp(CameraEffect[0].glitchScale, CameraEffect[1].glitchScale, Ease(movePerc));
 
             // Window Control
             if (_cameraPlus._isMainCamera && WindowControl != null)
@@ -321,12 +321,21 @@ namespace CameraPlus.Behaviours
                 {
                     var otherCameraPlus = CameraUtilities.TargetCameraPlus(windowControl.Target, Plugin.cameraController.CurrentProfile);
                     if (otherCameraPlus != null)
+                    {
                         otherCameraPlus._screenCamera.enabled = windowControl.Visible.Value;
+                        if(windowControl.StartPos != null && windowControl.EndPos != null){
+                            otherCameraPlus._screenCamera.SetPosition(LeapVector2(
+                                new Vector2(float.Parse(windowControl.StartPos.x), float.Parse(windowControl.StartPos.y)), 
+                                new Vector2(float.Parse(windowControl.EndPos.x), float.Parse(windowControl.EndPos.y)), Ease(movePerc)));
+                        }
+                        else
+                            otherCameraPlus._screenCamera.ResetPosition();
+                    }
                 }
             }
 
             _cameraPlus.ThirdPersonPos = LerpVector3(StartPos, EndPos, Ease(movePerc));
-            _cameraPlus.ThirdPersonRot = LerpVector3(StartRot, EndRot, Ease(movePerc));
+            _cameraPlus.ThirdPersonRot = LerpVector3Angle(StartRot, EndRot, Ease(movePerc));
             _cameraPlus.turnToHeadOffset = LerpVector3(StartHeadOffset, EndHeadOffset, Ease(movePerc));
             _cameraPlus.FOV=Mathf.Lerp(StartFOV,EndFOV,Ease(movePerc));
 
@@ -334,15 +343,19 @@ namespace CameraPlus.Behaviours
 
         protected Vector2 LeapVector2(Vector2 from, Vector2 to, float percent)
         {
-            return new Vector2(Mathf.LerpAngle(from.x, to.x, percent), Mathf.LerpAngle(from.y, to.y, percent));
+            return new Vector2(Mathf.Lerp(from.x, to.x, percent), Mathf.Lerp(from.y, to.y, percent));
         }
         protected Vector3 LerpVector3(Vector3 from, Vector3 to, float percent)
+        {
+            return new Vector3(Mathf.Lerp(from.x, to.x, percent), Mathf.Lerp(from.y, to.y, percent), Mathf.Lerp(from.z, to.z, percent));
+        }
+        protected Vector3 LerpVector3Angle(Vector3 from, Vector3 to, float percent)
         {
             return new Vector3(Mathf.LerpAngle(from.x, to.x, percent), Mathf.LerpAngle(from.y, to.y, percent), Mathf.LerpAngle(from.z, to.z, percent));
         }
         protected Vector4 LerpVector4(Vector4 from, Vector4 to, float percent)
         {
-            return new Vector4(Mathf.LerpAngle(from.x, to.x, percent), Mathf.LerpAngle(from.y, to.y, percent), Mathf.LerpAngle(from.z, to.z, percent), Mathf.LerpAngle(from.w, to.w, percent));
+            return new Vector4(Mathf.Lerp(from.x, to.x, percent), Mathf.Lerp(from.y, to.y, percent), Mathf.Lerp(from.z, to.z, percent), Mathf.Lerp(from.w, to.w, percent));
         }
 
         protected Color LerpColor(Color from, Color to, float percent)

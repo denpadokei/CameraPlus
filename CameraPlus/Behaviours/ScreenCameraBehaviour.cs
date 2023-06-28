@@ -32,6 +32,16 @@ namespace CameraPlus.Behaviours
             _cam.depth = layer;
         }
 
+        public void SetPosition(Vector2 position)
+        {
+            _cam.pixelRect = new Rect(position.x,position.y,_cam.pixelRect.width,_cam.pixelRect.height);
+        }
+
+        public void ResetPosition()
+        {
+            if(_cameraPlus)
+                _cam.pixelRect = new Rect(_cameraPlus.Config.screenPosX, _cameraPlus.Config.screenPosY, _cameraPlus.Config.screenWidth, _cameraPlus.Config.screenHeight);
+        }
         public void SetLayer(int layer)
         {
             _cam.depth = layer;

@@ -600,17 +600,17 @@ namespace CameraPlus.UI
                                 MenuUI.Box(0, 12, "Screen position", 12, 6);
                                 MenuUI.Label(0, 14, "X", 6, 2);
                                 var screenX = (float)_cameraPlus.Config.screenPosX;
-                                if (MenuUI.DoubleSpinBox(0, 16, ref screenX, 1, 20, 1, Screen.width - _cameraPlus.Config.screenWidth, 0, 6, 2))
+                                if (MenuUI.DoubleSpinBox(0, 16, ref screenX, 1, 20, 0, Screen.width - _cameraPlus.Config.screenWidth, 0, 6, 2))
                                 {
                                     _cameraPlus.Config.screenPosX = (int)screenX;
-                                    _cameraPlus.CreateScreenRenderTexture();
+                                    _cameraPlus._screenCamera.SetPosition(new Vector2(_cameraPlus.Config.screenPosX, _cameraPlus.Config.screenPosY));
                                 }
                                 MenuUI.Label(6, 14, "Y", 6, 2);
                                 var screenY = (float)_cameraPlus.Config.screenPosY;
-                                if (MenuUI.DoubleSpinBox(6, 16, ref screenY, 1, 20, 1, Screen.height - _cameraPlus.Config.screenHeight, 0, 6, 2))
+                                if (MenuUI.DoubleSpinBox(6, 16, ref screenY, 1, 20, 0, Screen.height - _cameraPlus.Config.screenHeight, 0, 6, 2))
                                 {
                                     _cameraPlus.Config.screenPosY =(int)screenY;
-                                    _cameraPlus.CreateScreenRenderTexture();
+                                    _cameraPlus._screenCamera.SetPosition(new Vector2(_cameraPlus.Config.screenPosX, _cameraPlus.Config.screenPosY));
                                 }
 
 

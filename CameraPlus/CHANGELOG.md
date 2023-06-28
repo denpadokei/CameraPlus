@@ -1,3 +1,8 @@
+# v7.0.1 Changes
+- Added sub-window movement in MovementScript.  
+- Fixed a bug that limited movementscript camera position.  
+- Misoperation prevention in profile load.  
+
 # v7.0.0 Changes
 - Support game version 1.30.2  
 - The camera preview can now be detached from the cube and fixed in place.  
