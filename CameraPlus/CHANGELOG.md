@@ -2,6 +2,7 @@
 - Added sub-window movement in MovementScript.  
 - Fixed a bug that limited movementscript camera position.  
 - Misoperation prevention in profile load.  
+- Optimized Shader processing.  
 
 # v7.0.0 Changes
 - Support game version 1.30.2  
