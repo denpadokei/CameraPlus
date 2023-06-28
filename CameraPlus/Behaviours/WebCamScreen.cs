@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using CameraPlus.Utilities;
 
 namespace CameraPlus.Behaviours
 {
@@ -25,78 +26,78 @@ namespace CameraPlus.Behaviours
                 webCamTexture.Stop();
             webCamTexture = new WebCamTexture(webCamName);
             rawImage.texture = webCamTexture;
-            rawMaterial.SetColor("_Color", new Color(1.0f, 1.0f, 1.0f, 0));
-            rawMaterial.SetColor("_ChromaKeyColor", Color.blue);
+            rawMaterial.SetColor(ShaderPropertyID.Color, new Color(1.0f, 1.0f, 1.0f, 0));
+            rawMaterial.SetColor(ShaderPropertyID.ChromaKeyColor, Color.blue);
             rawImage.material = rawMaterial;
             webCamTexture.Play();
         }
 
         internal void ChromakeyColor(float r, float g, float b)
         {
-            rawMaterial.SetColor("_ChromaKeyColor", new Color(r, g, b, 0));
+            rawMaterial.SetColor(ShaderPropertyID.ChromaKeyColor, new Color(r, g, b, 0));
         }
         internal float ChromakeyR
         {
             get{
-                Color col = rawMaterial.GetColor("_ChromaKeyColor");
+                Color col = rawMaterial.GetColor(ShaderPropertyID.ChromaKeyColor);
                 return col.r;
             }
             set{
-                Color col = rawMaterial.GetColor("_ChromaKeyColor");
+                Color col = rawMaterial.GetColor(ShaderPropertyID.ChromaKeyColor);
                 col.r = value;
-                rawMaterial.SetColor("_ChromaKeyColor", new Color(col.r, col.g, col.b, 0));
+                rawMaterial.SetColor(ShaderPropertyID.ChromaKeyColor, new Color(col.r, col.g, col.b, 0));
             }
         }
         internal float ChromakeyG
         {
             get{
-                Color col = rawMaterial.GetColor("_ChromaKeyColor");
+                Color col = rawMaterial.GetColor(ShaderPropertyID.ChromaKeyColor);
                 return col.g;
             }
             set{
-                Color col = rawMaterial.GetColor("_ChromaKeyColor");
+                Color col = rawMaterial.GetColor(ShaderPropertyID.ChromaKeyColor);
                 col.g = value;
-                rawMaterial.SetColor("_ChromaKeyColor", new Color(col.r, col.g, col.b, 0));
+                rawMaterial.SetColor(ShaderPropertyID.ChromaKeyColor, new Color(col.r, col.g, col.b, 0));
             }
         }
         internal float ChromakeyB
         {
             get{
-                Color col = rawMaterial.GetColor("_ChromaKeyColor");
+                Color col = rawMaterial.GetColor(ShaderPropertyID.ChromaKeyColor);
                 return col.b;
             }
             set{
-                Color col = rawMaterial.GetColor("_ChromaKeyColor");
+                Color col = rawMaterial.GetColor(ShaderPropertyID.ChromaKeyColor);
                 col.b = value;
-                rawMaterial.SetColor("_ChromaKeyColor", new Color(col.r, col.g, col.b, 0));
+                rawMaterial.SetColor(ShaderPropertyID.ChromaKeyColor, new Color(col.r, col.g, col.b, 0));
             }
         }
 
         internal float ChromakeyHue
         {
             get{
-                return rawMaterial.GetFloat("_ChromaKeyHueRange");
+                return rawMaterial.GetFloat(ShaderPropertyID.ChromaKeyHueRange);
             }
             set{
-                rawMaterial.SetFloat("_ChromaKeyHueRange", value);
+                rawMaterial.SetFloat(ShaderPropertyID.ChromaKeyHueRange, value);
             }
         }
         internal float ChromakeySaturation
         {
             get{
-                return rawMaterial.GetFloat("_ChromaKeySaturationRange");
+                return rawMaterial.GetFloat(ShaderPropertyID.ChromaKeyHueRange);
             }
             set{ 
-                rawMaterial.SetFloat("_ChromaKeySaturationRange", value);
+                rawMaterial.SetFloat(ShaderPropertyID.ChromaKeyHueRange, value);
             }
         }
         internal float ChromakeyBrightness
         {
             get{
-                return rawMaterial.GetFloat("_ChromaKeyBrightnessRange");
+                return rawMaterial.GetFloat(ShaderPropertyID.ChromaKeyBrightnessRange);
             }
             set{
-                rawMaterial.SetFloat("_ChromaKeyBrightnessRange", value);
+                rawMaterial.SetFloat(ShaderPropertyID.ChromaKeyBrightnessRange, value);
             }
         }
         private IEnumerator ColorPickCoroutine()

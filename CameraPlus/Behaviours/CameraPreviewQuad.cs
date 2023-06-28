@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using CameraPlus.Configuration;
+using CameraPlus.Utilities;
 
 namespace CameraPlus.Behaviours
 {
@@ -16,18 +17,18 @@ namespace CameraPlus.Behaviours
 		public bool IsDisplayMaterialVROnly
 		{
 			get{
-				return _previewMaterial.GetFloat("_IsVRCameraOnly") == 1;
+				return _previewMaterial.GetFloat(ShaderPropertyID.VRCameraOnly) == 1;
 			}
 			set{
 				if (value)
 				{
-					_previewMaterial.SetFloat("_IsVRCameraOnly", 1);
-					_cubeMaterial.SetFloat("_IsVRCameraOnly", 1);
+					_previewMaterial.SetFloat(ShaderPropertyID.VRCameraOnly, 1);
+					_cubeMaterial.SetFloat(ShaderPropertyID.VRCameraOnly, 1);
 				}
 				else
 				{
-					_previewMaterial.SetFloat("_IsVRCameraOnly", 0);
-					_cubeMaterial.SetFloat("_IsVRCameraOnly", 0);
+					_previewMaterial.SetFloat(ShaderPropertyID.VRCameraOnly, 0);
+					_cubeMaterial.SetFloat(ShaderPropertyID.VRCameraOnly, 0);
 				}
 			}
 		}
