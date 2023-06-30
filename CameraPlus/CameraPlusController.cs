@@ -111,6 +111,7 @@ namespace CameraPlus
         {
             AssetBundle assetBundle = AssetBundle.LoadFromStream(Assembly.GetExecutingAssembly().GetManifestResourceStream("CameraPlus.Resources.Shader.customshader"));
             Shaders = assetBundle.LoadAllAssets<Shader>().ToDictionary(x => x.name);
+            assetBundle.Unload(false);
         }
 
         private void OnDestroy()
@@ -124,7 +125,7 @@ namespace CameraPlus
         public void OnActiveSceneChanged(Scene from, Scene to)
         {
             if (Initialized || (!Initialized && (to.name == "MainMenu")))
-                SharedCoroutineStarter.instance.StartCoroutine(DelayedActiveSceneChanged(from, to));
+                StartCoroutine(DelayedActiveSceneChanged(from, to));
 #if DEBUG
             Plugin.Log.Info($"Scene Change {from.name} to {to.name}");
 #endif

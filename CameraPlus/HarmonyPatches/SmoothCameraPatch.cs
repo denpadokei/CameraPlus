@@ -9,17 +9,12 @@ namespace CameraPlus.HarmonyPatches
 	[HarmonyPatch]
 	internal class DisableSmoothCamera
 	{
-		static bool Prefix()
+        [HarmonyPatch(typeof(SmoothCameraController), "ActivateSmoothCameraIfNeeded")]
+        static bool Prefix()
 		{
 			return false;
 		}
 
-		[HarmonyTargetMethods]
-		static IEnumerable<MethodBase> TargetMethods()
-		{
-			yield return AccessTools.Method(typeof(SmoothCameraController), "ActivateSmoothCameraIfNeeded");
-			yield return AccessTools.Method(typeof(SmoothCamera), "OnEnable");
-		}
 	}
 
     [HarmonyPatch(typeof(SmoothCameraController), "Start")]

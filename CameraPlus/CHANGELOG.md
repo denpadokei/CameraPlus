@@ -1,4 +1,5 @@
 # v7.0.2 Changes
+- Support game version 1.31.0 (maybe).  
 - Fixed a null bug when deleting a displayed profile.  
 
 # v7.0.1 Changes
