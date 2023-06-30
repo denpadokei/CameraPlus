@@ -1,3 +1,6 @@
+# v7.0.3 Changes
+- Fixed an issue where grabbing the camera would cause it to become stuck at your feet.  
+
 # v7.0.2 Changes
 - Support game version 1.31.0 (maybe).  
 - Fixed a null bug when deleting a displayed profile.  
