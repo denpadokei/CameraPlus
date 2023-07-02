@@ -120,7 +120,7 @@ namespace CameraPlus.Configuration
                 if (cam != null)
                 {
                     cam._quad.gameObject.SetActive(thirdPerson && PreviewCamera);
-                    SetCullingMask();
+                    SetCullingMask(visibleObject);
                 }
             }
         }
