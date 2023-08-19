@@ -102,6 +102,8 @@ If you plan on adding any new dependencies which are located in the Beat Saber d
 ```
 ### VMCAvatar-BS Mod is required to build with full functionality.  
 [VMCAvatar-BS](https://github.com/nagatsuki/VMCAvatar-BS)
+Full builds currently require the Pre-release version.
+[https://github.com/nagatsuki/VMCAvatar-BS/releases/tag/v1.0.0-dev2](https://github.com/nagatsuki/VMCAvatar-BS/releases/tag/v1.0.0-dev2)
   
 ### Modify build-in shader
 To create customshader, you need to open the UnityProject folder from UnityEditor and create an AssetBundle.  
