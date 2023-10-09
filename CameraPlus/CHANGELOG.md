@@ -1,3 +1,6 @@
+# v7.0.8 Changes
+- Support game version 1.31.1 - 1.32.0.  
+
 # v7.0.7 Changes
 - Temporary workaround of room adjust problem (PR #26 #27).  
 

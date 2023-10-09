@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace CameraPlus.HarmonyPatches
 {
-    [HarmonyPatch(typeof(FirstPersonFlyingController), "Start")]
+    [HarmonyPatch(typeof(FirstPersonFlyingController), "OnEnable")]
     internal class FPFCPatch
     {
         public static FirstPersonFlyingController instance { get; private set; } = null;

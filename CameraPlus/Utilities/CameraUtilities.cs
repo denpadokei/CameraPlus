@@ -295,7 +295,10 @@ namespace CameraPlus.Utilities
             Plugin.Log.Notice($"ProfileChange {currentprofile} to {profile}");
             if (!Plugin.cameraController.LoadedProfile.ContainsKey(profile))
             {
-                LoadProfile(ProfileName);
+                if (Directory.Exists(Path.Combine(ProfilePath, ProfileName)))
+                    LoadProfile(ProfileName);
+                else
+                    return;
             }
             Plugin.cameraController.LoadedProfile[currentprofile].SetActive(false);
             Plugin.cameraController.LoadedProfile[profile].SetActive(true);
