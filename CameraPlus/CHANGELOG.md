@@ -1,3 +1,6 @@
+# v7.1.2 Changes
+- Fixed the VR only display of Shader not working properly.  
+
 # v7.1.1 Changes
 - Fixed an issue where the rotation axis was misaligned on 90/360 degree rotation map.
 

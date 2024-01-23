@@ -44,7 +44,7 @@ Shader "BeatSaber/BlitCopyWithDepthTransparent" {
             };
 
             bool IsVRCamera() {
-#if defined(UNITY_SINGLE_PASS_STEREO)
+#if defined(USING_STEREO_MATRICES)
                 return true;
 #endif
                 return false;
