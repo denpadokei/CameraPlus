@@ -1,7 +1,5 @@
 ﻿using UnityEngine;
 using CameraPlus.HarmonyPatches;
-using UnityEngine.UIElements;
-using UnityEngine.SceneManagement;
 
 namespace CameraPlus.Behaviours
 {
