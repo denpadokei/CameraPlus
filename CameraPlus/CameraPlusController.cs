@@ -139,6 +139,10 @@ namespace CameraPlus
                 else
                     _beatLineManagerYAngle = this._environmentSpawnRotation.targetRotation;
             }
+            else
+            {
+                _beatLineManagerYAngle = 0;
+            }
         }
 
         private void ShaderLoad()

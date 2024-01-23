@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using CameraPlus.HarmonyPatches;
 using UnityEngine.UIElements;
+using UnityEngine.SceneManagement;
 
 namespace CameraPlus.Behaviours
 {
@@ -30,15 +31,16 @@ namespace CameraPlus.Behaviours
                 _rotation = Quaternion.identity;
             }
 
+            transform.localPosition = _position;
+            transform.localRotation = _rotation;
+
             if (_cameraPlus.Config.cameraExtensions.follow360map)
             {
                 _yAngle = Mathf.LerpAngle(_yAngle, CameraPlusController.instance._beatLineManagerYAngle, Mathf.Clamp(Time.deltaTime * _cameraPlus.Config.cameraExtensions.rotation360Smooth, 0f, 1f));
 
-                _rotation.eulerAngles = new Vector3(_rotation.x, _yAngle + _rotation.y, _rotation.z);
+                transform.localRotation *= Quaternion.AngleAxis(_yAngle, transform.up);
             }
 
-            transform.localPosition = _position;
-            transform.localRotation = _rotation;
         }
     }
 }
