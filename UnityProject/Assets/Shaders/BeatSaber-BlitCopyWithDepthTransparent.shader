@@ -6,6 +6,7 @@ Shader "BeatSaber/BlitCopyWithDepthTransparent" {
         _MainTex ("Texture", any) = "" {}
         //_Color("Multiplicative color", Color) = (1.0, 1.0, 1.0, 1.0)
         [MaterialToggle] _IsVRCameraOnly ("Is VR Camera Only", Float) = 1
+        [MaterialToggle] _IsMultiRenderVRCamera ("Is MultiRender VR Camera Only", Float) = 0
         [HideInInspector] _CullMode ("_CullMode", Float) = 2.0
     }
     SubShader {
@@ -28,6 +29,7 @@ Shader "BeatSaber/BlitCopyWithDepthTransparent" {
             uniform float4 _MainTex_ST;
             uniform float4 _Color;
             float _IsVRCameraOnly;
+            float _IsMultiRenderVRCamera;
 
             struct appdata_t {
                 float4 vertex : POSITION;
@@ -47,6 +49,9 @@ Shader "BeatSaber/BlitCopyWithDepthTransparent" {
 #if defined(USING_STEREO_MATRICES)
                 return true;
 #endif
+                if(_IsMultiRenderVRCamera==1)
+                    return true;
+
                 return false;
             }
 

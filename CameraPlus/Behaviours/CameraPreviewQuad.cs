@@ -2,6 +2,8 @@
 using UnityEngine.EventSystems;
 using CameraPlus.Configuration;
 using CameraPlus.Utilities;
+using CameraPlus.HarmonyPatches;
+using UnityEngine.XR.OpenXR;
 
 namespace CameraPlus.Behaviours
 {
@@ -33,12 +35,35 @@ namespace CameraPlus.Behaviours
 			}
 		}
 
+		private void OnWillRenderObject()
+		{
+
+            if (OpenXRSettingPatch.Instance)
+			{
+				if(OpenXRSettingPatch.Instance.m_renderMode == OpenXRSettings.RenderMode.MultiPass)
+				{
+                    if (Camera.current.stereoEnabled)
+                    {
+                        _previewMaterial.SetFloat("_IsMultiRenderVRCamera", 1);
+                        _cubeMaterial.SetFloat("_IsMultiRenderVRCamera", 1);
+                    }
+                    else
+                    {
+                        _previewMaterial.SetFloat("_IsMultiRenderVRCamera", 0);
+                        _cubeMaterial.SetFloat("_IsMultiRenderVRCamera", 0);
+                    }
+                }
+
+            }
+		}
+
 		public void Awake()
 		{
 			DontDestroyOnLoad(gameObject);
 		}
 		public void Init(CameraPlusBehaviour camera)
         {
+            this.gameObject.AddComponent<MeshRenderer>();
             _cameraPlus = camera;
 			_cameraCube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			_cameraCube.GetComponent<MeshRenderer>().material = _cubeMaterial;
