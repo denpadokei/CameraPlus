@@ -99,11 +99,6 @@
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\Unity.TextMeshPro.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.XR.OpenXR">
-      <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\Unity.XR.OpenXR.dll</HintPath>
-		<Private>False</Private>
-		<Publicize>True</Publicize>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -181,7 +176,6 @@
     <Compile Include="Configuration\MovementScriptJson.cs" />
     <Compile Include="HarmonyPatches\AudioTimeSyncControllerPatch.cs" />
     <Compile Include="HarmonyPatches\CustomPreviewBeatmapLevelPatch.cs" />
-    <Compile Include="HarmonyPatches\OpenXRSettingPatch.cs" />
     <Compile Include="HarmonyPatches\SmoothCameraPatch.cs" />
     <Compile Include="HarmonyPatches\FPFCPatch.cs" />
     <Compile Include="HarmonyPatches\LevelDataPatch.cs" />
