@@ -34,7 +34,8 @@ namespace CameraPlus.HarmonyPatches
                         customLevelPath = string.Empty;
                     }
                 }
-            }
+            }else
+                customLevelPath = string.Empty;
         }
     }
 }
