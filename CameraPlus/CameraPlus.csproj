@@ -48,8 +48,8 @@
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\BeatmapCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="BGNet">
-      <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\BGNet.dll</HintPath>
+    <Reference Include="BGNetCore">
+      <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\BGNetCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="GameplayCore">
