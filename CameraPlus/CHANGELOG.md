@@ -1,3 +1,6 @@
+# v7.2.0 Changes
+- Support game version 1.34.5.  
+
 # v7.1.2 Changes
 - Fixed the VR only display of Shader not working properly.  
 

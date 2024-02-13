@@ -6,34 +6,14 @@ using HarmonyLib;
 
 namespace CameraPlus.HarmonyPatches
 {
-	[HarmonyPatch]
-	internal class LevelDataPatch
+    [HarmonyPatch(typeof(LevelSelectionNavigationController), nameof(LevelSelectionNavigationController.HandleLevelCollectionNavigationControllerDidPressActionButton))]
+    internal class LevelDataPatch
 	{
-		public static IDifficultyBeatmap difficultyBeatmap;
-		public static GameplayModifiers gameplayModifiers;
-		public static bool is360Level = false;
+        public static bool is360Level = false;
 
-		static void Prefix(IDifficultyBeatmap difficultyBeatmap, GameplayModifiers gameplayModifiers)
-		{
-#if DEBUG
-			Plugin.Log.Notice("Got level data!");
-#endif
-			LevelDataPatch.difficultyBeatmap = difficultyBeatmap;
-
-			is360Level = difficultyBeatmap.parentDifficultyBeatmapSet.beatmapCharacteristic.containsRotationEvents;
-		}
-
-		internal static void Reset()
-		{
-			is360Level = false;
-			difficultyBeatmap = null;
-		}
-
-		[HarmonyTargetMethods]
-		static IEnumerable<MethodBase> TargetMethods()
-		{
-			foreach (var t in new Type[] { typeof(StandardLevelScenesTransitionSetupDataSO), typeof(MissionLevelScenesTransitionSetupDataSO), typeof(MultiplayerLevelScenesTransitionSetupDataSO) })
-				yield return t.GetMethod("Init", BindingFlags.Instance | BindingFlags.Public);
-		}
-	}
+        static void Prefix(LevelSelectionNavigationController __instance)
+        {
+			is360Level = __instance.beatmapKey.beatmapCharacteristic.containsRotationEvents;
+        }
+    }
 }
