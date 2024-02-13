@@ -1,25 +1,39 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using HarmonyLib;
+using IPA.Utilities;
 
 namespace CameraPlus.HarmonyPatches
 {
-    [HarmonyPatch(typeof(CustomPreviewBeatmapLevel), nameof(CustomPreviewBeatmapLevel.GetCoverImageAsync))]
-    internal class CustomPreviewBeatmapLevelPatch
+    [HarmonyPatch(typeof(LevelSelectionNavigationController), nameof(LevelSelectionNavigationController.HandleLevelCollectionNavigationControllerDidChangeLevelDetailContent))]
+    internal static class SongScriptBeatmapPatch
     {
-        private static string _latestSelectedSong = string.Empty;
+        private static string _keyPrefix = "custom_level_";
+        private static string _customLevelRoot = CustomLevelPathHelper.customLevelsDirectoryPath;
+
+        private static string _latestSelectedLevelPath = string.Empty;
         public static string customLevelPath = string.Empty;
-        static void Postfix(CustomPreviewBeatmapLevel __instance)
+        static void Postfix(LevelSelectionNavigationController __instance)
         {
-            if (__instance.customLevelPath != _latestSelectedSong)
+            if (__instance.beatmapLevel.levelID.Contains(_keyPrefix))
             {
-                _latestSelectedSong = __instance.customLevelPath;
+                string currentLevelPath = Path.Combine(_customLevelRoot, __instance.beatmapLevel.levelID.Substring(_keyPrefix.Length));
+                if (currentLevelPath != _latestSelectedLevelPath)
+                {
+                    _latestSelectedLevelPath = currentLevelPath;
 #if DEBUG
-                Plugin.Log.Notice($"Selected CustomLevel Path :\n {__instance.customLevelPath}");
+                    Plugin.Log.Notice($"Selected CustomLevel Path :\n {currentLevelPath}");
 #endif
-                if (File.Exists(Path.Combine(__instance.customLevelPath, "SongScript.json")))
-                    customLevelPath = Path.Combine(__instance.customLevelPath, "SongScript.json");
-                else
-                    customLevelPath = string.Empty;
+                    if (File.Exists(Path.Combine(currentLevelPath, "SongScript.json")))
+                    {
+                        customLevelPath = Path.Combine(currentLevelPath, "SongScript.json");
+                        Plugin.Log.Notice($"Found SongScript path : \n{currentLevelPath}");
+                    }
+                    else
+                    {
+                        customLevelPath = string.Empty;
+                    }
+                }
             }
         }
     }

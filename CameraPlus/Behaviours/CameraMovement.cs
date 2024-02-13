@@ -250,9 +250,9 @@ namespace CameraPlus.Behaviours
                     movementNextStartTime = 0;
                     eventID = 0;
                 }
-                if (from.name == "MainMenu" && _cameraPlus.Config.movementScript.songSpecificScript && CustomPreviewBeatmapLevelPatch.customLevelPath != String.Empty)
+                if (from.name == "MainMenu" && _cameraPlus.Config.movementScript.songSpecificScript && SongScriptBeatmapPatch.customLevelPath != String.Empty)
                 {
-                    LoadCameraData(CustomPreviewBeatmapLevelPatch.customLevelPath);
+                    LoadCameraData(SongScriptBeatmapPatch.customLevelPath);
                 }
 
                 var gp = Resources.FindObjectsOfTypeAll<PauseController>().FirstOrDefault();

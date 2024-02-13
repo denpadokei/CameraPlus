@@ -52,6 +52,11 @@
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\BGNetCore.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="DataModels">
+      <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\DataModels.dll</HintPath>
+      <Private>False</Private>
+	  <Publicize>True</Publicize>		
+    </Reference>
     <Reference Include="GameplayCore">
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\GameplayCore.dll</HintPath>
       <Private>False</Private>
@@ -82,7 +87,8 @@
     <Reference Include="Main">
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\Main.dll</HintPath>
       <Private>False</Private>
-    </Reference>
+      <Publicize>True</Publicize>
+	</Reference>
     <Reference Include="HMLib">
       <HintPath>$(GameDirectory)\Beat Saber_Data\Managed\HMLib.dll</HintPath>
       <Private>False</Private>

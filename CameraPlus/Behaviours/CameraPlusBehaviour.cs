@@ -543,8 +543,8 @@ namespace CameraPlus.Behaviours
                 if (_cameraMovement)
                     _cameraMovement.Shutdown();
 
-                if (CustomPreviewBeatmapLevelPatch.customLevelPath != String.Empty && Config.movementScript.songSpecificScript)
-                    songScriptPath = CustomPreviewBeatmapLevelPatch.customLevelPath;
+                if (SongScriptBeatmapPatch.customLevelPath != String.Empty && Config.movementScript.songSpecificScript)
+                    songScriptPath = SongScriptBeatmapPatch.customLevelPath;
                 else if (File.Exists(Path.Combine(CameraUtilities.ScriptPath, Path.GetFileName(Config.movementScript.movementScript))))
                     songScriptPath = Path.Combine(CameraUtilities.ScriptPath, Path.GetFileName(Config.movementScript.movementScript));
                 else
