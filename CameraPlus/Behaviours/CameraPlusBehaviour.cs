@@ -38,10 +38,23 @@ namespace CameraPlus.Behaviours
         public CameraConfig Config = null;
         public bool RunCullingMask = false;
 
+        public Rect ScreenRect = new Rect();
+        public Vector2 ScreenPosition
+        {
+            get
+            {
+                return new Vector2(ScreenRect.x, ScreenRect.y);
+            }
+            set
+            {
+                ScreenRect.x = value.x;
+                ScreenRect.y = value.y;
+            }
+        }
+
         internal Camera _cam;
         internal CameraPreviewQuad _quad;
-        protected RenderTexture _camRenderTexture;
-        internal ScreenCameraBehaviour _screenCamera;
+        internal RenderTexture _camRenderTexture;
         internal CameraOrigin _cameraOrigin;
         internal GameObject _originOffset;
         protected Camera _mainCamera = null;
@@ -81,6 +94,7 @@ namespace CameraPlus.Behaviours
         internal WebCamScreen webCamScreen = null;
         internal CameraEffectStruct effectElements = new CameraEffectStruct();
         private bool _initializeExternalSender = false;
+        internal bool renderScreen = true;
 
 #if WITH_VMCA
         private VMCAvatarMarionette marionette = null;
@@ -119,9 +133,6 @@ namespace CameraPlus.Behaviours
             var destroyList = new string[] { "AudioListener", "LIV", "MainCamera", "MeshCollider", "TrackedPoseDriver" };
             foreach (var component in _cam.GetComponents<Behaviour>())
                 if (destroyList.Contains(component.GetType().Name)) Destroy(component);
-
-            _screenCamera = new GameObject("Screen Camera").AddComponent<ScreenCameraBehaviour>();
-            _screenCamera.transform.SetParent(transform);
 
             gameObj.SetActive(true);
 
@@ -222,10 +233,12 @@ namespace CameraPlus.Behaviours
         {
             if (Config != null)
             {
-                if (Config?.vmcProtocol.mode == VMCProtocolMode.Sender)
+                if (Config.vmcProtocol.mode == VMCProtocolMode.Sender)
                     InitExternalSender();
-                if (Config?.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
+                if (Config.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
                     AddMovementScript();
+                if (!Config.cameraExtensions.dontDrawDesktop)
+                    Plugin.cameraController.ScreenCamera.RegistrationCamera(this);
             }
         }
 
@@ -233,6 +246,7 @@ namespace CameraPlus.Behaviours
         {
             Plugin.cameraController.externalSender.RemoveTask(this);
             _initializeExternalSender = false;
+            Plugin.cameraController.ScreenCamera.UnregistrationCamera(this);
         }
 
         protected virtual void OnDestroy()
@@ -256,8 +270,6 @@ namespace CameraPlus.Behaviours
             if (webCamScreen)
                 DisableWebCamScreen();
 
-            if (_screenCamera)
-                Destroy(_screenCamera.gameObject);
             if (_quad)
                 Destroy(_quad);
         }
@@ -280,7 +292,11 @@ namespace CameraPlus.Behaviours
                 ThirdPersonRot = Config.Rotation;
             }
 
-            _screenCamera.enabled = !Config.cameraExtensions.dontDrawDesktop;
+            if (!Config.cameraExtensions.dontDrawDesktop)
+                Plugin.cameraController.ScreenCamera.RegistrationCamera(this);
+            else
+                Plugin.cameraController.ScreenCamera.UnregistrationCamera(this);
+
             turnToHead = Config.cameraExtensions.turnToHead;
             turnToHeadOffset = Config.TurnToHeadOffset;
             turnToHeadHorizontal = Config.cameraExtensions.turnToHeadHorizontal;
@@ -293,6 +309,8 @@ namespace CameraPlus.Behaviours
             _cam.farClipPlane = Config.cameraExtensions.farClip;
 
             effectElements = Config.cameraEffect;
+            ScreenRect = Config.rect;
+            renderScreen = !Config.cameraExtensions.dontDrawDesktop;
             CreateScreenRenderTexture();
             _quad.SetCameraQuadPosition(PluginConfig.Instance.CameraQuadPosition);
         }
@@ -326,11 +344,7 @@ namespace CameraPlus.Behaviours
                     };
                     _cam.targetTexture = _camRenderTexture;
                     _quad._previewMaterial.SetTexture("_MainTex", _camRenderTexture);
-                    _screenCamera?.SetRenderTexture(_camRenderTexture, this);
                 }
-
-                if (changed || Config.screenPosX != _prevScreenPosX || Config.screenPosY != _prevScreenPosY || Config.layer != _prevLayer)
-                    _screenCamera?.SetCameraInfo(Config.ScreenPosition, Config.ScreenSize, Config.layer);
 
                 _prevLayer = Config.layer;
                 _prevScreenPosX = Config.screenPosX;
@@ -365,18 +379,10 @@ namespace CameraPlus.Behaviours
 
         private void OnFPFCToglleEvent()
         {
-            _screenCamera.SetLayer(Config.layer);
             if (Plugin.cameraController.isFPFC)
-            {
                 turnToHead = false;
-                _screenCamera.enabled = false;
-            }
             else
-            {
                 turnToHead = Config.cameraExtensions.turnToHead;
-                if(!Config.DontDrawDesktop)
-                    _screenCamera.enabled = true;
-            }
         }
 
         protected virtual void Update()
@@ -797,6 +803,7 @@ namespace CameraPlus.Behaviours
                 Config.screenHeight = Mathf.Clamp(Config.screenHeight, 100, Screen.height);
                 Config.screenPosX = Mathf.Clamp(Config.screenPosX, 0, Screen.width - Config.screenWidth);
                 Config.screenPosY = Mathf.Clamp(Config.screenPosY, 0, Screen.height - Config.screenHeight);
+                ScreenRect = Config.rect;
                 webCamScreen?.ChangeWebCamRectScale(Config.screenHeight);
 
                 CreateScreenRenderTexture();

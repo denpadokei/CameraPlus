@@ -33,8 +33,7 @@ namespace CameraPlus
         internal Transform origin;
 
         internal Dictionary<string, Shader> Shaders = new Dictionary<string, Shader>();
-        private RenderTexture _renderTexture;
-        private ScreenCameraBehaviour _fillBlackScreen;
+        public ScreenCameraBehaviour ScreenCamera;
         private CameraMoverPointer _cameraMovePointer;
         public bool Initialized = false;
 
@@ -73,10 +72,8 @@ namespace CameraPlus
         }
         private void Start()
         {
-            _renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
-            _fillBlackScreen = this.gameObject.AddComponent<ScreenCameraBehaviour>();
-            _fillBlackScreen.SetCameraInfo(new Vector2(0, 0), new Vector2(Screen.width, Screen.height), -2000);
-            _fillBlackScreen.SetRenderTexture(_renderTexture);
+            ScreenCamera = new GameObject("Screen Camera").AddComponent<ScreenCameraBehaviour>();
+            ScreenCamera.transform.SetParent(transform);
 
             ShaderLoad();
             _cameraMovePointer = this.gameObject.AddComponent<CameraMoverPointer>();
@@ -244,13 +241,13 @@ namespace CameraPlus
         private void OnFPFCToglleEvent()
         {
             if (isFPFC)
-                _fillBlackScreen.enabled = false;
+                ScreenCamera.gameObject.SetActive(false);
             else
-                _fillBlackScreen.enabled = true;
+                ScreenCamera.gameObject.SetActive(true);
         }
         internal void SetBackScreenLayer(int layer)
         {
-            _fillBlackScreen.SetLayer(layer);
+            ScreenCamera.SetLayer(layer);
         }
 
         internal string[] WebCameraList()

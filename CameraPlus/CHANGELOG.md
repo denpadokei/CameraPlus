@@ -1,3 +1,6 @@
+# V7.2.1 Changes
+- Lighter rendering.  
+- 
 # v7.2.0 Changes
 - Support game version 1.34.5.  
 
