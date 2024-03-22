@@ -1,4 +1,7 @@
-# V7.2.1 Changes
+# v7.2.2 Changes
+- Fixed a mistake in the script reset process.     
+
+# v7.2.1 Changes
 - Lighter rendering.  
 - 
 # v7.2.0 Changes

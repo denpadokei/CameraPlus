@@ -225,7 +225,7 @@ namespace CameraPlus.Behaviours
 #endif
             Plugin.cameraController.externalSender.RemoveTask(this);
 
-            if (Config.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
+            if (string.IsNullOrWhiteSpace(Config.movementScript.movementScript) || Config.movementScript.songSpecificScript)
                 AddMovementScript();
         }
 
@@ -235,7 +235,7 @@ namespace CameraPlus.Behaviours
             {
                 if (Config.vmcProtocol.mode == VMCProtocolMode.Sender)
                     InitExternalSender();
-                if (Config.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
+                if (string.IsNullOrWhiteSpace(Config.movementScript.movementScript) || Config.movementScript.songSpecificScript)
                     AddMovementScript();
                 if (!Config.cameraExtensions.dontDrawDesktop)
                     Plugin.cameraController.ScreenCamera.RegistrationCamera(this);
@@ -544,12 +544,11 @@ namespace CameraPlus.Behaviours
             if (Config.vmcProtocol.mode == VMCProtocolMode.Receiver) return "ExternalReceiver Enabled";
             if (!ThirdPerson) return "Camera Mode is First Person";
 
-            if (Config.movementScript.movementScript != String.Empty || Config.movementScript.songSpecificScript)
+            if (string.IsNullOrWhiteSpace( Config.movementScript.movementScript) || Config.movementScript.songSpecificScript)
             {
-                if (_cameraMovement)
-                    _cameraMovement.Shutdown();
+                ClearMovementScript();
 
-                if (SongScriptBeatmapPatch.customLevelPath != String.Empty && Config.movementScript.songSpecificScript)
+                if (string.IsNullOrWhiteSpace( SongScriptBeatmapPatch.customLevelPath) && Config.movementScript.songSpecificScript)
                     songScriptPath = SongScriptBeatmapPatch.customLevelPath;
                 else if (File.Exists(Path.Combine(CameraUtilities.ScriptPath, Path.GetFileName(Config.movementScript.movementScript))))
                     songScriptPath = Path.Combine(CameraUtilities.ScriptPath, Path.GetFileName(Config.movementScript.movementScript));
@@ -573,11 +572,13 @@ namespace CameraPlus.Behaviours
         public void ClearMovementScript()
         {
             if (_cameraMovement)
+            {
                 _cameraMovement.Shutdown();
-            _cameraMovement = null;
-            ThirdPersonPos = Config.Position;
-            ThirdPersonRot = Config.Rotation;
-            _cam.fieldOfView = Config.fov;
+                _cameraMovement = null;
+                ThirdPersonPos = Config.Position;
+                ThirdPersonRot = Config.Rotation;
+                _cam.fieldOfView = Config.fov;
+            }
         }
 
         protected IEnumerator GetMainCamera()
