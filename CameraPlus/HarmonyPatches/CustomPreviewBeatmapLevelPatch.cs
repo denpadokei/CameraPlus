@@ -2,6 +2,7 @@
 using System.IO;
 using HarmonyLib;
 using IPA.Utilities;
+using CameraPlus.HarmonyPatches;
 
 namespace CameraPlus.HarmonyPatches
 {
@@ -15,9 +16,9 @@ namespace CameraPlus.HarmonyPatches
         public static string customLevelPath = string.Empty;
         static void Postfix(LevelSelectionNavigationController __instance)
         {
-            if (__instance.beatmapLevel.levelID.Contains(_keyPrefix))
+            if (CustomLevelLoaderPatch.Instance._loadedBeatmapSaveData.ContainsKey(__instance.beatmapLevel.levelID))
             {
-                string currentLevelPath = Path.Combine(_customLevelRoot, __instance.beatmapLevel.levelID.Substring(_keyPrefix.Length));
+                string currentLevelPath = CustomLevelLoaderPatch.Instance._loadedBeatmapSaveData[__instance.beatmapLevel.levelID].customLevelFolderInfo.folderPath;
                 if (currentLevelPath != _latestSelectedLevelPath)
                 {
                     _latestSelectedLevelPath = currentLevelPath;

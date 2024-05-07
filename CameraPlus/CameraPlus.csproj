@@ -181,6 +181,7 @@
     <Compile Include="Configuration\CameraConfig.cs" />
     <Compile Include="Configuration\MovementScriptJson.cs" />
     <Compile Include="HarmonyPatches\AudioTimeSyncControllerPatch.cs" />
+    <Compile Include="HarmonyPatches\CustomLevelLoaderPatch.cs" />
     <Compile Include="HarmonyPatches\CustomPreviewBeatmapLevelPatch.cs" />
     <Compile Include="HarmonyPatches\SmoothCameraPatch.cs" />
     <Compile Include="HarmonyPatches\FPFCPatch.cs" />

@@ -130,7 +130,7 @@ namespace CameraPlus.Behaviours
 
             foreach (var child in _cam.transform.Cast<Transform>())
                 Destroy(child.gameObject);
-            var destroyList = new string[] { "AudioListener", "LIV", "MainCamera", "MeshCollider", "TrackedPoseDriver" };
+            var destroyList = new string[] { "AudioListener", "LIV", "MainCamera", "MeshCollider", "TrackedPoseDriver", "DepthTextureController" };
             foreach (var component in _cam.GetComponents<Behaviour>())
                 if (destroyList.Contains(component.GetType().Name)) Destroy(component);
 
@@ -225,7 +225,7 @@ namespace CameraPlus.Behaviours
 #endif
             Plugin.cameraController.externalSender.RemoveTask(this);
 
-            if (string.IsNullOrWhiteSpace(Config.movementScript.movementScript) || Config.movementScript.songSpecificScript)
+            if (!string.IsNullOrWhiteSpace(Config.movementScript.movementScript) || Config.movementScript.songSpecificScript)
                 AddMovementScript();
         }
 
@@ -235,7 +235,7 @@ namespace CameraPlus.Behaviours
             {
                 if (Config.vmcProtocol.mode == VMCProtocolMode.Sender)
                     InitExternalSender();
-                if (string.IsNullOrWhiteSpace(Config.movementScript.movementScript) || Config.movementScript.songSpecificScript)
+                if (!string.IsNullOrWhiteSpace(Config.movementScript.movementScript) || Config.movementScript.songSpecificScript)
                     AddMovementScript();
                 if (!Config.cameraExtensions.dontDrawDesktop)
                     Plugin.cameraController.ScreenCamera.RegistrationCamera(this);
@@ -544,11 +544,11 @@ namespace CameraPlus.Behaviours
             if (Config.vmcProtocol.mode == VMCProtocolMode.Receiver) return "ExternalReceiver Enabled";
             if (!ThirdPerson) return "Camera Mode is First Person";
 
-            if (string.IsNullOrWhiteSpace( Config.movementScript.movementScript) || Config.movementScript.songSpecificScript)
+            if (!string.IsNullOrWhiteSpace( Config.movementScript.movementScript) || Config.movementScript.songSpecificScript)
             {
                 ClearMovementScript();
 
-                if (string.IsNullOrWhiteSpace( SongScriptBeatmapPatch.customLevelPath) && Config.movementScript.songSpecificScript)
+                if (!string.IsNullOrWhiteSpace( SongScriptBeatmapPatch.customLevelPath) && Config.movementScript.songSpecificScript)
                     songScriptPath = SongScriptBeatmapPatch.customLevelPath;
                 else if (File.Exists(Path.Combine(CameraUtilities.ScriptPath, Path.GetFileName(Config.movementScript.movementScript))))
                     songScriptPath = Path.Combine(CameraUtilities.ScriptPath, Path.GetFileName(Config.movementScript.movementScript));
