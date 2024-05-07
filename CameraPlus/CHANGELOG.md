@@ -1,3 +1,6 @@
+# v7.3.0 Chanegs
+- Support game version 1.36.2.  
+
 # v7.2.2 Changes
 - Fixed a mistake in the script reset process.     
 
