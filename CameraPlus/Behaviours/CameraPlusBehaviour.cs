@@ -1,4 +1,4 @@
-﻿#define WITH_VMCA
+﻿//#define WITH_VMCA
 using System;
 using System.IO;
 using System.Linq;

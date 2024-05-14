@@ -1,4 +1,4 @@
-﻿#define WITH_VMCA
+﻿//#define WITH_VMCA
 using UnityEngine;
 
 #if WITH_VMCA
